@@ -19,7 +19,7 @@ export class AuthService {
 
   async signIn(username: string, pass: string): Promise<any> {
     await this.usersService.initUsers();
-    const user = await this.usersService.findOne(username);
+    const user = await this.usersService.findByUsername(username);
     if (!user) {
       throw new NotFoundException('User not found');
     }

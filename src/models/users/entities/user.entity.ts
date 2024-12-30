@@ -1,9 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, Unique } from 'typeorm';
 
-@Entity()
+@Entity('users')
+@Unique(['username'])
 export class User {
-  @PrimaryGeneratedColumn()
-  userId: number;
+  @PrimaryGeneratedColumn('uuid')
+  userId?: number;
 
   @Column({ length: 500 })
   username: string;
@@ -11,8 +12,7 @@ export class User {
   @Column('text')
   password: string;
 
-  constructor(userId: number, username: string, password: string) {
-    this.userId = userId;
+  constructor(username: string, password: string) {
     this.username = username;
     this.password = password;
   }
