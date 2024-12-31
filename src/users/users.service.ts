@@ -1,61 +1,47 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { User } from 'src/models/users/entities/user.entity';
-import { DataSource } from 'typeorm';
-import { UsersRepository } from './users.repository';
-import { Query } from 'typeorm/driver/Query';
+import { DataSource, Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from './entities/user.entity';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UsersService {
   private readonly logger: Logger = new Logger(UsersService.name);
-  private users: User[];
 
   constructor(
-    private usersRepository: UsersRepository,
+    @InjectRepository(User) private readonly usersRepository: Repository<User>,
     private dataSource: DataSource,
   ) {}
 
   async initUsers() {
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    this.users = [
-      await this.usersRepository.createUser(new User('john', 'changeme')),
-      await this.usersRepository.createUser(new User('maria', 'guess')),
-    ];
-    await queryRunner.startTransaction();
-    try {
-      this.users.forEach((user) => {
-        console.log(user);
-        queryRunner.manager.save(user);
-      });
-      await queryRunner.commitTransaction();
-    } catch (err) {
-      this.logger.error(err);
-      await queryRunner.rollbackTransaction();
-    } finally {
-      await queryRunner.release();
-    }
+    await this.createUser({
+      username: 'john',
+      password: 'changeme',
+      email: 'john@email.com',
+    });
+    await this.createUser({
+      username: 'maria',
+      password: 'guess',
+      email: 'maria@email.com',
+    });
+  }
+
+  async createUser(newUser: CreateUserDto): Promise<User> {
+    const user = this.usersRepository.create(newUser);
+    console.log(user);
+    await this.usersRepository.upsert(user, ['email']);
+    return user;
   }
 
   async findAll(): Promise<User[]> {
     return this.usersRepository.find();
   }
 
-  async findById(userId: number) {
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-    try {
-      return await queryRunner.manager.findOneById({ userId });
-    } catch (err) {
-      this.logger.error(err);
-      await queryRunner.rollbackTransaction();
-    } finally {
-      await queryRunner.release();
-    }
+  async findById(id: string) {
+    return this.usersRepository.findOneBy({ id });
   }
-  async findByUsername(userName: string) {
-    console.log(userName);
-    return this.users.find((user) => user.username === userName);
+  async findByUsername(username: string) {
+    return this.usersRepository.findOneBy({ username });
   }
 
   async remove(userId: number) {

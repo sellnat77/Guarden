@@ -6,6 +6,12 @@ import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmConfigService } from './config/typeorm.config.service';
+import { PlantsModule } from './plants/plants.module';
+import { LocationsModule } from './locations/locations.module';
+import { SchedulesModule } from './schedules/schedules.module';
+import { VitalsModule } from './vitals/vitals.module';
+import { RoutinesModule } from './routines/routines.module';
+import { QrCodesModule } from './qr-codes/qr-codes.module';
 
 @Module({
   controllers: [AppController],
@@ -18,6 +24,12 @@ import { TypeOrmConfigService } from './config/typeorm.config.service';
       useClass: TypeOrmConfigService,
     }),
     ConfigModule,
+    PlantsModule,
+    LocationsModule,
+    SchedulesModule,
+    VitalsModule,
+    RoutinesModule,
+    QrCodesModule,
   ],
 })
 export class AppModule {}
