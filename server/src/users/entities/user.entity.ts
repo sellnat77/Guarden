@@ -4,8 +4,13 @@ import {
   PrimaryGeneratedColumn,
   BeforeInsert,
   BeforeUpdate,
+  OneToMany,
+  JoinColumn,
+  JoinTable,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { Location } from 'src/locations/entities/location.entity';
+import { Plant } from 'src/plants/entities/plant.entity';
 
 const SALT_OR_ROUNDS = 10;
 
@@ -22,6 +27,22 @@ export class User {
 
   @Column('text', { unique: true })
   email: string;
+
+  @OneToMany(() => Location, (location) => location.createdBy)
+  @JoinTable({
+    name: 'createdBy',
+    joinColumn: { name: 'createdBy' },
+    inverseJoinColumn: { name: 'id' },
+  })
+  locations: Location[];
+
+  @OneToMany(() => Plant, (plant) => plant.createdBy)
+  @JoinTable({
+    name: 'createdBy',
+    joinColumn: { name: 'createdBy' },
+    inverseJoinColumn: { name: 'id' },
+  })
+  plants: Plant[];
 
   @BeforeUpdate()
   @BeforeInsert()

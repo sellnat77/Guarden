@@ -1,3 +1,6 @@
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Plant } from 'src/plants/entities/plant.entity';
+
 @Entity()
 export class Schedule {
   @PrimaryGeneratedColumn('uuid')

@@ -13,7 +13,7 @@ export class LocationsService {
   ) {}
   async create(createLocationDto: CreateLocationDto) {
     const location = this.locationsRepository.create(createLocationDto);
-    await this.locationsRepository.save(location);
+    await this.locationsRepository.upsert(location, ['name']);
     return location;
   }
 

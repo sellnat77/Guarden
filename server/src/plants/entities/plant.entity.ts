@@ -1,5 +1,13 @@
 import { Location } from 'src/locations/entities/location.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { User } from 'src/users/entities/user.entity';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  Relation,
+} from 'typeorm';
 
 @Entity()
 export class Plant {
@@ -11,15 +19,27 @@ export class Plant {
 
   @Column({ type: 'varchar', length: 255, nullable: false })
   species: string;
-  @Column({ type: 'datetime' })
+
+  @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   lastWatered: Date;
 
-  @Column({ type: 'datetime' })
+  @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   lastPruned: Date;
+
+  @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+  lastFertilized: Date;
+
+  @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+  lastRePotted: Date;
 
   @Column({ type: 'text' })
   notes: string;
 
-  @ManyToOne(() => Location, (location: Location) => location.id)
-  location: Location;
+  @ManyToOne(() => Location, (location) => location.plants)
+  @JoinColumn({ name: 'locationId' })
+  location: Relation<Location>;
+
+  @ManyToOne(() => User, (user) => user.plants)
+  @JoinColumn()
+  createdBy: string;
 }

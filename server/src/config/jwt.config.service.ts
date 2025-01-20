@@ -8,6 +8,9 @@ export class JwtConfigService implements JwtOptionsFactory {
     console.log(process.env.JWT_SECRET);
     return {
       secret: process.env.JWT_SECRET || 'hard!to-guess_secret',
+      signOptions: {
+        expiresIn: '3d',
+      },
     };
   }
 }

@@ -8,7 +8,6 @@ import {
 import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { User } from 'src/users/entities/user.entity';
 import { SignInDto } from './dto/sign-in.dto';
 import { SignUpDto } from './dto/sign-up.dto';
 
@@ -21,9 +20,8 @@ export class AuthService {
   ) {}
 
   async signIn(signInDto: SignInDto): Promise<any> {
-    console.log('test+++++++');
     await this.usersService.initUsers();
-    const user = await this.usersService.findByUsername(signInDto.username);
+    const user = await this.usersService.findByEmail(signInDto.email);
     if (!user) {
       throw new NotFoundException('User not found');
     }
@@ -36,14 +34,18 @@ export class AuthService {
       throw new UnauthorizedException('Incorrect Password');
     }
 
-    const payload = { sub: user.id, username: user.username };
+    const payload = {
+      sub: user.id,
+      email: user.email,
+      username: user.username,
+    };
     return { access_token: await this.jwtService.signAsync(payload) };
   }
 
   async signUp(signUpDto: SignUpDto): Promise<any> {
-    const user = await this.usersService.findByUsername(signUpDto.username);
+    const user = await this.usersService.findByEmail(signUpDto.email);
     if (user) {
-      throw new ForbiddenException('Username already exists');
+      throw new ForbiddenException('User email already exists');
     }
     const newUser = await this.usersService.createUser(signUpDto);
 
