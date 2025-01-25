@@ -17,6 +17,7 @@ const PlantForm = ({ onSubmit, initialData }) => {
   });
 
   useEffect(() => {
+    console.log("5");
     if (initialData) {
       setData(initialData);
     }

@@ -9,10 +9,22 @@ import Card from "@mui/material/Card";
 import Grid2 from "@mui/material/Grid2";
 import { useEffect, useState } from "react";
 import { LineChart } from "@mui/x-charts/LineChart";
+import { useNavigate } from "react-router-dom";
 
 const HomePage = ({ token }) => {
+  const navigate = useNavigate();
   const [locations, setLocations] = useState([]);
   const [chartData, setChartData] = useState([]);
+
+  const handleAddNewLocation = (newLocation) => {
+    setLocations([...locations, newLocation]);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    navigate("/login");
+  };
+
   const xLabels = [
     "day 1",
     "day 2",
@@ -25,6 +37,7 @@ const HomePage = ({ token }) => {
   ];
 
   useEffect(() => {
+    console.log("2");
     const fetchData = async () => {
       try {
         const response = await axios.get("http://localhost:5000/locations", {
@@ -56,7 +69,9 @@ const HomePage = ({ token }) => {
           </Typography>
           <Button variant="contained">Profile</Button>
           <Button variant="contained">Settings</Button>
-          <Button variant="contained">Logout</Button>
+          <Button variant="contained" onClick={handleLogout}>
+            Logout
+          </Button>
         </Toolbar>
       </AppBar>
 
@@ -80,7 +95,10 @@ const HomePage = ({ token }) => {
             </Grid2>
           ))}
           <Grid2 item key={"add-location"}>
-            <LocationCard token={token} />
+            <LocationCard
+              token={token}
+              handleAddNewLocation={handleAddNewLocation}
+            />
           </Grid2>
         </Grid2>
 

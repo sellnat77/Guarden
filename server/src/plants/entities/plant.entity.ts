@@ -4,6 +4,7 @@ import {
   Column,
   Entity,
   JoinColumn,
+  JoinTable,
   ManyToOne,
   PrimaryGeneratedColumn,
   Relation,
@@ -36,7 +37,7 @@ export class Plant {
   notes: string;
 
   @ManyToOne(() => Location, (location) => location.plants)
-  @JoinColumn({ name: 'locationId' })
+  @JoinTable({ name: 'locationId' })
   location: Relation<Location>;
 
   @ManyToOne(() => User, (user) => user.plants)

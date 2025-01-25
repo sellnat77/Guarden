@@ -27,6 +27,18 @@ export class LocationsController {
     return this.locationsService.create(createLocationDto);
   }
 
+  @Patch('location/:locationId')
+  update(
+    @User() user: any,
+    @Param('locationId') locationId: string,
+    @Body() updateLocationDto: UpdateLocationDto,
+  ) {
+    console.log(user);
+    console.log(updateLocationDto);
+    updateLocationDto.createdBy = user.sub;
+    return this.locationsService.update(locationId, updateLocationDto);
+  }
+
   @Get()
   findAll() {
     return this.locationsService.findAll();
@@ -35,14 +47,6 @@ export class LocationsController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.locationsService.findOne(id);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateLocationDto: UpdateLocationDto,
-  ) {
-    return this.locationsService.update(id, updateLocationDto);
   }
 
   @Delete(':id')

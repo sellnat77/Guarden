@@ -14,30 +14,10 @@ const Location = ({ token }) => {
   const navigate = useNavigate();
   const { state } = useLocation();
   const { location } = state;
-  const [plants, setPlants] = useState([]);
 
   const goHome = () => {
     navigate("/home");
   };
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:5000/plants/location/${location.id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        );
-        console.log(response.data);
-        setPlants(response.data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-    fetchData();
-  }, [token, location]);
 
   return (
     <div>
@@ -69,11 +49,13 @@ const Location = ({ token }) => {
       <div style={{ padding: "20px" }}>
         {/* Grid2 of location cards */}
         <Grid2 container spacing={2} columns={{ xs: 1, sm: 2, md: 4 }}>
-          {plants.map((plant) => (
-            <Grid2 item key={plant.id}>
-              <PlantCard token={token} plant={plant} />
-            </Grid2>
-          ))}
+          {location &&
+            location.plants &&
+            location.plants.map((plant) => (
+              <Grid2 item key={plant.id}>
+                <PlantCard token={token} plant={plant} />
+              </Grid2>
+            ))}
           <Grid2 item key={"add-plant"}>
             <PlantCard token={token} locationId={location.id} />
           </Grid2>

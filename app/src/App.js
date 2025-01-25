@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, useNavigate } from "react-router-dom";
 import Login from "./Components/login";
 import ProtectedRoutes from "./Components/ProtectedRoutes";
 import { jwtDecode } from "jwt-decode";
@@ -8,6 +8,7 @@ function App() {
   const [accessToken, setAccessToken] = useState(null);
 
   useEffect(() => {
+    console.log("1");
     const storedAccessToken = localStorage.getItem("accessToken");
 
     if (storedAccessToken) {
@@ -33,15 +34,7 @@ function App() {
   return (
     <div>
       <BrowserRouter>
-        {accessToken ? (
-          // User is logged in, show protected routes
-          <div>
-            <ProtectedRoutes token={accessToken} />
-          </div>
-        ) : (
-          // User is not logged in, show login form
-          <Login />
-        )}
+        <ProtectedRoutes token={accessToken} />
       </BrowserRouter>
     </div>
   );
