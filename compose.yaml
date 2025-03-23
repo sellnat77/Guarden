@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   db:
-    container_name: database
+    container_name: guarden_database
     image: postgres:latest
     restart: unless-stopped
     environment:
@@ -16,27 +16,31 @@ services:
     env_file: ".env"
 
   adminer:
-    container_name: adminer
+    container_name: guarden_db_debug
     image: adminer
     restart: always
     ports:
       - "8080:8080"
 
   backend:
-    container_name: backend
+    container_name: guarden_backend
     build:
-      context: ./server
+      context: ./api-core
       dockerfile: Dockerfile
+    command: npm run start:dev:fast
     ports:
       - "${PORT}:${PORT}"
+    volumes:
+      - ./api-core:/usr/src/app
+      # - ./api-core/node_modules
     depends_on:
       - db
     env_file: ".env"
 
-  frontend:
-    container_name: frontend
+  dashboard:
+    container_name: guarden_dashboard
     build:
-      context: ./app
+      context: ./dashboard
       dockerfile: Dockerfile
     ports:
       - "3000:80"
