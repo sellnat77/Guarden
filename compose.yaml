@@ -22,8 +22,8 @@ services:
     ports:
       - "8080:8080"
 
-  backend:
-    container_name: guarden_backend
+  api-core:
+    container_name: guarden_api_core
     build:
       context: ./api-core
       dockerfile: Dockerfile
@@ -37,8 +37,8 @@ services:
       - db
     env_file: ".env"
 
-  vision_processor:
-    container_name: guarden_vision
+  api-vision:
+    container_name: guarden_api_vision
     build:
       context: ./api-vision
       dockerfile: Dockerfile
@@ -58,7 +58,7 @@ services:
     ports:
       - "3000:80"
     depends_on:
-      - backend
+      - api-core
     env_file: ".env"
 
 volumes:
