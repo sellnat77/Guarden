@@ -1,5 +1,5 @@
-from typing import Annotated
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, UploadFile
+
 from app.internal.visionProcessor import VisionProcessor
 
 app = FastAPI()
@@ -9,11 +9,12 @@ app = FastAPI()
 async def root():
     return {"message": "Hello World"}
 
+
 @app.post("/ndvi/upload/")
 async def processNDVI(file: UploadFile):
     processor = VisionProcessor(file)
     await processor.prepareImage()
     score = await processor.getNDVIScore()
-    print(f'Got ndvi of {score:.2f}')
+    print(score)
 
-    return {"filename": file.filename, "ndvi": score, "display": f'{score:.3f}'}
+    return {"filename": file.filename, "ndvi": score, "display": f"{score:.3f}"}
