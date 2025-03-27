@@ -27,14 +27,27 @@ services:
     build:
       context: ./api-core
       dockerfile: Dockerfile
-    command: npm run start:dev:fast
+    command: npm run start:dev
     ports:
-      - "${PORT}:${PORT}"
+      - "${PORT}:3000"
     volumes:
       - ./api-core:/usr/src/app
-      # - ./api-core/node_modules
+      - /usr/src/app/node_modules
     depends_on:
       - db
+    env_file: ".env"
+
+  vision_processor:
+    container_name: guarden_vision
+    build:
+      context: ./api-vision
+      dockerfile: Dockerfile
+    working_dir: /code/app
+    command: fastapi dev main.py --host 0.0.0.0 --port 80
+    ports:
+      - "${VISION_PORT}:80"
+    volumes:
+      - ./api-vision/app:/code/app
     env_file: ".env"
 
   dashboard:

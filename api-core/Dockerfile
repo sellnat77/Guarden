@@ -1,23 +1,20 @@
-# Use the official Node.js image as the base image
+# Dockerfile
 FROM node:20
 
-# Set the working directory inside the container
+# Create app directory
 WORKDIR /usr/src/app
 
-# Copy package.json and package-lock.json to the working directory
+# Install app dependencies
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+# where available (npm@5+)
 COPY package*.json ./
 
-# Install the application dependencies
-RUN npm ci --force
+RUN npm install
+# If you are building your code for production
+# RUN npm ci --only=production
 
-# Copy the rest of the application files
+# Bundle app source
 COPY . .
 
-# Build the NestJS application
-RUN npm run build
-
-# Expose the application port
 EXPOSE 3000
-
-# Command to run the application
-CMD ["node", "dist/main"]
+CMD [ "npm", "run", "start:prod" ]
