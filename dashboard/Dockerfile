@@ -1,31 +1,19 @@
-FROM node:22-alpine AS builder
-ENV NODE_ENV production
+# The version of Node that we will use
+FROM node:22-alpine3.20
 
-# Add a work directory
-WORKDIR /app
+# The working directory of the app in the container
+WORKDIR /usr/src/app
 
-# Cache and Install dependencies
-COPY package.json .
-RUN npm i
+COPY package*.json ./
 
-# Copy app files
-COPY . .
+# Install the packages in package.json
+RUN npm install
 
-# Build the app
-RUN npm run build
+# Copy the project files from the host to the work directory in the container
+COPY . /usr/src/app/
 
-# Bundle static assets with nginx
-FROM nginx:alpine AS production
-ENV NODE_ENV production
+# Expose the port in the container so that it can be accessed from the outside
+EXPOSE 5173
 
-# Copy built assets from builder
-COPY --from=builder /app/build /usr/share/nginx/html
-
-# Add your nginx.conf
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-# Expose port
-EXPOSE 80
-
-# Start nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Command to run the app
+CMD ["npm", "run", "dev"]

@@ -56,7 +56,10 @@ services:
       context: ./dashboard
       dockerfile: Dockerfile
     ports:
-      - "3000:80"
+      - "3000:5173"
+    volumes:
+      - ./dashboard:/usr/src/app
+      - /usr/src/app/node_modules
     depends_on:
       - api-core
     env_file: ".env"
