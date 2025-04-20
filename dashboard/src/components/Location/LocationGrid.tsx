@@ -7,51 +7,46 @@ import {
 } from "@mui/material";
 import LocationCard from "./LocationCard";
 import Location from "../../interfaces/location.interface";
+import location from "../../api/location";
+import { useState, useEffect } from "react";
+import { Outlet } from "react-router";
+
+const defaultLocations: Location[] = [
+  {
+    id: "1",
+    name: "Patio",
+    description: "Patio snippet text",
+    thumbnailPath: "./backyard.webp",
+    thumbnailDescription: "Default Backyard",
+  },
+];
+import defaultThumbnail from "../../assets/backyard.webp";
 
 function LocationGrid() {
-  const myLocations: Location[] = [
-    {
-      id: "1",
-      title: "Patio",
-      description: "Patio snippet text",
-      thumbnailPath: "./backyard.webp",
-      thumbnailDescription: "Default Backyard",
-      plants: [
-        {
-          id: "plant 1",
-          name: "Patio plant",
-          description: "Patio snippet text",
-          thumbnailPath: "./backyard.webp",
-          thumbnailDescription: "Default Backyard",
-        },
-      ],
-    },
-    {
-      id: "2",
-      title: "Backyard",
-      description: "Backyard snippet text",
-      thumbnailPath: "./backyard.webp",
-      thumbnailDescription: "Default Backyard",
-      plants: [
-        {
-          id: "plant 2",
-          name: "Backyard plant",
-          description: "backyard plant snippet text",
-          thumbnailPath: "./backyard.webp",
-          thumbnailDescription: "Default Backyard",
-        },
-      ],
-    },
-  ];
+  const [locations, setLocations] = useState(defaultLocations);
+  const fetchLocations = async () => {
+    try {
+      const { data } = await location.list();
+      setLocations(data);
+    } catch (error) {
+      // Handle API errors
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+    fetchLocations();
+  }, []);
+
   return (
     <>
+      <Outlet />
       <Grid container spacing={4}>
         <Grid key="AddLocation" size={{ xs: 6 }}>
           <CardActionArea>
             <CardMedia
               component="img"
               height="140"
-              image="backyard.webp"
+              image={defaultThumbnail}
               alt="green iguana"
             />
             <CardContent>
@@ -61,7 +56,7 @@ function LocationGrid() {
             </CardContent>
           </CardActionArea>
         </Grid>
-        {myLocations.map((loc) => (
+        {locations.map((loc) => (
           <Grid key={loc.id} size={{ xs: 6 }}>
             <LocationCard location={loc} />
           </Grid>

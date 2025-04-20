@@ -19,7 +19,7 @@ import { User } from 'src/users/decorators/user.decorator';
 export class LocationsController {
   constructor(private readonly locationsService: LocationsService) {}
 
-  @Post('location')
+  @Post()
   create(@User() user: any, @Body() createLocationDto: CreateLocationDto) {
     console.log(user);
     console.log(createLocationDto);
@@ -44,7 +44,7 @@ export class LocationsController {
     return this.locationsService.findAll();
   }
 
-  @Get(':id')
+  @Get('/location/:id')
   findOne(@Param('id') id: string) {
     return this.locationsService.findOne(id);
   }

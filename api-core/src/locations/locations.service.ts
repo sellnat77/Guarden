@@ -4,7 +4,6 @@ import { UpdateLocationDto } from './dto/update-location.dto';
 import { Location } from './entities/location.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Plant } from 'src/plants/entities/plant.entity';
 
 @Injectable()
 export class LocationsService {
@@ -19,9 +18,7 @@ export class LocationsService {
   }
 
   async findAll() {
-    return this.locationsRepository.find({
-      relations: { plants: true },
-    });
+    return this.locationsRepository.find({});
   }
 
   async findOne(id: string) {

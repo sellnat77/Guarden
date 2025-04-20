@@ -20,7 +20,7 @@ import { User } from 'src/users/decorators/user.decorator';
 export class PlantsController {
   constructor(private readonly plantsService: PlantsService) {}
 
-  @Post('plant')
+  @Post()
   create(@User() user: any, @Body() createPlantDto: CreatePlantDto) {
     console.log(user);
     createPlantDto.createdBy = user.sub;
@@ -38,7 +38,7 @@ export class PlantsController {
     return this.plantsService.findByLocation(locationId);
   }
 
-  @Get(':id')
+  @Get('/plant/:id')
   findOne(@Param('id') id: string) {
     return this.plantsService.findOne(id);
   }

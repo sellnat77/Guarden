@@ -11,29 +11,41 @@ import Plant from "../../interfaces/plant.interface";
 const defaultData: Plant = {
   id: "default",
   name: "Backyard Succ",
-  description: "Backyard snippet text",
-  thumbnailPath: "./backyard.webp",
+  species: "Succulent",
+  notes: "Backyard snippet text",
+  thumbnailPath: "assets/backyard.webp",
   thumbnailDescription: "Default Backyard",
 };
+import defaultThumbnail from "../../assets/backyard.webp";
+interface PlantProps {
+  plant: Plant;
+}
 
-function PlantCard({ plant = defaultData }) {
+function PlantCard({ plant }: PlantProps) {
   return (
     <Card sx={{ maxWidth: 345 }}>
       <CardMedia
         sx={{ height: 140 }}
-        image={plant.thumbnailPath}
-        title={plant.thumbnailDescription}
+        image={plant.thumbnailPath ?? defaultThumbnail}
+        title={plant.thumbnailDescription ?? defaultData.thumbnailDescription}
       />
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
-          {plant.name}
+          {plant.name ?? defaultData.name}
         </Typography>
         <Typography variant="body2" sx={{ color: "text.secondary" }}>
-          {plant.description}
+          {plant.notes ?? defaultData.notes}
         </Typography>
       </CardContent>
       <CardActions>
-        <Button size="small">Details</Button>
+        <Button
+          size="small"
+          onClick={() => {
+            console.log(plant);
+          }}
+        >
+          Details
+        </Button>
       </CardActions>
     </Card>
   );

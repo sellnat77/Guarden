@@ -21,16 +21,16 @@ export class Plant {
   @Column({ type: 'varchar', length: 255, nullable: false })
   species: string;
 
-  @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({ type: 'timestamptz', nullable: true })
   lastWatered: Date;
 
-  @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({ type: 'timestamptz', nullable: true })
   lastPruned: Date;
 
-  @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({ type: 'timestamptz', nullable: true })
   lastFertilized: Date;
 
-  @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({ type: 'timestamptz', nullable: true })
   lastRePotted: Date;
 
   @Column({ type: 'text' })
