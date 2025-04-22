@@ -16,7 +16,7 @@ const defaultData: Plant = {
   thumbnailPath: "assets/backyard.webp",
   thumbnailDescription: "Default Backyard",
 };
-import defaultThumbnail from "../../assets/backyard.webp";
+import defaultThumbnail from "../../assets/plant.svg";
 interface PlantProps {
   plant: Plant;
 }

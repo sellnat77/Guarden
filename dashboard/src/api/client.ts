@@ -16,7 +16,7 @@ export const _get = (url: string, config = {}) => {
   const testConfig = {
     headers: {
       Authorization:
-        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhMmFlMjRmYy01MjU1LTQyNzUtOTJmNy01MzY1NmZmMGZmNTIiLCJlbWFpbCI6Im1hcmlhQGVtYWlsLmNvbSIsInVzZXJuYW1lIjoibWFyaWEiLCJpYXQiOjE3NDUwMjM4ODcsImV4cCI6MTc0NTI4MzA4N30.LlQiM2eQYsIweFlWb0jQJPfywacShEFpAqjvfvpFhbg",
+        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhMmFlMjRmYy01MjU1LTQyNzUtOTJmNy01MzY1NmZmMGZmNTIiLCJlbWFpbCI6Im1hcmlhQGVtYWlsLmNvbSIsInVzZXJuYW1lIjoibWFyaWEiLCJpYXQiOjE3NDUzNDQ5MDMsImV4cCI6MTc0NTYwNDEwM30.FMOQcAPOQ4UIK3trSwMJUvruALEbuDr5Hz3_WaUD6mM",
     },
   };
   return apiClient.get(url, testConfig);

@@ -9,7 +9,6 @@ import LocationCard from "./LocationCard";
 import Location from "../../interfaces/location.interface";
 import location from "../../api/location";
 import { useState, useEffect } from "react";
-import { Outlet } from "react-router";
 
 const defaultLocations: Location[] = [
   {
@@ -39,7 +38,6 @@ function LocationGrid() {
 
   return (
     <>
-      <Outlet />
       <Grid container spacing={4}>
         <Grid key="AddLocation" size={{ xs: 6 }}>
           <CardActionArea>

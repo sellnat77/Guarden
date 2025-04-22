@@ -5,7 +5,9 @@ import App from "./App";
 import Layout from "./layouts/dashboard";
 import LocationGrid from "./components/Location/LocationGrid";
 import PlantGrid from "./components/Plant/PlantGrid";
-import PlantCard from "./components/Plant/PlantCard";
+import WIP from "./components/wip";
+import Home from "./components/Home/Home";
+import Stats from "./components/Stats/Stats";
 
 const router = createBrowserRouter([
   {
@@ -16,19 +18,21 @@ const router = createBrowserRouter([
         Component: Layout,
         children: [
           {
+            path: "",
+            Component: Home,
+          },
+          {
             path: "locations",
             Component: LocationGrid,
           },
           {
             path: ":locationId/plants",
             Component: PlantGrid,
-            children: [
-              {
-                path: ":id",
-                Component: PlantCard,
-              },
-            ],
           },
+          { path: "plants", Component: WIP },
+          { path: "health", Component: Stats },
+          { path: "routines", Component: WIP },
+          { path: "settings", Component: WIP },
         ],
       },
     ],

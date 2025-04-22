@@ -10,7 +10,7 @@ import Plant from "../../interfaces/plant.interface";
 import { useEffect, useState } from "react";
 import plant from "../../api/plant";
 import { useParams } from "react-router";
-import defaultThumbnail from "../../assets/backyard.webp";
+import defaultThumbnail from "../../assets/plant.svg";
 
 function PlantGrid() {
   const { locationId } = useParams();
