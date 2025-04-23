@@ -27,6 +27,10 @@ export class PlantsService {
     return this.plantsRepository.find();
   }
 
+  async stats() {
+    return this.plantsRepository.count();
+  }
+
   async findByLocation(locationId: string) {
     return this.plantsRepository.findBy({ location: { id: locationId } });
   }

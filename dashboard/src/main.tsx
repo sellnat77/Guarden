@@ -8,6 +8,8 @@ import PlantGrid from "./components/Plant/PlantGrid";
 import WIP from "./components/wip";
 import Home from "./components/Home/Home";
 import Stats from "./components/Stats/Stats";
+import LocationDetail from "./components/Location/LocationDetail";
+import SignIn from "./components/Auth/SignIn";
 
 const router = createBrowserRouter([
   {
@@ -21,9 +23,14 @@ const router = createBrowserRouter([
             path: "",
             Component: Home,
           },
+
           {
             path: "locations",
             Component: LocationGrid,
+          },
+          {
+            path: ":locationId/detail",
+            Component: LocationDetail,
           },
           {
             path: ":locationId/plants",
@@ -34,6 +41,10 @@ const router = createBrowserRouter([
           { path: "routines", Component: WIP },
           { path: "settings", Component: WIP },
         ],
+      },
+      {
+        path: "sign-in",
+        Component: SignIn,
       },
     ],
   },

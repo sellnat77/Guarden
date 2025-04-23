@@ -44,6 +44,11 @@ export class LocationsController {
     return this.locationsService.findAll();
   }
 
+  @Get('stats')
+  stats() {
+    return this.locationsService.stats();
+  }
+
   @Get('/location/:id')
   findOne(@Param('id') id: string) {
     return this.locationsService.findOne(id);

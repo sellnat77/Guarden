@@ -15,8 +15,7 @@ export const _get = (url: string, config = {}) => {
   console.log(BASE_URL);
   const testConfig = {
     headers: {
-      Authorization:
-        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhMmFlMjRmYy01MjU1LTQyNzUtOTJmNy01MzY1NmZmMGZmNTIiLCJlbWFpbCI6Im1hcmlhQGVtYWlsLmNvbSIsInVzZXJuYW1lIjoibWFyaWEiLCJpYXQiOjE3NDUzNDQ5MDMsImV4cCI6MTc0NTYwNDEwM30.FMOQcAPOQ4UIK3trSwMJUvruALEbuDr5Hz3_WaUD6mM",
+      Authorization: "Bearer notoken",
     },
   };
   return apiClient.get(url, testConfig);

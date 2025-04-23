@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { RoutinesService } from './routines.service';
 import { CreateRoutineDto } from './dto/create-routine.dto';
 import { UpdateRoutineDto } from './dto/update-routine.dto';
@@ -15,6 +23,11 @@ export class RoutinesController {
   @Get()
   findAll() {
     return this.routinesService.findAll();
+  }
+
+  @Get('stats')
+  stats() {
+    return this.routinesService.stats();
   }
 
   @Get(':id')

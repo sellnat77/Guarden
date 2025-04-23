@@ -21,6 +21,10 @@ export class LocationsService {
     return this.locationsRepository.find({});
   }
 
+  async stats() {
+    return this.locationsRepository.count({});
+  }
+
   async findOne(id: string) {
     return this.locationsRepository.findOneBy({ id });
   }

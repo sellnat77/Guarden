@@ -32,6 +32,11 @@ export class PlantsController {
     return this.plantsService.findAll();
   }
 
+  @Get('stats')
+  stats() {
+    return this.plantsService.stats();
+  }
+
   @Get('location/:locationId')
   findByLocation(@Param('locationId') locationId: string) {
     console.log(locationId);

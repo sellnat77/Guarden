@@ -12,6 +12,10 @@ export class RoutinesService {
     return `This action returns all routines`;
   }
 
+  stats() {
+    return 5;
+  }
+
   findOne(id: number) {
     return `This action returns a #${id} routine`;
   }

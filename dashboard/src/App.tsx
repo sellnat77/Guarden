@@ -5,8 +5,10 @@ import MonitorHeartIcon from "@mui/icons-material/MonitorHeart";
 import EventRepeatIcon from "@mui/icons-material/EventRepeat";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { ReactRouterAppProvider } from "@toolpad/core/react-router";
-import { Outlet } from "react-router";
-import type { Navigation } from "@toolpad/core";
+import { Outlet, useNavigate } from "react-router";
+import { Authentication, type Navigation } from "@toolpad/core";
+import { useCallback, useMemo, useState } from "react";
+import SessionContext, { type Session } from "./SessionContext";
 
 const NAVIGATION: Navigation = [
   {
@@ -45,13 +47,45 @@ const NAVIGATION: Navigation = [
 ];
 
 const BRANDING = {
-  title: "My Guarden App",
+  title: "Guarden",
 };
 
+// preview-start
+const providers = [{ id: "credentials", name: "Email and Password" }];
+// preview-end
+
 export default function App() {
+  const [session, setSession] = useState<Session | null>(null);
+  const navigate = useNavigate();
+  const AUTHENTICATION: Authentication = {
+    signIn: useCallback(() => {
+      navigate("/sign-in", { state: { providers } });
+    }, [navigate]),
+    signOut: useCallback(() => {
+      setSession(null);
+      navigate("/sign-in");
+    }, [navigate]),
+  };
+
+  const sessionContextValue = useMemo(
+    () => ({
+      session,
+      setSession,
+      loading: false,
+    }),
+    [session],
+  );
+
   return (
-    <ReactRouterAppProvider navigation={NAVIGATION} branding={BRANDING}>
-      <Outlet />
+    <ReactRouterAppProvider
+      session={session}
+      navigation={NAVIGATION}
+      branding={BRANDING}
+      authentication={AUTHENTICATION}
+    >
+      <SessionContext.Provider value={sessionContextValue}>
+        <Outlet />
+      </SessionContext.Provider>
     </ReactRouterAppProvider>
   );
 }
