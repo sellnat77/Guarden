@@ -8,7 +8,7 @@ import {
 import LocationCard from "./LocationCard";
 import Location from "../../interfaces/location.interface";
 import location from "../../api/location";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 const defaultLocations: Location[] = [
   {
@@ -20,21 +20,27 @@ const defaultLocations: Location[] = [
   },
 ];
 import defaultThumbnail from "../../assets/backyard.webp";
+import { useSession } from "../../SessionContext";
+import AddLocationFormDialog from "./AddLocationFormDialog";
 
 function LocationGrid() {
+  const { session } = useSession();
   const [locations, setLocations] = useState(defaultLocations);
-  const fetchLocations = async () => {
+  const token = session?.user.token || "";
+
+  const getLocations = useCallback(async () => {
     try {
-      const { data } = await location.list();
+      const { data } = await location.list(token);
       setLocations(data);
     } catch (error) {
       // Handle API errors
       console.error(error);
     }
-  };
+  }, [token]);
+
   useEffect(() => {
-    fetchLocations();
-  }, []);
+    getLocations();
+  }, [getLocations]);
 
   return (
     <>
@@ -48,9 +54,7 @@ function LocationGrid() {
               alt="green iguana"
             />
             <CardContent>
-              <Typography gutterBottom variant="h5" component="div">
-                Add New Location
-              </Typography>
+              <AddLocationFormDialog token={token} />
             </CardContent>
           </CardActionArea>
         </Grid>

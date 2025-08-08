@@ -6,19 +6,13 @@ const apiClient = axios.create({
   baseURL: BASE_URL,
   headers: {
     "Content-Type": "application/json",
-    // You can add other headers like authorization token here
   },
 });
 
 // Define common API methods
 export const _get = (url: string, config = {}) => {
-  console.log(BASE_URL);
-  const testConfig = {
-    headers: {
-      Authorization: "Bearer notoken",
-    },
-  };
-  return apiClient.get(url, testConfig);
+  console.log(config);
+  return apiClient.get(url, config);
 };
 
 export const _delete = (url: string, config = {}) => {

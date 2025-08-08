@@ -8,11 +8,13 @@ class VisionProcessor:
         self.sourceFile: UploadFile = sourceFile
         self.sourceImage: np.ndarray
         self.ndviImage: np.ndarray
+        self.hsvImage: np.ndarray
 
     async def prepareImage(self) -> None:
         nparr = np.fromfile(self.sourceFile.file, dtype=np.uint8)
         img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
         self.sourceImage = img
+        self.hsvImage = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
         self.imageNPArray = np.array(self.sourceImage, dtype=float) / float(255)
         self.contrastAdjusted = await self.adjustContrast()
 
@@ -44,3 +46,26 @@ class VisionProcessor:
     async def getNDVIScore(self) -> float:
         await self.calculateNDVI()
         return np.nanmean(np.where(self.ndviImage != 0, self.ndviImage, np.nan))
+
+    async def getHSVScore(self) -> float:
+        lowerGreen = np.array([30, 50, 50])
+        upperGreen = np.array([90, 255, 255])
+        lowerUnhealthy = np.array([0, 50, 50])
+        upperUnhealthy = np.array([30, 255, 255])
+
+        healthyMask = cv2.inRange(self.hsvImage, lowerGreen, upperGreen)
+        unhealthyMask = cv2.inRange(self.hsvImage, lowerUnhealthy, upperUnhealthy)
+
+        totalPixels = np.sum(healthyMask > 0) + np.sum(unhealthyMask > 0)
+        healthyPixels = np.sum(healthyMask > 0)
+        unhealthyPixels = np.sum(unhealthyMask > 0)
+
+        healthyPercentage = (
+            (healthyPixels / totalPixels) * 100 if totalPixels > 0 else 0
+        )
+        unhealthyPercentage = (
+            (unhealthyPixels / totalPixels) * 100 if totalPixels > 0 else 0
+        )
+        print(f"healthy {healthyPercentage:2f} unhealthy {unhealthyPercentage:2f}")
+
+        return healthyPercentage

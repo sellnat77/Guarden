@@ -40,10 +40,10 @@ export default function SignIn() {
             // Convert Firebase user to Session format
             const userSession: Session = {
               user: {
-                name: "testName", // || "",
-                email: "testEmail", // || "",
+                name: "Maria", // || "",
+                email: email || "",
                 image: "test", //result.user.photoURL || "",
-                token: "myToken",
+                token: result.access_token,
               },
             };
             setSession(userSession);

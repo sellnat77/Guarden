@@ -18,3 +18,13 @@ async def processNDVI(file: UploadFile):
     print(score)
 
     return {"filename": file.filename, "ndvi": score, "display": f"{score:.3f}"}
+
+
+@app.post("/hsv/upload/")
+async def processHSV(file: UploadFile):
+    processor = VisionProcessor(file)
+    await processor.prepareImage()
+    score = await processor.getHSVScore()
+    print(score)
+
+    return {"filename": file.filename, "hsv": score, "display": f"{score:.3f}"}

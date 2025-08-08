@@ -20,15 +20,18 @@ import defaultThumbnail from "../../assets/backyard.webp";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useParams } from "react-router";
+import { useSession } from "../../SessionContext";
 
 function LocationDetail() {
-  const { locationId = defaultData.id } = useParams();
   const navigate = useNavigate();
+  const { session } = useSession();
+  const { locationId = defaultData.id } = useParams();
   const [locationDetail, setLocation] = useState(defaultData);
+  const token = session?.user.token || "";
 
   const fetchLocation = async () => {
     try {
-      const { data } = await location.detail(locationId);
+      const { data } = await location.detail(locationId, token);
       setLocation(data);
     } catch (error) {
       // Handle API errors

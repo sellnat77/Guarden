@@ -12,6 +12,7 @@ import { SchedulesModule } from './schedules/schedules.module';
 import { VitalsModule } from './vitals/vitals.module';
 import { RoutinesModule } from './routines/routines.module';
 import { QrCodesModule } from './qr-codes/qr-codes.module';
+import { TipsModule } from './tips/tips.module';
 
 @Module({
   controllers: [AppController],
@@ -27,6 +28,7 @@ import { QrCodesModule } from './qr-codes/qr-codes.module';
     PlantsModule,
     LocationsModule,
     SchedulesModule,
+    TipsModule,
     VitalsModule,
     RoutinesModule,
     QrCodesModule,

@@ -11,15 +11,18 @@ import { useEffect, useState } from "react";
 import plant from "../../api/plant";
 import { useParams } from "react-router";
 import defaultThumbnail from "../../assets/plant.svg";
+import { useSession } from "../../SessionContext";
 
 function PlantGrid() {
   const { locationId } = useParams();
+  const { session } = useSession();
   const [plants, setPlants] = useState<Plant[] | null>(null);
+  const token = session?.user.token || "";
 
   const fetchPlants = async (id: string | undefined) => {
     if (id) {
       try {
-        const { data } = await plant.list(id);
+        const { data } = await plant.list(id, token);
         console.log(data);
         setPlants(data);
       } catch (error) {
