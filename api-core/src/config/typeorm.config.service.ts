@@ -4,6 +4,7 @@ import { Location } from 'src/locations/entities/location.entity';
 import { Plant } from 'src/plants/entities/plant.entity';
 import { Tip } from 'src/tips/entities/tip.entity';
 import { User } from 'src/users/entities/user.entity';
+import { Vital } from 'src/vitals/entities/vital.entity';
 
 @Injectable()
 export class TypeOrmConfigService implements TypeOrmOptionsFactory {
@@ -15,7 +16,7 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       username: process.env.DB_USERNAME || 'guardener',
       password: process.env.DB_PASSWORD || 'guardener',
       database: process.env.DB_NAME || 'guarden',
-      entities: [User, Plant, Location, Tip],
+      entities: [User, Plant, Location, Tip, Vital],
       synchronize: true,
     };
   }

@@ -1,10 +1,4 @@
-import {
-  CardActionArea,
-  CardContent,
-  CardMedia,
-  Grid,
-  Typography,
-} from "@mui/material";
+import { CardActionArea, CardContent, CardMedia, Grid } from "@mui/material";
 import LocationCard from "./LocationCard";
 import Location from "../../interfaces/location.interface";
 import location from "../../api/location";
@@ -25,7 +19,7 @@ import AddLocationFormDialog from "./AddLocationFormDialog";
 
 function LocationGrid() {
   const { session } = useSession();
-  const [locations, setLocations] = useState(defaultLocations);
+  const [locations, setLocations] = useState<Location[]>(defaultLocations);
   const token = session?.user.token || "";
 
   const getLocations = useCallback(async () => {
@@ -46,17 +40,15 @@ function LocationGrid() {
     <>
       <Grid container spacing={4}>
         <Grid key="AddLocation" size={{ xs: 6 }}>
-          <CardActionArea>
-            <CardMedia
-              component="img"
-              height="140"
-              image={defaultThumbnail}
-              alt="green iguana"
-            />
-            <CardContent>
-              <AddLocationFormDialog token={token} />
-            </CardContent>
-          </CardActionArea>
+          <CardMedia
+            component="img"
+            height="140"
+            image={defaultThumbnail}
+            alt="green iguana"
+          />
+          <CardContent>
+            <AddLocationFormDialog token={token} setLocations={setLocations} />
+          </CardContent>
         </Grid>
         {locations.map((loc) => (
           <Grid key={loc.id} size={{ xs: 6 }}>

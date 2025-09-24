@@ -7,8 +7,15 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import location, { addLocationParams } from "../../api/location";
+import Location from "../../interfaces/location.interface";
 
-export default function AddLocationFormDialog({ token }: { token: string }) {
+export default function AddLocationFormDialog({
+  token,
+  setLocations,
+}: {
+  token: string;
+  setLocations: React.Dispatch<React.SetStateAction<Location[]>>;
+}) {
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
@@ -21,11 +28,10 @@ export default function AddLocationFormDialog({ token }: { token: string }) {
         name,
         description,
       };
-      console.log(token);
       const { data } = await location.add(newLocation, token);
-      console.log(data);
+      setLocations((prev) => [...prev, data]);
+      handleClose();
     } catch (error) {
-      // Handle API errors
       console.error(error);
     }
   };
@@ -49,7 +55,7 @@ export default function AddLocationFormDialog({ token }: { token: string }) {
               const formJson = Object.fromEntries(
                 (formData as FormData).entries(),
               );
-              console.log(formJson);
+
               addLocation(
                 formJson.name.toString(),
                 formJson.description.toString(),

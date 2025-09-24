@@ -1,4 +1,6 @@
+import { AxiosResponse } from "axios";
 import { _get, _post } from "./client";
+import Location from "../interfaces/location.interface";
 export type addLocationParams = {
   name: string;
   description: string;
@@ -23,7 +25,10 @@ export default {
         Authorization: `Bearer ${token}`,
       },
     }),
-  add: (data: addLocationParams, token: string) =>
+  add: (
+    data: addLocationParams,
+    token: string,
+  ): Promise<AxiosResponse<Location>> =>
     _post("locations", data, {
       headers: {
         Authorization: `Bearer ${token}`,

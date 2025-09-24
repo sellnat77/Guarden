@@ -1,11 +1,13 @@
 import { Location } from 'src/locations/entities/location.entity';
 import { User } from 'src/users/entities/user.entity';
+import { Vital } from 'src/vitals/entities/vital.entity';
 import {
   Column,
   Entity,
   JoinColumn,
   JoinTable,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   Relation,
 } from 'typeorm';
@@ -43,4 +45,7 @@ export class Plant {
   @ManyToOne(() => User, (user) => user.plants)
   @JoinColumn()
   createdBy: string;
+
+  @OneToMany(() => Vital, (vital) => vital.plant)
+  vitals: Relation<Vital>[];
 }

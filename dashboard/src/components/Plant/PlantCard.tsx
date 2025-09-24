@@ -38,12 +38,7 @@ function PlantCard({ plant }: PlantProps) {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button
-          size="small"
-          onClick={() => {
-            console.log(plant);
-          }}
-        >
+        <Button size="small" onClick={() => {}}>
           Details
         </Button>
       </CardActions>

@@ -6,15 +6,18 @@ export class Vital {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => Plant, (plant) => plant.id)
+  @ManyToOne(() => Plant, (plant) => plant.vitals)
   plant: Plant;
 
-  @Column({ type: 'date', nullable: false })
+  @Column({ type: 'date', nullable: true })
   date: Date;
 
-  @Column({ type: 'float', nullable: false })
+  @Column({ type: 'float', nullable: true })
   ndviValue: number;
 
-  @Column({ type: 'varchar', length: 255, nullable: false })
+  @Column({ type: 'float', nullable: true })
+  hsvValue: number;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
   imageUrl: string;
 }

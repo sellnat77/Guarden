@@ -11,7 +11,6 @@ const apiClient = axios.create({
 
 // Define common API methods
 export const _get = (url: string, config = {}) => {
-  console.log(config);
   return apiClient.get(url, config);
 };
 
@@ -24,5 +23,6 @@ export const _put = (url: string, data = {}, config = {}) => {
 };
 
 export const _post = (url: string, data = {}, config = {}) => {
+  apiClient.post(url);
   return apiClient.post(url, data, config);
 };

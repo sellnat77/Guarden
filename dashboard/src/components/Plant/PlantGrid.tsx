@@ -23,7 +23,7 @@ function PlantGrid() {
     if (id) {
       try {
         const { data } = await plant.list(id, token);
-        console.log(data);
+
         setPlants(data);
       } catch (error) {
         // Handle API errors
@@ -33,7 +33,6 @@ function PlantGrid() {
   };
 
   useEffect(() => {
-    console.log("++++++++++++");
     fetchPlants(locationId);
   }, [locationId]);
 

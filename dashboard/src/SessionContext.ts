@@ -17,10 +17,7 @@ interface SessionContextType {
 
 const SessionContext = createContext<SessionContextType>({
   session: null,
-  setSession: (session: Session) => {
-    console.log("nice");
-    console.log(session);
-  },
+  setSession: (session: Session) => {},
   loading: true,
 });
 
