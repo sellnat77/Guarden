@@ -41,7 +41,7 @@ import { ForgotPassword } from "./pages/forgotPassword";
 import { authProvider } from "./authProvider";
 
 function App() {
-  const API_URL = "http://localhost:5000";
+  const API_URL = "http://api-core:5000";
   const dataProvider = nestjsxCrudDataProvider(API_URL);
 
   return (

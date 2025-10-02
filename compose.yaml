@@ -14,6 +14,8 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     env_file: ".env"
+    networks:
+      - guarden-network
 
   adminer:
     container_name: guarden_db_debug
@@ -21,6 +23,8 @@ services:
     restart: always
     ports:
       - "8080:8080"
+    networks:
+      - guarden-network
 
   api-core:
     container_name: guarden_api_core
@@ -36,6 +40,8 @@ services:
     depends_on:
       - db
     env_file: ".env"
+    networks:
+      - guarden-network
 
   api-vision:
     container_name: guarden_api_vision
@@ -49,6 +55,8 @@ services:
     volumes:
       - ./api-vision/app:/code/app
     env_file: ".env"
+    networks:
+      - guarden-network
 
   dashboard:
     container_name: guarden_dashboard
@@ -63,6 +71,12 @@ services:
     depends_on:
       - api-core
     env_file: ".env"
+    networks:
+      - guarden-network
 
 volumes:
   pgdata:
+
+networks:
+  guarden-network:
+    driver: bridge
