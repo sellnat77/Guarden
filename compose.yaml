@@ -27,7 +27,7 @@ services:
     build:
       context: ./api-core
       dockerfile: Dockerfile
-    command: npm run start:dev
+    # command: npm run start:dev
     ports:
       - "${PORT}:3000"
     volumes:

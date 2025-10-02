@@ -79,7 +79,7 @@ export const PlantList = () => {
           return locationIsLoading ? (
             <>Loading...</>
           ) : (
-            locations?.find((item) => item.id === value)
+            locations?.find((item) => item.id === value)?.name
           );
         },
       },
