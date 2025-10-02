@@ -10,6 +10,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { SignInDto } from './dto/sign-in.dto';
 import { SignUpDto } from './dto/sign-up.dto';
+import { CrudRequest } from '@dataui/crud';
 
 @Injectable()
 export class AuthService {
@@ -20,8 +21,7 @@ export class AuthService {
   ) {}
 
   async signIn(signInDto: SignInDto): Promise<any> {
-    await this.usersService.initUsers();
-    const user = await this.usersService.findByEmail(signInDto.email);
+    const user = await this.usersService.findOneBy({ email: signInDto.email });
     if (!user) {
       throw new NotFoundException('User not found');
     }
@@ -42,12 +42,12 @@ export class AuthService {
     return { access_token: await this.jwtService.signAsync(payload) };
   }
 
-  async signUp(signUpDto: SignUpDto): Promise<any> {
-    const user = await this.usersService.findByEmail(signUpDto.email);
+  async signUp(req: CrudRequest, signUpDto: SignUpDto): Promise<any> {
+    const user = await this.usersService.findOneBy({ email: signUpDto.email });
     if (user) {
       throw new ForbiddenException('User email already exists');
     }
-    const newUser = await this.usersService.createUser(signUpDto);
+    const newUser = await this.usersService.createOne(req, signUpDto); // .createOne(signUpDto);
 
     const payload = { sub: newUser.id, username: newUser.username };
     return { access_token: await this.jwtService.signAsync(payload) };

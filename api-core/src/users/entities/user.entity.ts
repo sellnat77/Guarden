@@ -5,7 +5,6 @@ import {
   BeforeInsert,
   BeforeUpdate,
   OneToMany,
-  JoinColumn,
   JoinTable,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
@@ -15,7 +14,7 @@ import { Plant } from 'src/plants/entities/plant.entity';
 const SALT_OR_ROUNDS = 10;
 
 @Entity('users')
-export class User {
+export class UserEntity {
   @PrimaryGeneratedColumn('uuid')
   id?: string;
 

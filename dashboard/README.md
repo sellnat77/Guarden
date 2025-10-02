@@ -1,54 +1,49 @@
-# React + TypeScript + Vite
+# refine-project
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+<div align="center" style="margin: 30px;">
+    <a href="https://refine.dev">
+    <img alt="refine logo" src="https://refine.ams3.cdn.digitaloceanspaces.com/readme/refine-readme-banner.png">
+    </a>
+</div>
+<br/>
 
-Currently, two official plugins are available:
+This [Refine](https://github.com/refinedev/refine) project was generated with [create refine-app](https://github.com/refinedev/refine/tree/master/packages/create-refine-app).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Getting Started
 
-## Expanding the ESLint configuration
+A React Framework for building internal tools, admin panels, dashboards & B2B apps with unmatched flexibility ✨
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Refine's hooks and components simplifies the development process and eliminates the repetitive tasks by providing industry-standard solutions for crucial aspects of a project, including authentication, access control, routing, networking, state management, and i18n.
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## Available Scripts
+
+### Running the development server.
+
+```bash
+    npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Building for production.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+```bash
+    npm run build
 ```
+
+### Running the production server.
+
+```bash
+    npm run start
+```
+
+## Learn More
+
+To learn more about **Refine**, please check out the [Documentation](https://refine.dev/docs)
+
+- **NestJS Data Provider** [Docs](https://refine.dev/docs/core/providers/data-provider/#overview)
+- **Material UI** [Docs](https://refine.dev/docs/ui-frameworks/mui/tutorial/)
+- **Custom Auth Provider** [Docs](https://refine.dev/docs/core/providers/auth-provider/)
+- **React Router** [Docs](https://refine.dev/docs/core/providers/router-provider/)
+
+## License
+
+MIT

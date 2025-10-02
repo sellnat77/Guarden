@@ -13,6 +13,13 @@ import { AuthGuard } from './auth.guard';
 import { SignInDto } from './dto/sign-in.dto';
 import { SignUpDto } from './dto/sign-up.dto';
 import { User } from 'src/users/decorators/user.decorator';
+import { UserEntity } from 'src/users/entities/user.entity';
+import {
+  CrudController,
+  CrudRequest,
+  ParsedBody,
+  ParsedRequest,
+} from '@dataui/crud';
 
 @Controller('auth')
 export class AuthController {
@@ -26,13 +33,14 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('register')
-  signUp(@Body() signUpDto: SignUpDto) {
-    return this.authService.signUp(signUpDto);
+  signUp(@ParsedRequest() req: CrudRequest, @Body() signUpDto: SignUpDto) {
+    console.log(signUpDto);
+    return this.authService.signUp(req, signUpDto);
   }
 
   @UseGuards(AuthGuard)
   @Get('profile')
-  getProfile(@Request() req: Request, @User() user: any) {
+  getProfile(@Request() req: Request, @User() user: UserEntity) {
     return user;
   }
 }

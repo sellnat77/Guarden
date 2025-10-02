@@ -1,10 +1,9 @@
 import { Plant } from 'src/plants/entities/plant.entity';
-import { User } from 'src/users/entities/user.entity';
+import { UserEntity } from 'src/users/entities/user.entity';
 import {
   Column,
   Entity,
   JoinColumn,
-  JoinTable,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -14,7 +13,7 @@ import {
 @Entity()
 export class Location {
   @PrimaryGeneratedColumn('uuid')
-  id?: string;
+  id: string;
 
   @Column({ type: 'varchar', length: 255, nullable: false, unique: true })
   name: string;
@@ -34,7 +33,7 @@ export class Location {
   @Column({ nullable: true })
   parentId: string;
 
-  @ManyToOne(() => User, (user) => user.locations)
+  @ManyToOne(() => UserEntity, (user) => user.locations)
   createdBy: string;
 
   @OneToMany(() => Plant, (plant) => plant.location)

@@ -1,5 +1,5 @@
 import { Location } from 'src/locations/entities/location.entity';
-import { User } from 'src/users/entities/user.entity';
+import { UserEntity } from 'src/users/entities/user.entity';
 import { Vital } from 'src/vitals/entities/vital.entity';
 import {
   Column,
@@ -42,7 +42,7 @@ export class Plant {
   @JoinTable({ name: 'locationId' })
   location: Relation<Location>;
 
-  @ManyToOne(() => User, (user) => user.plants)
+  @ManyToOne(() => UserEntity, (user) => user.plants)
   @JoinColumn()
   createdBy: string;
 

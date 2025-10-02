@@ -1,19 +1,37 @@
-# The version of Node that we will use
-FROM node:22-alpine3.20
+# This Dockerfile uses `serve` npm package to serve the static files with node process.
+# You can find the Dockerfile for nginx in the following link:
+# https://github.com/refinedev/dockerfiles/blob/main/vite/Dockerfile.nginx
+FROM refinedev/node:18 AS base
 
-# The working directory of the app in the container
-WORKDIR /usr/src/app
+FROM base as deps
 
-COPY package*.json ./
+COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* .npmrc* ./
 
-# Install the packages in package.json
-RUN npm ci
+RUN \
+  if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
+  elif [ -f package-lock.json ]; then npm ci; \
+  elif [ -f pnpm-lock.yaml ]; then yarn global add pnpm && pnpm i --frozen-lockfile; \
+  else echo "Lockfile not found." && exit 1; \
+  fi
 
-# Copy the project files from the host to the work directory in the container
-COPY . /usr/src/app/
+FROM base as builder
 
-# Expose the port in the container so that it can be accessed from the outside
-EXPOSE 5173
+ENV NODE_ENV production
 
-# Command to run the app
-CMD ["npm", "run", "dev"]
+COPY --from=deps /app/refine/node_modules ./node_modules
+
+COPY . .
+
+RUN npm run build
+
+FROM base as runner
+
+ENV NODE_ENV production
+
+RUN npm install -g serve
+
+COPY --from=builder /app/refine/dist ./
+
+USER refine
+
+CMD ["serve"]
