@@ -10,8 +10,6 @@ export const LocationCreate = () => {
     formState: { errors },
   } = useForm({});
 
-  console.log("test");
-
   return (
     <Create isLoading={formLoading} saveButtonProps={saveButtonProps}>
       <Box
