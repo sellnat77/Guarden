@@ -25,7 +25,6 @@ export class AuthService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
-
     const passwordsMatch = await bcrypt.compare(
       signInDto.password,
       user.password,
@@ -42,13 +41,12 @@ export class AuthService {
     return { access_token: await this.jwtService.signAsync(payload) };
   }
 
-  async signUp(req: CrudRequest, signUpDto: SignUpDto): Promise<any> {
+  async signUp(signUpDto: SignUpDto): Promise<any> {
     const user = await this.usersService.findOneBy({ email: signUpDto.email });
     if (user) {
       throw new ForbiddenException('User email already exists');
     }
-    const newUser = await this.usersService.createOne(req, signUpDto); // .createOne(signUpDto);
-
+    const newUser = await this.usersService.registerUser(signUpDto);
     const payload = { sub: newUser.id, username: newUser.username };
     return { access_token: await this.jwtService.signAsync(payload) };
   }

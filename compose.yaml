@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   db:
     container_name: guarden_database
@@ -76,7 +74,6 @@ services:
 
 volumes:
   pgdata:
-
 networks:
   guarden-network:
     driver: bridge

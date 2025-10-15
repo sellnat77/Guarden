@@ -1,11 +1,23 @@
-import type { AuthProvider } from "@refinedev/core";
+import { type AuthProvider } from "@refinedev/core";
+import { API_URL } from "./App";
 
 export const TOKEN_KEY = "refine-auth";
 
 export const authProvider: AuthProvider = {
-  login: async ({ username, email, password }) => {
-    if ((username || email) && password) {
-      localStorage.setItem(TOKEN_KEY, username);
+  login: async ({ email, password }) => {
+    const resp = await fetch(API_URL + "/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        password,
+      }),
+    });
+    const { access_token } = await resp.json();
+    if (access_token) {
+      localStorage.setItem(TOKEN_KEY, access_token);
       return {
         success: true,
         redirectTo: "/",
@@ -25,6 +37,34 @@ export const authProvider: AuthProvider = {
     return {
       success: true,
       redirectTo: "/login",
+    };
+  },
+  register: async ({ email, password }) => {
+    const resp = await fetch(API_URL + "/auth/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        password,
+      }),
+    });
+    const { access_token } = await resp.json();
+    if (access_token) {
+      localStorage.setItem(TOKEN_KEY, access_token);
+      return {
+        success: true,
+        redirectTo: "/",
+      };
+    }
+
+    return {
+      success: false,
+      error: {
+        name: "LoginError",
+        message: "Invalid username or password",
+      },
     };
   },
   check: async () => {

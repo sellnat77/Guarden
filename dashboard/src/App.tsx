@@ -15,7 +15,9 @@ import {
   ThemedLayout,
 } from "@refinedev/mui";
 
-import nestjsxCrudDataProvider from "@refinedev/nestjsx-crud";
+import nestjsxCrudDataProvider, {
+  axiosInstance,
+} from "@refinedev/nestjsx-crud";
 import CssBaseline from "@mui/material/CssBaseline";
 import GlobalStyles from "@mui/material/GlobalStyles";
 import { BrowserRouter, Route, Routes, Outlet } from "react-router";
@@ -38,11 +40,29 @@ import { Header } from "./components/header";
 import { Login } from "./pages/login";
 import { Register } from "./pages/register";
 import { ForgotPassword } from "./pages/forgotPassword";
-import { authProvider } from "./authProvider";
+import { authProvider, TOKEN_KEY } from "./authProvider";
+
+export const API_URL = "http://localhost:5000";
 
 function App() {
-  const API_URL = "http://localhost:5000";
-  const dataProvider = nestjsxCrudDataProvider(API_URL);
+  const apiClient = axiosInstance.create({
+    baseURL: API_URL,
+  });
+
+  apiClient.interceptors.request.use(
+    async (config) => {
+      const token = localStorage.getItem(TOKEN_KEY);
+      if (token && config?.headers) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
+    }
+  );
+
+  const dataProvider = nestjsxCrudDataProvider(API_URL, apiClient);
 
   return (
     <BrowserRouter>

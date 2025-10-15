@@ -14,12 +14,6 @@ import { SignInDto } from './dto/sign-in.dto';
 import { SignUpDto } from './dto/sign-up.dto';
 import { User } from 'src/users/decorators/user.decorator';
 import { UserEntity } from 'src/users/entities/user.entity';
-import {
-  CrudController,
-  CrudRequest,
-  ParsedBody,
-  ParsedRequest,
-} from '@dataui/crud';
 
 @Controller('auth')
 export class AuthController {
@@ -31,11 +25,9 @@ export class AuthController {
     return this.authService.signIn(signInDto);
   }
 
-  @HttpCode(HttpStatus.OK)
   @Post('register')
-  signUp(@ParsedRequest() req: CrudRequest, @Body() signUpDto: SignUpDto) {
-    console.log(signUpDto);
-    return this.authService.signUp(req, signUpDto);
+  signUp(@Body() signUpDto: SignUpDto) {
+    return this.authService.signUp(signUpDto);
   }
 
   @UseGuards(AuthGuard)

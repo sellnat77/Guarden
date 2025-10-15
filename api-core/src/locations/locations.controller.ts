@@ -17,7 +17,7 @@ import { User } from 'src/users/decorators/user.decorator';
 import { Crud, CrudController } from '@dataui/crud';
 import { Location } from './entities/location.entity';
 
-// @UseGuards(AuthGuard)
+@UseGuards(AuthGuard)
 @Crud({
   model: {
     type: Location,
