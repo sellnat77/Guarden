@@ -11,10 +11,13 @@ jobs:
         include:
           - image: ghcr.io/${{ github.repository_owner }}/Guarden/api-vision
             dockerfile: api-vision/Dockerfile
+            build-context: api-vision
           - image: ghcr.io/${{ github.repository_owner }}/Guarden/api-core
             dockerfile: api-core/Dockerfile
+            build-context: api-core
           - image: ghcr.io/${{ github.repository_owner }}/Guarden/dashboard
             dockerfile: dashboard/Dockerfile
+            build-context: dashboard
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -28,7 +31,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
-          context: .
+          context: ${{ matrix.build-context }}
           file: ${{ matrix.dockerfile }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
