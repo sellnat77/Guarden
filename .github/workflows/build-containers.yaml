@@ -10,11 +10,11 @@ jobs:
     strategy:
       matrix:
         include:
-          - image: your-docker-registry/api-vision
+          - image: ghcr.io/${{ github.repository_owner }}/${{ github.repository }}/api-vision
             dockerfile: api-vision/Dockerfile
-          - image: your-docker-registry/api-core
+          - image: ghcr.io/${{ github.repository_owner }}/${{ github.repository }}/api-core
             dockerfile: api-core/Dockerfile
-          - image: your-docker-registry/dashboard
+          - image: ghcr.io/${{ github.repository_owner }}/${{ github.repository }}/dashboard
             dockerfile: dashboard/Dockerfile
         steps:
           - name: Checkout
