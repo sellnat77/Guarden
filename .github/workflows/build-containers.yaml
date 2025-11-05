@@ -15,21 +15,21 @@ jobs:
             dockerfile: api-core/Dockerfile
           - image: ghcr.io/${{ github.repository_owner }}/${{ github.repository }}/dashboard
             dockerfile: dashboard/Dockerfile
-        steps:
-          - name: Checkout
-            uses: actions/checkout@v3
-          - name: Log in to ghcr.io
-            run: echo "${{ secrets.GUARDEN_BUILD_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-          - name: Extract metadata (tags, labels) for Docker
-            id: meta
-            uses: docker/metadata-action@v5
-            with:
-              images: ${{ matrix.image }}
-          - name: Build and push
-            uses: docker/build-push-action@v4
-            with:
-              context: .
-              file: ${{ matrix.dockerfile }}
-              push: true
-              tags: ${{ steps.meta.outputs.tags }}
-              labels: ${{ steps.meta.outputs.labels }
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Log in to ghcr.io
+        run: echo "${{ secrets.GUARDEN_BUILD_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ matrix.image }}
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ${{ matrix.dockerfile }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }
