@@ -26,9 +26,12 @@ jobs:
       - name: Install dependencies
         working-directory: ${{ matrix.src_dir }}
         run: pwd && npm ci
-      - name: Build
+      - name: Lint
         working-directory: ${{ matrix.src_dir }}
         run: npm run lint
+      - name: Build
+        working-directory: ${{ matrix.src_dir }}
+        run: npm run build
 
   lint-pip:
     runs-on: ubuntu-latest
