@@ -1,6 +1,7 @@
 import { Box, TextField } from "@mui/material";
 import { Create } from "@refinedev/mui";
 import { useForm } from "@refinedev/react-hook-form";
+import { FieldErrors } from "react-hook-form";
 
 export const LocationCreate = () => {
   const {
@@ -21,8 +22,8 @@ export const LocationCreate = () => {
           {...register("name", {
             required: "This field is required",
           })}
-          error={!!(errors as any)?.name}
-          helperText={(errors as any)?.name?.message}
+          error={!!(errors as FieldErrors)?.name}
+          helperText={!!(errors as FieldErrors)?.name?.message}
           margin="normal"
           fullWidth
           InputLabelProps={{ shrink: true }}
@@ -34,8 +35,8 @@ export const LocationCreate = () => {
           {...register("description", {
             required: "This field is required",
           })}
-          error={!!(errors as any)?.description}
-          helperText={(errors as any)?.description?.message}
+          error={!!(errors as FieldErrors)?.description}
+          helperText={!!(errors as FieldErrors)?.description?.message}
           margin="normal"
           fullWidth
           InputLabelProps={{ shrink: true }}
