@@ -23,12 +23,15 @@ jobs:
           node-version: "22"
           cache: "npm"
           cache-dependency-path: ${{matrix.src_dir}}/package-lock.json
-      - name: Install dependencies
+      - name: Install dependencies with legacy
         working-directory: ${{ matrix.src_dir }}
-        run: pwd && npm ci
-      - name: Build
+        run: pwd && npm install --legacy-peer-deps
+      - name: Lint
         working-directory: ${{ matrix.src_dir }}
         run: npm run lint
+      - name: Build
+        working-directory: ${{ matrix.src_dir }}
+        run: npm run build
 
   lint-pip:
     runs-on: ubuntu-latest
