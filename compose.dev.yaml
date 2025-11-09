@@ -26,9 +26,15 @@ services:
 
   api-core:
     container_name: guarden_api_core
-    image: ghcr.io/sellnat77/guarden/api-core:latest
+    build:
+      context: ./api-core
+      dockerfile: Dockerfile
+    command: npm run start:dev
     ports:
       - "${PORT}:3000"
+    volumes:
+      - ./api-core:/usr/src/app
+      - /usr/src/app/node_modules
     depends_on:
       - db
     env_file: ".env"
@@ -37,9 +43,15 @@ services:
 
   api-vision:
     container_name: guarden_api_vision
-    image: ghcr.io/sellnat77/guarden/api-vision:latest
+    build:
+      context: ./api-vision
+      dockerfile: Dockerfile
+    working_dir: /code/app
+    command: fastapi dev main.py --host 0.0.0.0 --port 80
     ports:
       - "${VISION_PORT}:80"
+    volumes:
+      - ./api-vision/app:/code/app
     env_file: ".env"
     networks:
       - guarden-network
@@ -47,8 +59,14 @@ services:
   dashboard:
     container_name: guarden_dashboard
     image: ghcr.io/sellnat77/guarden/dashboard:latest
+    build:
+      context: ./dashboard
+      dockerfile: Dockerfile
     ports:
       - "3000:5000"
+    volumes:
+      - ./dashboard:/usr/src/app
+      - /usr/src/app/node_modules
     depends_on:
       - api-core
     env_file: ".env"
