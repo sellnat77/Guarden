@@ -94,8 +94,6 @@ export const PlantEdit = () => {
                   label={"Location"}
                   margin="normal"
                   variant="outlined"
-                  error={!!(errors as FieldErrors)?.location?.id}
-                  helperText={!!(errors as FieldErrors)?.location?.id?.message}
                   required
                 />
               )}

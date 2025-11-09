@@ -9,7 +9,7 @@ import Typography from "@mui/material/Typography";
 import { useGetIdentity } from "@refinedev/core";
 import { HamburgerMenu, RefineThemedLayoutHeaderProps } from "@refinedev/mui";
 import React, { useContext } from "react";
-import { ColorModeContext } from "../../contexts/color-mode";
+import { ColorModeContext } from "../../contexts/color-mode/colorContext";
 
 type IUser = {
   id: number;
