@@ -1,0 +1,48 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-npm:
+    strategy:
+      matrix:
+        include:
+          - src_dir: api-core
+          - src_dir: dashboard
+
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{matrix.src_dir}}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "22"
+          cache: "npm"
+      - name: Install dependencies
+        run: npm ci
+      - name: Build
+        run: npm run lint
+
+  lint-pip:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: api-vision
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v3
+        with:
+          python-version: "3.9.12"
+      - name: Install black and isort
+        run: pip install black isort
+      - name: Run black
+        run: black .
+      - name: Run isort
+        run: isort -c .
