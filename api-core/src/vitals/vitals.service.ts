@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { CreateVitalDto } from './dto/create-vital.dto';
-import { UpdateVitalDto } from './dto/update-vital.dto';
 import { TypeOrmCrudService } from '@dataui/crud-typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Vital } from './entities/vital.entity';

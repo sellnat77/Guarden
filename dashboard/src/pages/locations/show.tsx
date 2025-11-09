@@ -1,10 +1,6 @@
 import { Stack, Typography } from "@mui/material";
 import { useShow } from "@refinedev/core";
-import {
-  NumberField,
-  Show,
-  TextFieldComponent as TextField,
-} from "@refinedev/mui";
+import { Show, TextFieldComponent as TextField } from "@refinedev/mui";
 
 export const LocationShow = () => {
   const { query } = useShow({});
