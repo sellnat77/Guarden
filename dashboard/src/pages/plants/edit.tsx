@@ -3,7 +3,7 @@ import MenuItem from "@mui/material/MenuItem";
 import { Edit, useAutocomplete } from "@refinedev/mui";
 import { useForm } from "@refinedev/react-hook-form";
 import React from "react";
-import { Controller } from "react-hook-form";
+import { Controller, FieldErrors } from "react-hook-form";
 
 export const PlantEdit = () => {
   const {
@@ -32,8 +32,8 @@ export const PlantEdit = () => {
           {...register("name", {
             required: "This field is required",
           })}
-          error={!!(errors as any)?.name}
-          helperText={(errors as any)?.name?.message}
+          error={!!(errors as FieldErrors)?.name}
+          helperText={!!(errors as FieldErrors)?.name?.message}
           margin="normal"
           fullWidth
           InputLabelProps={{ shrink: true }}
@@ -45,8 +45,8 @@ export const PlantEdit = () => {
           {...register("species", {
             required: "This field is required",
           })}
-          error={!!(errors as any)?.species}
-          helperText={(errors as any)?.species?.message}
+          error={!!(errors as FieldErrors)?.species}
+          helperText={!!(errors as FieldErrors)?.species?.message}
           margin="normal"
           fullWidth
           InputLabelProps={{ shrink: true }}
@@ -94,8 +94,8 @@ export const PlantEdit = () => {
                   label={"Location"}
                   margin="normal"
                   variant="outlined"
-                  error={!!(errors as any)?.location?.id}
-                  helperText={(errors as any)?.location?.id?.message}
+                  error={!!(errors as FieldErrors)?.location?.id}
+                  helperText={!!(errors as FieldErrors)?.location?.id?.message}
                   required
                 />
               )}

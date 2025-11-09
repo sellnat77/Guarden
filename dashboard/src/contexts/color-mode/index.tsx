@@ -1,20 +1,7 @@
-import React, {
-  PropsWithChildren,
-  createContext,
-  useEffect,
-  useState,
-} from "react";
+import React, { PropsWithChildren, useEffect, useState } from "react";
 import { ThemeProvider } from "@mui/material/styles";
 import { RefineThemes } from "@refinedev/mui";
-
-type ColorModeContextType = {
-  mode: string;
-  setMode: () => void;
-};
-
-export const ColorModeContext = createContext<ColorModeContextType>(
-  {} as ColorModeContextType
-);
+import { ColorModeContext } from "./colorContext";
 
 export const ColorModeContextProvider: React.FC<PropsWithChildren> = ({
   children,

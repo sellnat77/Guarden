@@ -1,9 +1,7 @@
 import { Stack, Typography } from "@mui/material";
 import { useOne, useShow } from "@refinedev/core";
 import {
-  DateField,
   MarkdownField,
-  NumberField,
   Show,
   TextFieldComponent as TextField,
 } from "@refinedev/mui";

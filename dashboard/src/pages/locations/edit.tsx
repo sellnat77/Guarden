@@ -1,6 +1,7 @@
 import { Box, TextField } from "@mui/material";
 import { Edit } from "@refinedev/mui";
 import { useForm } from "@refinedev/react-hook-form";
+import { FieldErrors } from "react-hook-form";
 
 export const LocationEdit = () => {
   const {
@@ -20,8 +21,8 @@ export const LocationEdit = () => {
           {...register("title", {
             required: "This field is required",
           })}
-          error={!!(errors as any)?.title}
-          helperText={(errors as any)?.title?.message}
+          error={!!(errors as FieldErrors)?.title}
+          helperText={!!(errors as FieldErrors)?.title?.message}
           margin="normal"
           fullWidth
           InputLabelProps={{ shrink: true }}
