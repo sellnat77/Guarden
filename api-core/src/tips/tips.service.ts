@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { CreateTipDto } from './dto/create-tip.dto';
-import { UpdateTipDto } from './dto/update-tip.dto';
 import { TypeOrmCrudService } from '@dataui/crud-typeorm';
 import { Tip } from './entities/tip.entity';
 import { InjectRepository } from '@nestjs/typeorm';
