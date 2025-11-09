@@ -15,9 +15,6 @@ jobs:
           - src_dir: dashboard
 
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ${{matrix.src_dir}}
     steps:
       - uses: actions/checkout@v3
       - name: Setup Node.js
@@ -26,8 +23,10 @@ jobs:
           node-version: "22"
           cache: "npm"
       - name: Install dependencies
+        working-directory: ${{ matrix.src_dir }}
         run: npm ci
       - name: Build
+        working-directory: ${{ matrix.src_dir }}
         run: npm run lint
 
   lint-pip:
