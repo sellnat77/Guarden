@@ -11,8 +11,8 @@ jobs:
     strategy:
       matrix:
         include:
-          - src_dir: "./api-core"
-          - src_dir: "./dashboard"
+          - src_dir: "api-core"
+          - src_dir: "dashboard"
 
     runs-on: ubuntu-latest
     steps:
@@ -24,7 +24,7 @@ jobs:
           cache: "npm"
       - name: Install dependencies
         working-directory: ${{ matrix.src_dir }}
-        run: npm ci
+        run: pwd && npm ci
       - name: Build
         working-directory: ${{ matrix.src_dir }}
         run: npm run lint
