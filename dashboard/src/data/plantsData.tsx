@@ -1,9 +1,17 @@
 import { gql } from "graphql-request";
+import type { PlantLocation } from "./locationsData";
 
 export const countPlants = gql`
   query countPlants {
     getAllPlants {
       count
+      plants {
+        id
+        species
+        location {
+          name
+        }
+      }
     }
   }
 `;
@@ -19,11 +27,7 @@ export interface Plant {
   waterFrequencyDays: number;
   fertilizeFrequencyDays: number;
   lastFertilized: string;
-  location: string;
-  growthHistory: {
-    date: string;
-    height: number;
-  }[];
+  location: PlantLocation;
 }
 
 export const plants: Plant[] = [
@@ -39,7 +43,7 @@ export const plants: Plant[] = [
     waterFrequencyDays: 7,
     fertilizeFrequencyDays: 30,
     lastFertilized: "2023-10-01",
-    location: "Living Room",
+    location: { name: "Living Room" },
     growthHistory: [
       {
         date: "2023-06",
@@ -75,7 +79,7 @@ export const plants: Plant[] = [
     waterFrequencyDays: 7,
     fertilizeFrequencyDays: 14,
     lastFertilized: "2023-09-15",
-    location: "Bedroom",
+    // location: "Bedroom",
     growthHistory: [
       {
         date: "2023-06",

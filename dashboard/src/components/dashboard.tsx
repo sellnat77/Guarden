@@ -1,29 +1,40 @@
 import { Leaf } from "lucide-react";
-import { countPlants, plants } from "../data/plantsData";
-// import { PlantCard } from "../components/PlantCard";
-// import { PlantStats } from "../components/PlantStats";
+import { countPlants, type Plant } from "@/data/plantsData";
+import { PlantCard } from "../components/PlantCard";
+import { PlantStats } from "./PlantStats";
 // import { CareReminders } from "../components/CareReminders";
-// import { GrowthTracker } from "../components/GrowthTracker";
+import { HealthTracker } from "./HealthTracker";
 // import { WateringSchedule } from "../components/WateringSchedule";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 import request from "graphql-request";
+import { countLocations } from "@/data/locationsData";
 
 export function PlantDashboard() {
   const { t } = useTranslation();
-  const { data } = useQuery({
+  const { data: fetchAllPlantsData } = useQuery({
     queryKey: ["fetchAllPlants"],
     queryFn: async () =>
       request(`${import.meta.env.VITE_GRAPHQL_SERVER}/graphql`, countPlants),
   });
+
+  const { data: fetchAllLocationsData } = useQuery({
+    queryKey: ["fetchAllLocations"],
+    queryFn: async () =>
+      request(`${import.meta.env.VITE_GRAPHQL_SERVER}/graphql`, countLocations),
+  });
+
+  const plantCount = fetchAllPlantsData?.getAllPlants?.count || 0;
+  const plantList = fetchAllPlantsData?.getAllPlants?.plants || [];
+  const locationCount = fetchAllLocationsData?.getAllLocations?.count || 0;
   return (
     <div>
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left Column - Main Dashboard */}
         <div className="lg:col-span-8 space-y-8">
-          {/*<PlantStats />*/}
+          <PlantStats totalLocations={locationCount} totalPlants={plantCount} needsWater={plantCount} overallHealth={67}/>
 
           <div className="mb-8">
             <div className="flex justify-between items-end mb-6">
@@ -33,7 +44,7 @@ export function PlantDashboard() {
                 </h2>
                 <p className="text-brown">
                   {t("thriving_plant", {
-                    count: data?.getAllPlants?.count || 0,
+                    count: plantCount
                   })}
                 </p>
               </div>
@@ -43,16 +54,13 @@ export function PlantDashboard() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-              {plants.map((plant, index) => {
-                // TODO   <PlantCard key={plant.id} plant={plant} index={index} />
-                console.log({ plant, index });
-                console.log(data);
-                return true;
+              {plantList.map((plant: Plant, index: number) => {
+                return <PlantCard key={plant.id} plant={plant} index={index} />
               })}
             </div>
           </div>
 
-          <div className="h-80">{/* TODO <GrowthTracker />*/}</div>
+          <div className="h-80">{<HealthTracker />}</div>
         </div>
 
         {/* Right Column - Sidebar */}

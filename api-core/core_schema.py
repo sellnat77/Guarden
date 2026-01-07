@@ -23,6 +23,11 @@ class GetAllPlantsReturn:
     count: int
 
 @strawberry.type
+class GetAllLocationsReturn:
+    locations: List[Location]
+    count: int
+
+@strawberry.type
 class Query:
     @strawberry.field
     async def plant(self, id: str) -> 'Plant | None':
@@ -32,6 +37,11 @@ class Query:
     async def getAllPlants(self)-> GetAllPlantsReturn:
         plants = await plantResolver.get_all_plants()
         return GetAllPlantsReturn(plants=plants, count=len(plants))
+
+    @strawberry.field
+    async def getAllLocations(self)-> GetAllLocationsReturn:
+        locations = await locationResolver.get_all_locations()
+        return GetAllLocationsReturn(locations=locations, count=len(locations))
 
 
     @strawberry.field
