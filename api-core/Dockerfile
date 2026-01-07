@@ -1,24 +1,17 @@
 
-# Use the official Node.js image as the base image
-FROM node:20
+FROM python:3.9
 
-# Set the working directory inside the container
-WORKDIR /usr/src/app
 
-# Copy package.json and package-lock.json to the working directory
-COPY package*.json ./
+WORKDIR /code
 
-# Install the application dependencies
-RUN npm install
 
-# Copy the rest of the application files
-COPY . .
+COPY ./pyproject.toml /code/pyproject.toml
 
-# Build the NestJS application
-RUN npm run build
 
-# Expose the application port
-EXPOSE 3000
+RUN poetry install --no-cache-dir --upgrade -r /code/pyproject.toml
 
-# Command to run the application
-CMD ["node", "dist/main"]
+
+COPY . /code/app
+
+
+CMD ["poetry", "run", "fastapi", "run", "app/main.py", "--port", "3000"]

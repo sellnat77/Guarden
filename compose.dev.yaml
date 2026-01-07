@@ -29,12 +29,10 @@ services:
     build:
       context: ./api-core
       dockerfile: Dockerfile
-    command: npm run start:dev
     ports:
       - "${PORT}:3000"
     volumes:
-      - ./api-core:/usr/src/app
-      - /usr/src/app/node_modules
+      - ./api-core:/code/app
     depends_on:
       - db
     env_file: ".env"

@@ -1,0 +1,223 @@
+export interface Plant {
+  id: string;
+  name: string;
+  species: string;
+  image: string;
+  health: 'healthy' | 'needs-attention' | 'critical';
+  lastWatered: string;
+  nextWatering: string;
+  waterFrequencyDays: number;
+  fertilizeFrequencyDays: number;
+  lastFertilized: string;
+  location: string;
+  growthHistory: {
+    date: string;
+    height: number;
+  }[];
+}
+export interface Task {
+  id: string;
+  plantId: string;
+  type: 'water' | 'fertilize' | 'prune' | 'repot';
+  dueDate: string;
+  priority: 'high' | 'medium' | 'low';
+  completed: boolean;
+}
+export const plants: Plant[] = [{
+  id: '1',
+  name: 'Monstera Deliciosa',
+  species: 'Swiss Cheese Plant',
+  image: 'https://images.unsplash.com/photo-1614594975525-e45190c55d0b?auto=format&fit=crop&q=80&w=800',
+  health: 'healthy',
+  lastWatered: '2023-10-25',
+  nextWatering: '2023-11-01',
+  waterFrequencyDays: 7,
+  fertilizeFrequencyDays: 30,
+  lastFertilized: '2023-10-01',
+  location: 'Living Room',
+  growthHistory: [{
+    date: '2023-06',
+    height: 45
+  }, {
+    date: '2023-07',
+    height: 48
+  }, {
+    date: '2023-08',
+    height: 52
+  }, {
+    date: '2023-09',
+    height: 58
+  }, {
+    date: '2023-10',
+    height: 62
+  }]
+}, {
+  id: '2',
+  name: 'Fiddle Leaf Fig',
+  species: 'Ficus Lyrata',
+  image: 'https://images.unsplash.com/photo-1597055181300-e30ba15f0d33?auto=format&fit=crop&q=80&w=800',
+  health: 'needs-attention',
+  lastWatered: '2023-10-20',
+  nextWatering: '2023-10-27',
+  waterFrequencyDays: 7,
+  fertilizeFrequencyDays: 14,
+  lastFertilized: '2023-09-15',
+  location: 'Bedroom',
+  growthHistory: [{
+    date: '2023-06',
+    height: 120
+  }, {
+    date: '2023-07',
+    height: 122
+  }, {
+    date: '2023-08',
+    height: 122
+  }, {
+    date: '2023-09',
+    height: 125
+  }, {
+    date: '2023-10',
+    height: 128
+  }]
+}, {
+  id: '3',
+  name: 'Snake Plant',
+  species: 'Sansevieria',
+  image: 'https://images.unsplash.com/photo-1593482886870-927132a9e0ef?auto=format&fit=crop&q=80&w=800',
+  health: 'healthy',
+  lastWatered: '2023-10-10',
+  nextWatering: '2023-10-31',
+  waterFrequencyDays: 21,
+  fertilizeFrequencyDays: 60,
+  lastFertilized: '2023-08-01',
+  location: 'Office',
+  growthHistory: [{
+    date: '2023-06',
+    height: 30
+  }, {
+    date: '2023-07',
+    height: 31
+  }, {
+    date: '2023-08',
+    height: 32
+  }, {
+    date: '2023-09',
+    height: 33
+  }, {
+    date: '2023-10',
+    height: 34
+  }]
+}, {
+  id: '4',
+  name: 'Pothos',
+  species: 'Epipremnum Aureum',
+  image: 'https://images.unsplash.com/photo-1596724852960-9f9418508a9d?auto=format&fit=crop&q=80&w=800',
+  health: 'healthy',
+  lastWatered: '2023-10-26',
+  nextWatering: '2023-10-30',
+  waterFrequencyDays: 4,
+  fertilizeFrequencyDays: 30,
+  lastFertilized: '2023-10-01',
+  location: 'Kitchen',
+  growthHistory: [{
+    date: '2023-06',
+    height: 15
+  }, {
+    date: '2023-07',
+    height: 20
+  }, {
+    date: '2023-08',
+    height: 28
+  }, {
+    date: '2023-09',
+    height: 35
+  }, {
+    date: '2023-10',
+    height: 42
+  }]
+}, {
+  id: '5',
+  name: 'Peace Lily',
+  species: 'Spathiphyllum',
+  image: 'https://images.unsplash.com/photo-1593691509543-c55ce32e01b5?auto=format&fit=crop&q=80&w=800',
+  health: 'needs-attention',
+  lastWatered: '2023-10-24',
+  nextWatering: '2023-10-28',
+  waterFrequencyDays: 4,
+  fertilizeFrequencyDays: 45,
+  lastFertilized: '2023-09-01',
+  location: 'Bathroom',
+  growthHistory: [{
+    date: '2023-06',
+    height: 25
+  }, {
+    date: '2023-07',
+    height: 26
+  }, {
+    date: '2023-08',
+    height: 28
+  }, {
+    date: '2023-09',
+    height: 29
+  }, {
+    date: '2023-10',
+    height: 30
+  }]
+}, {
+  id: '6',
+  name: 'Rubber Plant',
+  species: 'Ficus Elastica',
+  image: 'https://images.unsplash.com/photo-1611211232932-da3113c5b960?auto=format&fit=crop&q=80&w=800',
+  health: 'healthy',
+  lastWatered: '2023-10-15',
+  nextWatering: '2023-10-29',
+  waterFrequencyDays: 14,
+  fertilizeFrequencyDays: 30,
+  lastFertilized: '2023-10-05',
+  location: 'Living Room',
+  growthHistory: [{
+    date: '2023-06',
+    height: 50
+  }, {
+    date: '2023-07',
+    height: 55
+  }, {
+    date: '2023-08',
+    height: 60
+  }, {
+    date: '2023-09',
+    height: 64
+  }, {
+    date: '2023-10',
+    height: 68
+  }]
+}];
+export const upcomingTasks: Task[] = [{
+  id: '1',
+  plantId: '2',
+  type: 'water',
+  dueDate: '2023-10-27',
+  priority: 'high',
+  completed: false
+}, {
+  id: '2',
+  plantId: '5',
+  type: 'water',
+  dueDate: '2023-10-28',
+  priority: 'medium',
+  completed: false
+}, {
+  id: '3',
+  plantId: '6',
+  type: 'fertilize',
+  dueDate: '2023-10-29',
+  priority: 'low',
+  completed: false
+}, {
+  id: '4',
+  plantId: '4',
+  type: 'prune',
+  dueDate: '2023-11-01',
+  priority: 'medium',
+  completed: false
+}];

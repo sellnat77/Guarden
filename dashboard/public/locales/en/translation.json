@@ -1,0 +1,11 @@
+{
+  "app_name": "Guarden",
+  "search_placeholder": "Search plants...",
+  "welcome_jungle": "My Jungle",
+  "thriving_plant_zero": "You have no plants thriving",
+  "thriving_plant_one": "You have one plant thriving",
+  "thriving_plant_other": "You have {{count}} plants thriving",
+  "daily_tip_title": "Daily Tip",
+  "sample_tip_text": "Mist your tropical plants like the Monstera and Ferns today. The humidity is lower than usual!",
+  "button_view_all": "View all"
+}
