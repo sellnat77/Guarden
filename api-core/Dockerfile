@@ -1,24 +1,27 @@
+FROM python:3.13-slim AS builder
 
-# Use the official Node.js image as the base image
-FROM node:20
+WORKDIR /app
 
-# Set the working directory inside the container
-WORKDIR /usr/src/app
+ENV PYTHONFAULTHANDLER=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONHASHSEED=random \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PIP_DEFAULT_TIMEOUT=100
 
-# Copy package.json and package-lock.json to the working directory
-COPY package*.json ./
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install the application dependencies
-RUN npm install
+RUN pip install poetry==2.1
 
-# Copy the rest of the application files
-COPY . .
+COPY poetry.lock pyproject.toml /app/
 
-# Build the NestJS application
-RUN npm run build
+RUN poetry config virtualenvs.create false --local && \
+    poetry install --only main --no-interaction --no-ansi --no-root
 
-# Expose the application port
-EXPOSE 3000
+COPY . /app/
 
-# Command to run the application
-CMD ["node", "dist/main"]
+EXPOSE 5000
+
+CMD [""]
