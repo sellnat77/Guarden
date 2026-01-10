@@ -28,6 +28,9 @@ jobs:
       - name: Lint
         working-directory: ${{ matrix.src_dir }}
         run: npm run lint
+      - name: Build
+        working-directory: ${{ matrix.src_dir }}
+        run: npm run build
 
   lint-pip:
     strategy:
