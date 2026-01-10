@@ -4,7 +4,7 @@ import "../App.css";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import type { ChangeEvent } from "react";
-import { PlantDashboard } from "@/components/Dashboard";
+import { PlantDashboard } from "@/components/Dashboard.tsx";
 
 export const Route = createFileRoute("/")({
   component: App,
