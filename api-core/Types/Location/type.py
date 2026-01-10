@@ -3,8 +3,7 @@ from typing import Annotated
 import strawberry
 from typing_extensions import TYPE_CHECKING
 
-from Types.Location.resolvers import (get_plants_for_location,
-                                      get_user_for_location)
+from Types.Location.resolvers import get_plants_for_location, get_user_for_location
 
 if TYPE_CHECKING:
     from Types.Plant.type import Plant

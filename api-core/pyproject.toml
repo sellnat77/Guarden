@@ -19,6 +19,9 @@ dependencies = [
 [tool.poetry]
 packages = [{include = "api_core", from = "src"}]
 
+[tool.isort]
+profile = "black"
+
 [tool.poetry.dependencies]
 python = ">=3.13,<4.0"
 

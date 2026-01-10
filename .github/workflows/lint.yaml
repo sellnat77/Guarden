@@ -25,6 +25,9 @@ jobs:
       - name: Install dependencies with legacy
         working-directory: ${{ matrix.src_dir }}
         run: pwd && npm install --legacy-peer-deps
+      - name: Install serve to build
+        working-directory: ${{ matrix.src_dir }}
+        run: npm install -g serve
       - name: Lint
         working-directory: ${{ matrix.src_dir }}
         run: npm run lint
