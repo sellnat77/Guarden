@@ -26,9 +26,12 @@ services:
 
   api-core:
     container_name: guarden_api_core
+    build:
+      context: "api-core"
     image: ghcr.io/sellnat77/guarden/api-core:latest
+    command: poetry run fastapi dev main.py --port 5000 --host 0.0.0.0
     ports:
-      - "${PORT}:3000"
+      - "${PORT}:5000"
     depends_on:
       - db
     env_file: ".env"
@@ -47,6 +50,8 @@ services:
   dashboard:
     container_name: guarden_dashboard
     image: ghcr.io/sellnat77/guarden/dashboard:latest
+    build:
+      context: "dashboard"
     ports:
       - "3000:5000"
     depends_on:

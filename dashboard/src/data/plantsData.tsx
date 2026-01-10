@@ -1,5 +1,6 @@
 import { gql } from "graphql-request";
 import type { PlantLocation } from "./locationsData";
+import type { Vital } from "./vitalsData";
 
 export const countPlants = gql`
   query countPlants {
@@ -28,6 +29,7 @@ export interface Plant {
   fertilizeFrequencyDays: number;
   lastFertilized: string;
   location: PlantLocation;
+  vitalHistory: Vital[];
 }
 
 export const plants: Plant[] = [
@@ -43,27 +45,27 @@ export const plants: Plant[] = [
     waterFrequencyDays: 7,
     fertilizeFrequencyDays: 30,
     lastFertilized: "2023-10-01",
-    location: { name: "Living Room" },
-    growthHistory: [
+    location: { id: "1", name: "Living Room" },
+    vitalHistory: [
       {
         date: "2023-06",
-        height: 45,
+        health: 45,
       },
       {
         date: "2023-07",
-        height: 48,
+        health: 48,
       },
       {
         date: "2023-08",
-        height: 52,
+        health: 52,
       },
       {
         date: "2023-09",
-        height: 58,
+        health: 58,
       },
       {
         date: "2023-10",
-        height: 62,
+        health: 62,
       },
     ],
   },
@@ -79,27 +81,27 @@ export const plants: Plant[] = [
     waterFrequencyDays: 7,
     fertilizeFrequencyDays: 14,
     lastFertilized: "2023-09-15",
-    // location: "Bedroom",
-    growthHistory: [
+    location: { id: "1", name: "Living Room" },
+    vitalHistory: [
       {
         date: "2023-06",
-        height: 120,
+        health: 120,
       },
       {
         date: "2023-07",
-        height: 122,
+        health: 122,
       },
       {
         date: "2023-08",
-        height: 122,
+        health: 122,
       },
       {
         date: "2023-09",
-        height: 125,
+        health: 125,
       },
       {
         date: "2023-10",
-        height: 128,
+        health: 128,
       },
     ],
   },
@@ -115,27 +117,27 @@ export const plants: Plant[] = [
     waterFrequencyDays: 21,
     fertilizeFrequencyDays: 60,
     lastFertilized: "2023-08-01",
-    location: "Office",
-    growthHistory: [
+    location: { id: "2", name: "Office" },
+    vitalHistory: [
       {
         date: "2023-06",
-        height: 30,
+        health: 30,
       },
       {
         date: "2023-07",
-        height: 31,
+        health: 31,
       },
       {
         date: "2023-08",
-        height: 32,
+        health: 32,
       },
       {
         date: "2023-09",
-        height: 33,
+        health: 33,
       },
       {
         date: "2023-10",
-        height: 34,
+        health: 34,
       },
     ],
   },
@@ -151,27 +153,27 @@ export const plants: Plant[] = [
     waterFrequencyDays: 4,
     fertilizeFrequencyDays: 30,
     lastFertilized: "2023-10-01",
-    location: "Kitchen",
-    growthHistory: [
+    location: { id: "3", name: "Kitchen" },
+    vitalHistory: [
       {
         date: "2023-06",
-        height: 15,
+        health: 15,
       },
       {
         date: "2023-07",
-        height: 20,
+        health: 20,
       },
       {
         date: "2023-08",
-        height: 28,
+        health: 28,
       },
       {
         date: "2023-09",
-        height: 35,
+        health: 35,
       },
       {
         date: "2023-10",
-        height: 42,
+        health: 42,
       },
     ],
   },
@@ -187,27 +189,27 @@ export const plants: Plant[] = [
     waterFrequencyDays: 4,
     fertilizeFrequencyDays: 45,
     lastFertilized: "2023-09-01",
-    location: "Bathroom",
-    growthHistory: [
+    location: { id: "4", name: "Bathroom" },
+    vitalHistory: [
       {
         date: "2023-06",
-        height: 25,
+        health: 25,
       },
       {
         date: "2023-07",
-        height: 26,
+        health: 26,
       },
       {
         date: "2023-08",
-        height: 28,
+        health: 28,
       },
       {
         date: "2023-09",
-        height: 29,
+        health: 29,
       },
       {
         date: "2023-10",
-        height: 30,
+        health: 30,
       },
     ],
   },
@@ -223,27 +225,27 @@ export const plants: Plant[] = [
     waterFrequencyDays: 14,
     fertilizeFrequencyDays: 30,
     lastFertilized: "2023-10-05",
-    location: "Living Room",
-    growthHistory: [
+    location: { id: "1", name: "Living Room" },
+    vitalHistory: [
       {
         date: "2023-06",
-        height: 50,
+        health: 50,
       },
       {
         date: "2023-07",
-        height: 55,
+        health: 55,
       },
       {
         date: "2023-08",
-        height: 60,
+        health: 60,
       },
       {
         date: "2023-09",
-        height: 64,
+        health: 64,
       },
       {
         date: "2023-10",
-        height: 68,
+        health: 68,
       },
     ],
   },

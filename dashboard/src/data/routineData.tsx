@@ -1,42 +1,70 @@
-export interface Task {
+enum RoutineEnum {
+  WATER = "water",
+  FERTILIZE = "fertilize",
+  PRUNE = "prune",
+  REPOT = "repot",
+}
+
+enum RoutinePriority {
+  HIGH = "high",
+  MEDIUM = "medium",
+  LOW = "low",
+}
+export interface Routine {
   id: string;
   plantId: string;
-  type: "water" | "fertilize" | "prune" | "repot";
+  type: RoutineEnum;
   dueDate: string;
-  priority: "high" | "medium" | "low";
+  priority: RoutinePriority;
   completed: boolean;
 }
-export const upcomingTasks: Task[] = [
+export const upcomingRoutines: Routine[] = [
+  {
+    id: "0",
+    plantId: "2",
+    type: RoutineEnum.WATER,
+    dueDate: "2023-10-27",
+    priority: RoutinePriority.HIGH,
+    completed: false,
+  },
   {
     id: "1",
     plantId: "2",
-    type: "water",
+    type: RoutineEnum.PRUNE,
     dueDate: "2023-10-27",
-    priority: "high",
-    completed: false,
+    priority: RoutinePriority.HIGH,
+    completed: true,
   },
   {
     id: "2",
     plantId: "5",
-    type: "water",
+    type: RoutineEnum.WATER,
     dueDate: "2023-10-28",
-    priority: "medium",
+    priority: RoutinePriority.MEDIUM,
     completed: false,
   },
   {
     id: "3",
     plantId: "6",
-    type: "fertilize",
+    type: RoutineEnum.FERTILIZE,
     dueDate: "2023-10-29",
-    priority: "low",
+    priority: RoutinePriority.LOW,
     completed: false,
   },
   {
     id: "4",
     plantId: "4",
-    type: "prune",
+    type: RoutineEnum.PRUNE,
     dueDate: "2023-11-01",
-    priority: "medium",
+    priority: RoutinePriority.MEDIUM,
+    completed: false,
+  },
+  {
+    id: "5",
+    plantId: "4",
+    type: RoutineEnum.REPOT,
+    dueDate: "2023-11-01",
+    priority: RoutinePriority.MEDIUM,
     completed: false,
   },
 ];

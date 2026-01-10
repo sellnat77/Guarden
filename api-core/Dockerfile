@@ -1,17 +1,27 @@
+FROM python:3.13-slim AS builder
 
-FROM python:3.9
+WORKDIR /app
 
+ENV PYTHONFAULTHANDLER=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONHASHSEED=random \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PIP_DEFAULT_TIMEOUT=100
 
-WORKDIR /code
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
 
+RUN pip install poetry==2.1
 
-COPY ./pyproject.toml /code/pyproject.toml
+COPY poetry.lock pyproject.toml /app/
 
+RUN poetry config virtualenvs.create false --local && \
+    poetry install --only main --no-interaction --no-ansi --no-root
 
-RUN poetry install --no-cache-dir --upgrade -r /code/pyproject.toml
+COPY . /app/
 
+EXPOSE 5000
 
-COPY . /code/app
-
-
-CMD ["poetry", "run", "fastapi", "run", "app/main.py", "--port", "3000"]
+CMD [""]

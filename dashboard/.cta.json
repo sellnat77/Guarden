@@ -2,7 +2,7 @@
   "projectName": "dashboard",
   "mode": "file-router",
   "typescript": true,
-  "tailwind": false,
+  "tailwind": true,
   "packageManager": "npm",
   "git": true,
   "addOnOptions": {},

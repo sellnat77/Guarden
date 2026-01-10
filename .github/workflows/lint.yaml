@@ -11,7 +11,6 @@ jobs:
     strategy:
       matrix:
         include:
-          - src_dir: "api-core"
           - src_dir: "dashboard"
 
     runs-on: ubuntu-latest
@@ -34,6 +33,12 @@ jobs:
         run: npm run build
 
   lint-pip:
+    strategy:
+      matrix:
+        include:
+          - src_dir: "api-core"
+          - src_dir: "api-vision"
+
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -44,8 +49,11 @@ jobs:
         with:
           python-version: "3.9.12"
       - name: Install black and isort
+        working-directory: ${{ matrix.src_dir }}
         run: pip install black isort
       - name: Run black
+        working-directory: ${{ matrix.src_dir }}
         run: black .
       - name: Run isort
+        working-directory: ${{ matrix.src_dir }}
         run: isort -c .

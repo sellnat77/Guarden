@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING
+
 from Types.Location import loader as LocationLoader
 from Types.User import loader as UserLoader
 

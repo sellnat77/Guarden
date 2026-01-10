@@ -5,6 +5,14 @@
 {
   "project_name": "Guarden",
   "lsp": {
+    "tailwindcss-language-server": {
+      "settings": {
+        "classFunctions": ["cva", "cx"],
+        "experimental": {
+          "classRegex": ["[cls|className]\\s\\:\\=\\s\"([^\"]*)"],
+        },
+      },
+    },
     "vscode-css-language-server": {
       "settings": {
         "css": {

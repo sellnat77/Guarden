@@ -14,5 +14,11 @@
   "water_days_one": "Tomorrow",
   "water_days_other": "In {{count}} days",
   "health_tracker_title": "Health Overview",
-  "health_tracker_detail": "Average health across all plants"
+  "health_tracker_detail": "Average health across all plants",
+  "watering_schedule_title": "Watering Schedule",
+  "view_month_button": "View Month",
+  "care_reminders_title": "Care Reminders",
+  "pending_task_count_zero": "No tasks!",
+  "pending_task_count_other": "{{count}} pending",
+  "mark_task_complete_button": "Mark complete"
 }
