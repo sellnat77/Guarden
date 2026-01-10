@@ -24,7 +24,7 @@ jobs:
           cache-dependency-path: ${{matrix.src_dir}}/package-lock.json
       - name: Install dependencies with legacy
         working-directory: ${{ matrix.src_dir }}
-        run: pwd && npm install --legacy-peer-deps
+        run: pwd && npm install
       - name: Install serve to build
         working-directory: ${{ matrix.src_dir }}
         run: npm install -g serve
