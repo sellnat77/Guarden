@@ -1,14 +1,15 @@
 import { Leaf } from "lucide-react";
-import { countPlants, type Plant } from "@/data/plantsData";
+import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
+import { useQuery } from "@tanstack/react-query";
+import request from "graphql-request";
 import { PlantCard } from "../components/PlantCard";
 import { PlantStats } from "./PlantStats";
 import { CareReminders } from "./CareReminders";
 import { HealthTracker } from "./HealthTracker";
 import { WateringSchedule } from "./WateringSchedule";
-import { motion } from "framer-motion";
-import { useTranslation } from "react-i18next";
-import { useQuery } from "@tanstack/react-query";
-import request from "graphql-request";
+import type {Plant} from "@/data/plantsData";
+import {  countPlants } from "@/data/plantsData";
 import { countLocations } from "@/data/locationsData";
 
 export function PlantDashboard({ plantFilter }: { plantFilter: string }) {

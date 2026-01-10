@@ -29,10 +29,10 @@ export interface Plant {
   fertilizeFrequencyDays: number;
   lastFertilized: string;
   location: PlantLocation;
-  vitalHistory: Vital[];
+  vitalHistory: Array<Vital>;
 }
 
-export const plants: Plant[] = [
+export const plants: Array<Plant> = [
   {
     id: "1",
     name: "Monstera Deliciosa",

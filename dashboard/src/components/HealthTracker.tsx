@@ -1,7 +1,8 @@
 
-import {  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
+import {  Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+
 const defaultData = [{
   name: 'Jun',
   height: 45

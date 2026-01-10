@@ -1,9 +1,10 @@
-import { Droplets, Scissors, Shovel, Sprout, CheckCircle2 } from "lucide-react";
-import { plants } from "../data/plantsData";
+import { CheckCircle2, Droplets, Scissors, Shovel, Sprout } from "lucide-react";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
+import { plants } from "../data/plantsData";
 import { DEFAULT_LOCALE } from "@/i18n/config";
 import { upcomingRoutines } from "@/data/routineData";
+
 const getIcon = (type: string) => {
   switch (type) {
     case "water":

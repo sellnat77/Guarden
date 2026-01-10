@@ -18,7 +18,7 @@ export interface Routine {
   priority: RoutinePriority;
   completed: boolean;
 }
-export const upcomingRoutines: Routine[] = [
+export const upcomingRoutines: Array<Routine> = [
   {
     id: "0",
     plantId: "2",

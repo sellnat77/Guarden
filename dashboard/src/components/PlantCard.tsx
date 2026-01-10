@@ -1,7 +1,7 @@
-import { Droplets, Calendar, MoreVertical, Sun } from "lucide-react";
-import { type Plant } from "@/data/plantsData";
+import { Calendar, Droplets, MoreVertical, Sun } from "lucide-react";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
+import type {Plant} from "@/data/plantsData";
 
 const defaultPlantProps = {
   image:

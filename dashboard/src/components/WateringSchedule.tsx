@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { Droplets } from "lucide-react";
 import { motion } from "framer-motion";
 import { DEFAULT_LOCALE } from "@/i18n/config";
+
 const days = [
   {
     day: "Mon",

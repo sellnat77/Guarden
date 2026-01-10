@@ -1,6 +1,7 @@
 import HttpApi from "i18next-http-backend";
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
+
 export const DEFAULT_LOCALE = "en-US";
 export const DEFAULT_LANGUAGE = "en";
 

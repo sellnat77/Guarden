@@ -1,6 +1,7 @@
 
-import { Sprout, Droplets, Heart, HouseHeart } from 'lucide-react';
+import { Droplets, Heart, HouseHeart, Sprout } from 'lucide-react';
 import { motion } from 'framer-motion';
+
 export function PlantStats({ totalLocations=0, totalPlants=0, needsWater=0, overallHealth=0}) {
   const stats = [{
     label: 'Total Locations',
