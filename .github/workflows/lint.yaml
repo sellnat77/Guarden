@@ -33,7 +33,7 @@ jobs:
         run: npm run lint
       - name: Build
         working-directory: ${{ matrix.src_dir }}
-        run: npm run build
+        run: npm run build --verbose
 
   lint-pip:
     strategy:
