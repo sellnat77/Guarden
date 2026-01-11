@@ -8,8 +8,8 @@ import { PlantStats } from "./PlantStats";
 import { CareReminders } from "./CareReminders";
 import { HealthTracker } from "./HealthTracker";
 import { WateringSchedule } from "./WateringSchedule";
-import type {Plant} from "@/data/plantsData";
-import {  countPlants } from "@/data/plantsData";
+import type { Plant } from "@/data/plantsData";
+import { countPlants } from "@/data/plantsData";
 import { countLocations } from "@/data/locationsData";
 
 export function PlantDashboard({ plantFilter }: { plantFilter: string }) {
@@ -17,13 +17,16 @@ export function PlantDashboard({ plantFilter }: { plantFilter: string }) {
   const { data: fetchAllPlantsData } = useQuery({
     queryKey: ["fetchAllPlants"],
     queryFn: async () =>
-      request(`${import.meta.env.VITE_GRAPHQL_SERVER}/graphql`, countPlants),
+      request(`${import.meta.env.VITE_GD_GRAPHQL_SERVER}/graphql`, countPlants),
   });
 
   const { data: fetchAllLocationsData } = useQuery({
     queryKey: ["fetchAllLocations"],
     queryFn: async () =>
-      request(`${import.meta.env.VITE_GRAPHQL_SERVER}/graphql`, countLocations),
+      request(
+        `${import.meta.env.VITE_GD_GRAPHQL_SERVER}/graphql`,
+        countLocations,
+      ),
   });
 
   const allPlants = fetchAllPlantsData?.getAllPlants || [];
