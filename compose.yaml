@@ -3,15 +3,11 @@ services:
     container_name: guarden_database
     image: postgres:latest
     restart: unless-stopped
-    environment:
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_USER: ${DB_USERNAME}
-      POSTGRES_DB: ${DB_NAME}
-    ports:
-      - "${DB_PORT}:${DB_PORT}"
     volumes:
-      - pgdata:/var/lib/postgresql/data
-    env_file: ".env"
+      - guarden_pgdata:/var/lib/postgresql
+    env_file:
+      - path: .guarden.env
+        required: true
     networks:
       - guarden-network
 
@@ -31,10 +27,12 @@ services:
     image: ghcr.io/sellnat77/guarden/api-core:latest
     command: poetry run fastapi dev main.py --port 5000 --host 0.0.0.0
     ports:
-      - "${PORT}:5000"
+      - 5000:5000
     depends_on:
       - db
-    env_file: ".env"
+    env_file:
+      - path: .guarden.env
+        required: true
     networks:
       - guarden-network
 
@@ -42,8 +40,10 @@ services:
     container_name: guarden_api_vision
     image: ghcr.io/sellnat77/guarden/api-vision:latest
     ports:
-      - "${VISION_PORT}:80"
-    env_file: ".env"
+      - 8082:80
+    env_file:
+      - path: .guarden.env
+        required: true
     networks:
       - guarden-network
 
@@ -56,12 +56,15 @@ services:
       - "3000:5000"
     depends_on:
       - api-core
-    env_file: ".env"
+    env_file:
+      - path: .guarden.env
+        required: true
     networks:
       - guarden-network
 
-volumes:
-  pgdata:
 networks:
   guarden-network:
     driver: bridge
+
+volumes:
+  guarden_pgdata:
