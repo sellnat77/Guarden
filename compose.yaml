@@ -1,5 +1,5 @@
 services:
-  db:
+  guarden_db:
     container_name: guarden_database
     image: postgres:latest
     restart: unless-stopped
@@ -29,7 +29,7 @@ services:
     ports:
       - 5000:5000
     depends_on:
-      - db
+      - guarden_db
     env_file:
       - path: .guarden.env
         required: true
