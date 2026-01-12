@@ -73,7 +73,7 @@ tifffile==2025.3.13
 toolz==1.0.0
 tornado==6.4.2
 typer==0.15.2
-typing_extensions==4.12.2
+typing_extensions==4.15.0
 tzdata==2025.2
 urllib3==2.3.0
 uvicorn==0.34.0
