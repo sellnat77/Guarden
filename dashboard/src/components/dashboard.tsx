@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { HouseHeart, Leaf, MapPin, Plus, Sprout } from "lucide-react";
+import { HouseHeart, Leaf, Plus, Sprout } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";

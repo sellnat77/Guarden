@@ -1,16 +1,9 @@
 import { useNavigate } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import {
-  ArrowLeft,
-  HouseHeart,
-  MapPin,
-  Sun,
-  Thermometer,
-  Wind,
-} from "lucide-react";
-import {   useState } from "react";
+import { ArrowLeft, HouseHeart, Sun, Thermometer, Wind } from "lucide-react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import type {ChangeEvent, InputEvent} from "react";
+import type { ChangeEvent } from "react";
 
 const lightLevels = [
   "no_light",
