@@ -1,0 +1,21 @@
+{
+  "header": "New Location",
+  "location_name": "Location Name",
+  "location_name_hint": "e.g. Sunny Window Sill",
+  "indoor_radio": "Indoor",
+  "outdoor_radio": "Outdoor",
+  "env_conditions": "Environmental Conditions",
+  "avg_light": "Avergage Light",
+  "no_light": "No Light",
+  "low_light": "Low Light",
+  "indirect_sun": "Indirect Sunlight",
+  "direct_sun": "Direct Sunlight",
+  "full_sun": "Direct Full Sunlight",
+  "avg_temp": "Average Temp.",
+  "avg_temp_hint": "22",
+  "avg_humidity": "Average Humidity",
+  "avg_humidity_hint": "45",
+  "notes": "Notes",
+  "notes_hint": "e.g. Gets chilly in winter, perfect for ferns...",
+  "create_location": "Create Location"
+}

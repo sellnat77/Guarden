@@ -24,7 +24,7 @@ jobs:
           cache-dependency-path: ${{matrix.src_dir}}/package-lock.json
       - name: Install dependencies
         working-directory: ${{ matrix.src_dir }}
-        run: pwd && npm install
+        run: pwd && npm ci
       - name: Lint
         working-directory: ${{ matrix.src_dir }}
         run: npm run lint

@@ -10,7 +10,7 @@ dbName = os.environ.get("POSTGRES_DB", "guarden")
 
 DATABASE_URL = f"postgresql://{dbUser}:{dbPass}@{dbHost}:{dbPort}/{dbName}"
 print(DATABASE_URL)
-print('\n\n\\n\n\n\n\n\n\n')
+print('\n\n\n\n\n\n\n\n\n\n')
 database = Database(DATABASE_URL)
 
 
