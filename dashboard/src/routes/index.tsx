@@ -3,7 +3,7 @@ import { Bell, Leaf, Menu, Search } from "lucide-react";
 import "../App.css";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
-import { PlantDashboard } from "../components/dashboard";
+import { PlantDashboard } from "../components/Dashboard";
 import type { ChangeEvent } from "react";
 
 export const Route = createFileRoute("/")({

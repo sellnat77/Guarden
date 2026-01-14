@@ -16,4 +16,5 @@ body {
   background-color: var(--color-cream);
   color: var(--color-forest);
   font-family: "Inter", sans-serif;
+  margin: 8px;
 }

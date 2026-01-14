@@ -1,5 +1,6 @@
 {
   "app_name": "Guarden",
+
   "search_placeholder": "Search plants...",
   "welcome_jungle": "My Jungle",
   "thriving_plant_zero": "You have no plants thriving",
@@ -20,5 +21,7 @@
   "care_reminders_title": "Care Reminders",
   "pending_task_count_zero": "No tasks!",
   "pending_task_count_other": "{{count}} pending",
-  "mark_task_complete_button": "Mark complete"
+  "mark_task_complete_button": "Mark complete",
+  "btn_add_location": "Add Location",
+  "btn_add_plant": "Add Plant"
 }
