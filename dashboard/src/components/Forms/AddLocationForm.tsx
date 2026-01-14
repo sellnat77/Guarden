@@ -230,7 +230,7 @@ export function AddLocationForm() {
               <button
                 type="button"
                 onClick={handleCreateLocation}
-                className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#4A5D4F] py-4 font-serif text-lg font-bold text-[#F5F1E8] shadow-lg shadow-[#4A5D4F]/20 transition-all hover:-translate-y-0.5 hover:bg-[#3a4a3e] hover:shadow-xl"
+                className="hover:bg-dark-forest flex w-full items-center justify-center gap-2 rounded-2xl bg-[#4A5D4F] py-4 font-serif text-lg font-bold text-[#F5F1E8] shadow-lg shadow-[#4A5D4F]/20 transition-all hover:-translate-y-0.5 hover:shadow-xl"
               >
                 <HouseHeart className="h-6 w-6" />
                 {t("create_location")}
