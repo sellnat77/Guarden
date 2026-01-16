@@ -54,6 +54,7 @@ class Vital(Base):
     __tablename__ = "vitals"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     healthPct: Mapped[int] = mapped_column(Integer, nullable=False)
+    notes: Mapped[str] = mapped_column(String(255), nullable=False)
     plantId: Mapped[int] = mapped_column(ForeignKey("plants.id"))
     plant: Mapped["Plant"] = relationship(back_populates="vitals")
 
@@ -65,7 +66,7 @@ class Plant(Base):
     species: Mapped[str] = mapped_column(String(100), nullable=False)
     image: Mapped[str] = mapped_column(String(255), nullable=False)
     generalHealth: Mapped[str] = mapped_column(String(100), nullable=False)
-    notes: Mapped[str] = mapped_column(String(255), nullable=False)
+    description: Mapped[str] = mapped_column(String(255), nullable=False)
     waterFrequencyDays: Mapped[int] = mapped_column(Integer, nullable=False)
     fertilizeFrequencyDays: Mapped[int] = mapped_column(Integer, nullable=False)
     pruneFrequencyDays: Mapped[int] = mapped_column(Integer, nullable=False)
