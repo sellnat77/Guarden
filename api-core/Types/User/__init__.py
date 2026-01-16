@@ -1,8 +1,10 @@
-from db import SessionLocal, User
 import strawberry
 from strawberry.dataloader import DataLoader
 
+from db import SessionLocal, User
+
 from .inputs import *
+
 # from .loader import load_users
 
 # loader = DataLoader(load_fn=load_users)

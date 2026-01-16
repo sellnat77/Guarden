@@ -4,20 +4,25 @@ from typing import List
 import strawberry
 from asyncpg import Record
 from sqlalchemy import Result, ScalarResult, Sequence, select
-from strawberry_sqlalchemy_mapper import StrawberrySQLAlchemyMapper, StrawberrySQLAlchemyLoader
+from strawberry_sqlalchemy_mapper import (
+    StrawberrySQLAlchemyLoader,
+    StrawberrySQLAlchemyMapper,
+)
 
 import db
 from db import SessionLocal, database
 from Types.Location import LocationMutations
 from Types.Plant import PlantMutations
-from Types.User import UserMutations
 from Types.Tip import TipMutations
+from Types.User import UserMutations
 
 strawberry_sqlalchemy_mapper = StrawberrySQLAlchemyMapper(always_use_list=False)
+
 
 @strawberry_sqlalchemy_mapper.type(db.User)
 class User:
     pass
+
 
 @strawberry_sqlalchemy_mapper.type(db.Tip)
 class Tip:
@@ -91,8 +96,9 @@ class Mutation:
 
 
 mySession = SessionLocal()
-async def get_context(
-):
+
+
+async def get_context():
     return {
         "sqlalchemy_loader": StrawberrySQLAlchemyLoader(bind=mySession),
     }

@@ -56,6 +56,7 @@ class Vital(Base):
     plantId: Mapped[int] = mapped_column(ForeignKey("plants.id"))
     plant: Mapped["Plant"] = relationship(back_populates="vitals")
 
+
 class Tip(Base):
     __tablename__ = "tips"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
@@ -96,6 +97,7 @@ class Plant(Base):
 # Database setup
 engine = create_engine(DATABASE_URL, echo=True)
 SessionLocal = sessionmaker(bind=engine, autoflush=False)
+
 
 async def connect():
     await database.connect()

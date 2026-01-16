@@ -4,10 +4,9 @@ import strawberry
 from sqlalchemy import MetaData, Table, insert
 from strawberry.dataloader import DataLoader
 
-from db import database, SessionLocal, Tip
+from db import SessionLocal, Tip, database
 
 from .inputs import *
-
 
 
 @strawberry.type

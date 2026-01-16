@@ -1,6 +1,7 @@
-from db import SessionLocal, Plant
 import strawberry
 from strawberry.dataloader import DataLoader
+
+from db import Plant, SessionLocal
 
 # from .loader import load_plants
 from .inputs import *
