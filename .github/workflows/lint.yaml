@@ -37,12 +37,11 @@ jobs:
       matrix:
         include:
           - src_dir: "api-core"
-          - src_dir: "api-vision"
 
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: api-vision
+        working-directory: api-core
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v3

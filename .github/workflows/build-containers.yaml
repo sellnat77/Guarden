@@ -9,9 +9,6 @@ jobs:
     strategy:
       matrix:
         include:
-          - image: ghcr.io/${{ github.repository_owner }}/Guarden/api-vision
-            dockerfile: api-vision/Dockerfile
-            build-context: api-vision
           - image: ghcr.io/${{ github.repository_owner }}/Guarden/api-core
             dockerfile: api-core/Dockerfile
             build-context: api-core

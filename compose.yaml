@@ -38,17 +38,6 @@ services:
     networks:
       - guarden-network
 
-  api-vision:
-    container_name: guarden_api_vision
-    image: ghcr.io/sellnat77/guarden/api-vision:latest
-    ports:
-      - 8082:80
-    env_file:
-      - path: .guarden.env
-        required: true
-    networks:
-      - guarden-network
-
   dashboard:
     container_name: guarden_dashboard
     image: ghcr.io/sellnat77/guarden/dashboard:latest
