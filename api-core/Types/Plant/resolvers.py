@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 
 from Types.Location import loader as LocationLoader
 from Types.User import loader as UserLoader
+from Types.Vital import loader as VitalLoader
 
 
 async def get_location_for_plant(root):
@@ -10,3 +11,7 @@ async def get_location_for_plant(root):
 
 async def get_user_for_plant(root):
     return await UserLoader.load(root.createdById)
+
+
+async def get_vitals_for_plant(root):
+    return await VitalLoader.load(root.id)

@@ -1,0 +1,13 @@
+{
+  "intensity": "Intensity",
+  "no_light": "No Light",
+  "low_light": "Low Light",
+  "indirect_sun": "Indirect Sunlight",
+  "direct_sun": "Direct Sunlight",
+  "full_sun": "Direct Full Sunlight",
+  "daily": "Daily",
+  "weekly": "Weekly",
+  "monthly": "Monthly",
+  "semi_annually": "Semi Annually",
+  "annually": "Annually"
+}

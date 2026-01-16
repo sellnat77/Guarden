@@ -1,0 +1,16 @@
+{
+  "add_new_plant": "Add New Plant",
+  "preview": "Preview",
+  "add_photo": "Add Photo",
+  "nickname": "Nickname",
+  "nickname_hint": "e.g. Monty the Monstera",
+  "species": "Species",
+  "species_hint": "e.g. Monstera Deliciosa",
+  "care_reqs": "Care Requirements",
+  "watering_schedule": "Watering Schedule",
+  "frequency": "Frequency",
+  "light_needs": "Light Needs",
+  "intensity": "Intensity",
+  "assign_location": "Assign Location",
+  "add_to_jungle": "Add to Jungle"
+}
