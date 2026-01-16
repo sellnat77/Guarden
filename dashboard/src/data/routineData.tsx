@@ -51,20 +51,4 @@ export const upcomingRoutines: Array<Routine> = [
     priority: RoutinePriority.LOW,
     completed: false,
   },
-  {
-    id: "4",
-    plantId: "4",
-    type: RoutineEnum.PRUNE,
-    dueDate: "2023-11-01",
-    priority: RoutinePriority.MEDIUM,
-    completed: false,
-  },
-  {
-    id: "5",
-    plantId: "4",
-    type: RoutineEnum.REPOT,
-    dueDate: "2023-11-01",
-    priority: RoutinePriority.MEDIUM,
-    completed: false,
-  },
 ];

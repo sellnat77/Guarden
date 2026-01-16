@@ -2,8 +2,8 @@ import { CheckCircle2, Droplets, Scissors, Shovel, Sprout } from "lucide-react";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { plants } from "../data/plantsData";
-import { DEFAULT_LOCALE } from "@/i18n/config";
-import { upcomingRoutines } from "@/data/routineData";
+import { DEFAULT_LOCALE } from "../i18n/config";
+import { upcomingRoutines } from "../data/routineData";
 
 const getIcon = (type: string) => {
   switch (type) {
@@ -45,7 +45,7 @@ export function CareReminders() {
       transition={{
         duration: 0.5,
       }}
-      className="border-sand/50 h-full rounded-4xl border bg-white/80 p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-sm"
+      className="border-sand/50 rounded-4xl border bg-white/80 p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-sm"
     >
       <div className="mb-6 flex items-center justify-between">
         <h3 className="text-forest font-serif text-2xl">

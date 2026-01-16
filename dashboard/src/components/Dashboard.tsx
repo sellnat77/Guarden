@@ -5,14 +5,14 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 import request from "graphql-request";
+import { getLocations } from "../data/locationsData";
+import { countPlants } from "../data/plantsData";
 import { PlantCard } from "./PlantCard";
 import { PlantStats } from "./PlantStats";
 import { CareReminders } from "./CareReminders";
 import { HealthTracker } from "./HealthTracker";
 import { WateringSchedule } from "./WateringSchedule";
-import type { Plant } from "@/data/plantsData";
-import { countPlants } from "@/data/plantsData";
-import { countLocations } from "@/data/locationsData";
+import type { Plant } from "../data/plantsData";
 
 export function PlantDashboard({ plantFilter }: { plantFilter: string }) {
   const navigate = useNavigate();
@@ -29,7 +29,7 @@ export function PlantDashboard({ plantFilter }: { plantFilter: string }) {
     queryFn: async () =>
       request(
         `${import.meta.env.VITE_GD_GRAPHQL_SERVER}/graphql`,
-        countLocations,
+        getLocations,
       ),
   });
 
@@ -37,7 +37,7 @@ export function PlantDashboard({ plantFilter }: { plantFilter: string }) {
 
   const plantCount = fetchAllPlantsData?.getAllPlants?.count || 0;
   const plantList = allPlants.plants || [];
-  const locationCount = fetchAllLocationsData?.getAllLocations?.count || 0;
+  const locationCount = fetchAllLocationsData?.locations?.length || 0;
   return (
     <div>
       {/* Main Content Grid */}
@@ -80,9 +80,6 @@ export function PlantDashboard({ plantFilter }: { plantFilter: string }) {
 
         {/* Right Column - Sidebar */}
         <div className="space-y-8 lg:col-span-4">
-          <WateringSchedule />
-          <CareReminders />
-
           {/* Daily Tip Card */}
           <motion.div
             initial={{
@@ -109,6 +106,8 @@ export function PlantDashboard({ plantFilter }: { plantFilter: string }) {
               {plantFilter}
             </p>
           </motion.div>
+          <WateringSchedule />
+          <CareReminders />
         </div>
       </div>
       {/* Floating Action Button & Menu */}
