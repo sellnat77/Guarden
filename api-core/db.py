@@ -27,8 +27,6 @@ dbPort = os.environ.get("GD_DB_PORT", "5432")
 dbName = os.environ.get("POSTGRES_DB", "guarden")
 
 DATABASE_URL = f"postgresql://{dbUser}:{dbPass}@{dbHost}:{dbPort}/{dbName}"
-print(DATABASE_URL)
-print("\n\n\n\n\n\n\n\n\n\n")
 database = Database(DATABASE_URL)
 
 Base = declarative_base()
@@ -58,6 +56,11 @@ class Vital(Base):
     plantId: Mapped[int] = mapped_column(ForeignKey("plants.id"))
     plant: Mapped["Plant"] = relationship(back_populates="vitals")
 
+class Tip(Base):
+    __tablename__ = "tips"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    tipText: Mapped[str] = mapped_column(String(255), nullable=False)
+
 
 class Plant(Base):
     __tablename__ = "plants"
@@ -80,7 +83,7 @@ class Plant(Base):
     lastFertilized: Mapped[DATETIME] = mapped_column(
         DateTime, nullable=False, default=func.now()
     )
-    lastRePotted: Mapped[DATETIME] = mapped_column(
+    lastRepotted: Mapped[DATETIME] = mapped_column(
         DateTime, nullable=False, default=func.now()
     )
     locationId: Mapped[int] = mapped_column(ForeignKey("locations.id"))
@@ -93,12 +96,6 @@ class Plant(Base):
 # Database setup
 engine = create_engine(DATABASE_URL, echo=True)
 SessionLocal = sessionmaker(bind=engine, autoflush=False)
-
-
-async def init_db():
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-
 
 async def connect():
     await database.connect()

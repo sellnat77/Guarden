@@ -4,17 +4,24 @@ from typing import List
 import strawberry
 from asyncpg import Record
 from sqlalchemy import Result, ScalarResult, Sequence, select
-from strawberry_sqlalchemy_mapper import StrawberrySQLAlchemyMapper
+from strawberry_sqlalchemy_mapper import StrawberrySQLAlchemyMapper, StrawberrySQLAlchemyLoader
 
 import db
 from db import SessionLocal, database
 from Types.Location import LocationMutations
+from Types.Plant import PlantMutations
+from Types.User import UserMutations
+from Types.Tip import TipMutations
 
-strawberry_sqlalchemy_mapper = StrawberrySQLAlchemyMapper()
+strawberry_sqlalchemy_mapper = StrawberrySQLAlchemyMapper(always_use_list=False)
 
-# @strawberry_sqlalchemy_mapper.type(db.User)
-# class User:
-#     pass
+@strawberry_sqlalchemy_mapper.type(db.User)
+class User:
+    pass
+
+@strawberry_sqlalchemy_mapper.type(db.Tip)
+class Tip:
+    pass
 
 
 @strawberry_sqlalchemy_mapper.type(db.Location)
@@ -22,9 +29,9 @@ class Location:
     pass
 
 
-# @strawberry_sqlalchemy_mapper.type(db.Vital)
-# class Vital:
-#     pass
+@strawberry_sqlalchemy_mapper.type(db.Vital)
+class Vital:
+    pass
 
 
 @strawberry_sqlalchemy_mapper.type(db.Plant)
@@ -35,23 +42,31 @@ class Plant:
 @strawberry.type
 class Query:
 
-    # @strawberry.field
-    # async def users(self) -> ScalarResult[User]:
-    #     return await AsyncSessionLocal().scalars(select(User))
+    @strawberry.field
+    async def users(self, info: strawberry.Info) -> List[User]:
+        with db.SessionLocal() as session:
+            return list(session.scalars(select(User)).all())
 
     @strawberry.field
-    async def locations(self) -> List[Location]:
-        with SessionLocal() as session:
+    async def locations(self, info: strawberry.Info) -> List[Location]:
+        with db.SessionLocal() as session:
             locations = session.scalars(select(db.Location)).all()
             print(locations)
             return list(locations)
 
-    # @strawberry.field
-    # async def vitals(self) -> ScalarResult[Vital]:
-    #     return await AsyncSessionLocal().scalars(select(Vital))
     @strawberry.field
-    async def plants(self) -> List[Plant]:
-        with SessionLocal() as session:
+    async def vitals(self, info: strawberry.Info) -> List[Vital]:
+        with db.SessionLocal() as session:
+            return list(session.scalars(select(Vital)).all())
+
+    @strawberry.field
+    async def tips(self, info: strawberry.Info) -> List[Tip]:
+        with db.SessionLocal() as session:
+            return list(session.scalars(select(Tip)).all())
+
+    @strawberry.field
+    async def plants(self, info: strawberry.Info) -> List[Plant]:
+        with db.SessionLocal() as session:
             plants = session.scalars(select(db.Plant)).all()
             return list(plants)
 
@@ -62,6 +77,27 @@ class Mutation:
     def location(self) -> LocationMutations:
         return LocationMutations()
 
+    @strawberry.field
+    def plant(self) -> PlantMutations:
+        return PlantMutations()
+
+    @strawberry.field
+    def user(self) -> UserMutations:
+        return UserMutations()
+
+    @strawberry.field
+    def tip(self) -> TipMutations:
+        return TipMutations()
+
+
+mySession = SessionLocal()
+async def get_context(
+):
+    return {
+        "sqlalchemy_loader": StrawberrySQLAlchemyLoader(bind=mySession),
+    }
+
 
 strawberry_sqlalchemy_mapper.finalize()
-schema = strawberry.Schema(query=Query, mutation=Mutation, types=[Plant, Location])
+additional_types = list(strawberry_sqlalchemy_mapper.mapped_types.values())
+schema = strawberry.Schema(query=Query, mutation=Mutation, types=additional_types)
