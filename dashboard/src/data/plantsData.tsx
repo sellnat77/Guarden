@@ -3,14 +3,26 @@ import type { PlantLocation } from "./locationsData";
 import type { Vital } from "./vitalsData";
 
 export const countPlants = gql`
-  query countPlants {
-    getAllPlants {
-      count
-      plants {
+  query fetchPlants {
+    plants {
+      id
+      name
+      species
+      image
+      generalHealth
+      lastPruned
+      lastWatered
+      lastRepotted
+      lastFertilized
+      location {
         id
-        species
-        location {
-          name
+        name
+      }
+      vitals {
+        edges {
+          node {
+            healthPct
+          }
         }
       }
     }

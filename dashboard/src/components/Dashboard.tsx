@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 import request from "graphql-request";
 import { getLocations } from "../data/locationsData";
-import { countPlants } from "../data/plantsData";
+import { countPlants as getPlants } from "../data/plantsData";
 import { PlantCard } from "./PlantCard";
 import { PlantStats } from "./PlantStats";
 import { CareReminders } from "./CareReminders";
@@ -21,7 +21,7 @@ export function PlantDashboard({ plantFilter }: { plantFilter: string }) {
   const { data: fetchAllPlantsData } = useQuery({
     queryKey: ["fetchAllPlants"],
     queryFn: async () =>
-      request(`${import.meta.env.VITE_GD_GRAPHQL_SERVER}/graphql`, countPlants),
+      request(`${import.meta.env.VITE_GD_GRAPHQL_SERVER}/graphql`, getPlants),
   });
 
   const { data: fetchAllLocationsData } = useQuery({
@@ -33,10 +33,10 @@ export function PlantDashboard({ plantFilter }: { plantFilter: string }) {
       ),
   });
 
-  const allPlants = fetchAllPlantsData?.getAllPlants || [];
+  const allPlants = fetchAllPlantsData?.plants || [];
 
-  const plantCount = fetchAllPlantsData?.getAllPlants?.count || 0;
-  const plantList = allPlants.plants || [];
+  const plantCount = allPlants.length || 0;
+  const plantList = allPlants;
   const locationCount = fetchAllLocationsData?.locations?.length || 0;
   return (
     <div>
@@ -70,6 +70,7 @@ export function PlantDashboard({ plantFilter }: { plantFilter: string }) {
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
               {plantList.map((plant: Plant, index: number) => {
+                console.log(plant);
                 return <PlantCard key={plant.id} plant={plant} index={index} />;
               })}
             </div>
