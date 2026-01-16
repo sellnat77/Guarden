@@ -1,7 +1,8 @@
 from datetime import datetime
 from typing import TYPE_CHECKING
-from sqlalchemy.util.typing import Annotated
+
 import strawberry
+from sqlalchemy.util.typing import Annotated
 
 if TYPE_CHECKING:
     from Types.Plant.type import Plant

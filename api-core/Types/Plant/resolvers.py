@@ -12,5 +12,6 @@ async def get_location_for_plant(root):
 async def get_user_for_plant(root):
     return await UserLoader.load(root.createdById)
 
+
 async def get_vitals_for_plant(root):
     return await VitalLoader.load(root.id)

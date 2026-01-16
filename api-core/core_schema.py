@@ -1,15 +1,14 @@
-import db
-from sqlalchemy import select, ScalarResult, Result, Sequence
 from datetime import datetime
 from typing import List
 
-from Types.Location import LocationMutations
-
 import strawberry
-from strawberry_sqlalchemy_mapper import StrawberrySQLAlchemyMapper
 from asyncpg import Record
+from sqlalchemy import Result, ScalarResult, Sequence, select
+from strawberry_sqlalchemy_mapper import StrawberrySQLAlchemyMapper
 
-from db import database, SessionLocal
+import db
+from db import SessionLocal, database
+from Types.Location import LocationMutations
 
 strawberry_sqlalchemy_mapper = StrawberrySQLAlchemyMapper()
 
@@ -17,13 +16,16 @@ strawberry_sqlalchemy_mapper = StrawberrySQLAlchemyMapper()
 # class User:
 #     pass
 
+
 @strawberry_sqlalchemy_mapper.type(db.Location)
 class Location:
     pass
 
+
 # @strawberry_sqlalchemy_mapper.type(db.Vital)
 # class Vital:
 #     pass
+
 
 @strawberry_sqlalchemy_mapper.type(db.Plant)
 class Plant:
@@ -48,7 +50,7 @@ class Query:
     # async def vitals(self) -> ScalarResult[Vital]:
     #     return await AsyncSessionLocal().scalars(select(Vital))
     @strawberry.field
-    async def plants(self)->List[Plant]:
+    async def plants(self) -> List[Plant]:
         with SessionLocal() as session:
             plants = session.scalars(select(db.Plant)).all()
             return list(plants)
@@ -60,7 +62,6 @@ class Mutation:
     def location(self) -> LocationMutations:
         return LocationMutations()
 
+
 strawberry_sqlalchemy_mapper.finalize()
-schema = strawberry.Schema(
-    query=Query, mutation=Mutation, types=[Plant, Location]
-)
+schema = strawberry.Schema(query=Query, mutation=Mutation, types=[Plant, Location])

@@ -1,10 +1,10 @@
-import db
-from enum import Enum
 from datetime import datetime
+from enum import Enum
 from typing import TYPE_CHECKING, Annotated, List
 
 import strawberry
 
+import db
 
 from .resolvers import get_location_for_plant, get_user_for_plant
 
@@ -12,6 +12,7 @@ if TYPE_CHECKING:
     from Types.Location.type import Location
     from Types.User.type import User
     from Types.Vital.type import Vital
+
 
 class GeneralHealth(Enum):
     HEALTHY = "Healthy"
