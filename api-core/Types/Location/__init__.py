@@ -15,7 +15,6 @@ class LocationMutations:
     @strawberry.mutation
     async def addLocation(self, input: AddLocationInput) -> None:
         with SessionLocal() as sess:
-            statement = insert(Location).values(name=input.name)
-            print(statement)
-            sess.execute(statement)
+            newLocation = Location(**input.__dict__)
+            sess.add(newLocation)
             sess.commit()

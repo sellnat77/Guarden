@@ -5,9 +5,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from strawberry.fastapi import GraphQLRouter
 
 import db
-from core_schema import schema
+from core_schema import get_context, schema
 
-graphql_app = GraphQLRouter(schema)
+graphql_app = GraphQLRouter(schema, context_getter=get_context)
 
 
 @asynccontextmanager
