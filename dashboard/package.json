@@ -42,7 +42,7 @@
     "i": "^0.3.7",
     "jsdom": "^27.0.0",
     "npm": "^11.7.0",
-    "prettier": "^3.7.4",
+    "prettier": "^3.8.0",
     "prettier-plugin-tailwindcss": "^0.7.2",
     "tsc-alias": "^1.8.16",
     "typescript": "^5.9.3",
