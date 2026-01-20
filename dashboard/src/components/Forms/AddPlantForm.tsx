@@ -13,7 +13,7 @@ import { LightSelector } from "./LightSelector";
 import type { PlantLocation } from "@/data/locationsData";
 
 type addPlantFormProps = {
-  locations: Array<PlantLocation>;
+  locations?: Array<PlantLocation>;
 };
 const defaultLocations = [
   { id: "1", name: "Living Room (South Window)" },
