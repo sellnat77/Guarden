@@ -1,3 +1,8 @@
+import { Field } from "@base-ui/react/field";
+import { Button } from "@base-ui/react/button";
+import { Radio } from "@base-ui/react/radio";
+import { Input, RadioGroup } from "@base-ui/react";
+import { Form } from "@base-ui/react/form";
 import { useNavigate } from "@tanstack/react-router";
 import React, { useState } from "react";
 import { motion } from "framer-motion";
@@ -5,19 +10,23 @@ import { ArrowLeft, Camera, Droplets, Sprout, Upload } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { lightLevels, wateringSchedules } from "./Base";
 import { LightSelector } from "./LightSelector";
+import type { PlantLocation } from "@/data/locationsData";
 
+type addPlantFormProps = {
+  locations: Array<PlantLocation>;
+};
 const defaultLocations = [
-  "Living Room (South Window)",
-  "Kitchen Shelf",
-  "Bedroom Corner",
-  "Balcony Garden",
+  { id: "1", name: "Living Room (South Window)" },
+  { id: "2", name: "Kitchen Shelf" },
+  { id: "3", name: "Bedroom Corner" },
+  { id: "4", name: "Balcony Garden" },
 ];
 
-export function AddPlantForm({ locations = defaultLocations }) {
+export function AddPlantForm({
+  locations = defaultLocations,
+}: addPlantFormProps) {
   const navigate = useNavigate();
   const { t } = useTranslation("addPlant");
-  const [nickname, setNickname] = useState<string | undefined>(undefined);
-  const [species, setSpecies] = useState<string | undefined>(undefined);
   const [lightValue, setLightValue] = useState(
     Math.round((lightLevels.length - 1) / 2),
   );
@@ -32,16 +41,21 @@ export function AddPlantForm({ locations = defaultLocations }) {
       reader.readAsDataURL(file);
     }
   };
+
+  const handleFormSubmit = (formValues: Record<string, any>) => {
+    console.log(formValues);
+  };
+
   return (
     <div className="min-h-screen bg-[#FDFBF7] pb-12">
       {/* Header */}
       <header className="mx-auto flex max-w-3xl items-center gap-4 px-4 py-6 md:px-8">
-        <button
+        <Button
           onClick={() => navigate({ to: "/" })}
           className="border-sand text-forest rounded-full border bg-white p-2.5 shadow-sm transition-all hover:shadow-md"
         >
           <ArrowLeft className="h-5 w-5" />
-        </button>
+        </Button>
         <h1 className="text-forest font-serif text-2xl font-bold">
           {t("add_new_plant")}
         </h1>
@@ -62,9 +76,15 @@ export function AddPlantForm({ locations = defaultLocations }) {
           {/* Decorative background element */}
           <div className="bg-sand/20 pointer-events-none absolute top-0 right-0 h-64 w-64 translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl" />
 
-          <form className="relative z-10 space-y-8">
+          <Form
+            className="relative z-10 space-y-8"
+            onFormSubmit={handleFormSubmit}
+          >
             {/* Image Upload */}
-            <div className="flex flex-col items-center justify-center">
+            <Field.Root
+              name="imageUpload"
+              className="flex flex-col items-center justify-center"
+            >
               <div className="group relative cursor-pointer">
                 <div
                   className={`border-brown/30 flex h-40 w-40 items-center justify-center overflow-hidden rounded-full border-2 border-dashed transition-all duration-300 ${imagePreview ? "border-none" : "bg-cream group-hover:bg-sand/50"}`}
@@ -78,13 +98,13 @@ export function AddPlantForm({ locations = defaultLocations }) {
                   ) : (
                     <div className="text-brown/60 flex flex-col items-center">
                       <Camera className="mb-2 h-8 w-8" />
-                      <span className="text-sm font-medium">
+                      <Field.Label className="text-sm font-medium">
                         {t("add_photo")}
-                      </span>
+                      </Field.Label>
                     </div>
                   )}
                 </div>
-                <input
+                <Input
                   type="file"
                   accept="image/*"
                   onChange={handleImageUpload}
@@ -94,41 +114,35 @@ export function AddPlantForm({ locations = defaultLocations }) {
                   <Upload className="h-4 w-4" />
                 </div>
               </div>
-            </div>
+            </Field.Root>
 
             {/* Basic Info */}
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-              <div className="space-y-2">
-                <label className="text-forest ml-1 text-sm font-bold">
+              <Field.Root name="nickname" className="space-y-2">
+                <Field.Label className="text-forest ml-1 text-sm font-bold">
                   {t("nickname")}
-                </label>
-                <input
+                </Field.Label>
+                <Field.Control
                   type="text"
                   placeholder={t("nickname_hint")}
-                  value={nickname}
-                  onChange={(e) => {
-                    setNickname(e.currentTarget.value);
-                  }}
+                  required
                   className="bg-cream text-forest focus:ring-forest/20 placeholder-brown/40 w-full rounded-2xl border-none px-4 py-3 transition-all outline-none focus:ring-2"
                 />
-              </div>
-              <div className="space-y-2">
-                <label className="text-forest ml-1 text-sm font-bold">
+              </Field.Root>
+              <Field.Root name="species" className="space-y-2">
+                <Field.Label className="text-forest ml-1 text-sm font-bold">
                   {t("species")}
-                </label>
+                </Field.Label>
                 <div className="relative">
-                  <input
+                  <Field.Control
                     type="text"
                     placeholder={t("species_hint")}
-                    value={species}
-                    onChange={(e) => {
-                      setSpecies(e.currentTarget.value);
-                    }}
+                    required
                     className="bg-cream text-forest focus:ring-forest/20 placeholder-brown/40 w-full rounded-2xl border-none px-4 py-3 pl-11 transition-all outline-none focus:ring-2"
                   />
                   <Sprout className="text-brown/50 absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2" />
                 </div>
-              </div>
+              </Field.Root>
             </div>
 
             {/* Care Requirements */}
@@ -139,64 +153,71 @@ export function AddPlantForm({ locations = defaultLocations }) {
 
               <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
                 {/* Water */}
-                <div className="bg-cream/50 space-y-4 rounded-2xl p-5">
+                <Field.Root
+                  name="waterReqs"
+                  className="bg-cream/50 space-y-4 rounded-2xl p-5"
+                >
                   <div className="text-forest flex items-center gap-2 font-bold">
                     <Droplets className="text-terracotta h-5 w-5" />
                     <span>{t("watering_schedule")}</span>
                   </div>
                   <div className="space-y-3">
-                    <label className="text-brown text-sm">
-                      {t("frequency")}
-                    </label>
-                    <div className="flex gap-2">
-                      {wateringSchedules.map((freqKey) => (
-                        <button
-                          key={freqKey}
-                          type="button"
-                          className="border-sand hover:border-forest focus:bg-forest text-brown flex-1 rounded-xl border bg-white py-2 text-sm font-medium transition-all focus:text-white"
-                        >
-                          {t(freqKey, { ns: "baseForms" })}
-                        </button>
-                      ))}
-                    </div>
+                    <RadioGroup>
+                      <Field.Label className="text-brown text-sm">
+                        {t("frequency")}
+                      </Field.Label>
+                      <div className="flex gap-2">
+                        {wateringSchedules.map((freqKey) => (
+                          <Radio.Root
+                            key={freqKey}
+                            className="border-sand hover:border-forest focus:bg-forest text-brown flex-1 rounded-xl border bg-white py-2 text-center text-sm font-medium transition-all focus:text-white"
+                            value={t(freqKey, { ns: "baseForms" })}
+                          >
+                            {t(freqKey, { ns: "baseForms" })}
+                          </Radio.Root>
+                        ))}
+                      </div>
+                    </RadioGroup>
                   </div>
-                </div>
+                </Field.Root>
 
                 {/* Light */}
-                <div className="bg-cream/50 space-y-4 rounded-2xl p-5">
+                <Field.Root
+                  name="lightReqs"
+                  className="bg-cream/50 space-y-4 rounded-2xl p-5"
+                >
                   <LightSelector
                     title={t("light_needs")}
                     lightValue={lightValue}
                     setLightValue={setLightValue}
                   />
-                </div>
+                </Field.Root>
               </div>
             </div>
 
             {/* Location Dropdown */}
-            <div className="space-y-2">
-              <label className="text-forest ml-1 text-sm font-bold">
+            <Field.Root className="space-y-2">
+              <Field.Label className="text-forest ml-1 text-sm font-bold">
                 {t("assign_location")}
-              </label>
+              </Field.Label>
               <select className="bg-cream text-forest focus:ring-forest/20 w-full cursor-pointer appearance-none rounded-2xl border-none px-4 py-3 transition-all outline-none focus:ring-2">
-                {locations.map((location: string) => {
-                  return <option>{location}</option>;
+                {locations.map((location: PlantLocation) => {
+                  return <option key={location.id}>{location.name}</option>;
                 })}
               </select>
-            </div>
+            </Field.Root>
 
             {/* Submit Button */}
             <div className="pt-4">
-              <button
-                type="button"
-                onClick={() => navigate({ to: "/" })}
+              <Button
+                type="submit"
                 className="hover:bg-dark-forest text-cream bg-forest shadow-forest/20 flex w-full items-center justify-center gap-2 rounded-2xl py-4 font-serif text-lg font-bold shadow-lg transition-all hover:-translate-y-0.5 hover:shadow-xl"
               >
                 <Sprout className="h-6 w-6" />
                 {t("add_to_jungle")}
-              </button>
+              </Button>
             </div>
-          </form>
+          </Form>
         </div>
       </motion.main>
     </div>

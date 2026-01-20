@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Sun } from "lucide-react";
+import { Field, Slider } from "@base-ui/react";
 import { lightLevels } from "./Base";
 
 export function LightSelector({
@@ -28,20 +29,25 @@ export function LightSelector({
             {lightDescription}
           </span>
         </div>
-        <div className="bg-cream relative flex h-12 items-center overflow-hidden rounded-xl px-2">
-          <div className="from-sand to-sand/20 absolute top-0 bottom-0 left-0 w-full rounded-xl bg-linear-to-r" />
-          <input
+        <Field.Root name="lightReqs">
+          <Slider.Root
             min={0}
             max={lightLevels.length - 1}
             step={1}
-            value={lightValue}
-            onChange={(e) => {
-              setLightValue(parseInt(e.currentTarget.value));
-            }}
-            type="range"
-            className="accent-terracotta relative z-10 h-full w-full cursor-pointer"
-          />
-        </div>
+            className="relative flex h-12 items-center overflow-hidden rounded-xl px-5"
+            onValueChange={setLightValue}
+          >
+            <Slider.Control className="flex w-full touch-none items-center py-3 select-none">
+              <Slider.Track className="bg-cream h-10 w-full rounded select-none">
+                <Slider.Indicator className="from-sand/20 to-sand rounded bg-linear-to-r select-none" />
+                <Slider.Thumb
+                  aria-label={t("intensity")}
+                  className="outline-dark-forest h-8 w-5 rounded-full bg-white outline-2 select-none"
+                />
+              </Slider.Track>
+            </Slider.Control>
+          </Slider.Root>
+        </Field.Root>
       </div>
     </>
   );
