@@ -7,7 +7,7 @@
   "env_conditions": "Environmental Conditions",
   "avg_light": "Avergage Light",
   "avg_temp": "Average Temp.",
-  "avg_temp_hint": "22",
+  "avg_temp_hint": "70",
   "avg_humidity": "Average Humidity",
   "avg_humidity_hint": "45",
   "notes": "Notes",

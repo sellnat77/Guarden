@@ -10,6 +10,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@base-ui/react": "^1.1.0",
     "@tailwindcss/vite": "^4.1.18",
     "@tanstack/react-devtools": "^0.7.0",
     "@tanstack/react-query": "^5.90.16",
@@ -42,7 +43,7 @@
     "i": "^0.3.7",
     "jsdom": "^27.0.0",
     "npm": "^11.7.0",
-    "prettier": "^3.7.4",
+    "prettier": "^3.8.0",
     "prettier-plugin-tailwindcss": "^0.7.2",
     "tsc-alias": "^1.8.16",
     "typescript": "^5.9.3",
