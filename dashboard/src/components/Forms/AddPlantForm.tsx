@@ -1,30 +1,54 @@
 import { Field } from "@base-ui/react/field";
 import { Button } from "@base-ui/react/button";
 import { Radio } from "@base-ui/react/radio";
-import { Input, RadioGroup } from "@base-ui/react";
+import { Input, RadioGroup, Select } from "@base-ui/react";
 import { Form } from "@base-ui/react/form";
 import { useNavigate } from "@tanstack/react-router";
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Camera, Droplets, Sprout, Upload } from "lucide-react";
+import {
+  ArrowLeft,
+  Camera,
+  CheckIcon,
+  ChevronDown,
+  Droplets,
+  Sprout,
+  Upload,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import request from "graphql-request";
 import { lightLevels, wateringSchedules } from "./Base";
 import { LightSelector } from "./LightSelector";
+import type { AddPlantInput } from "@/data/plantsData";
 import type { PlantLocation } from "@/data/locationsData";
+import { getLocations } from "@/data/locationsData";
+import { addPlants } from "@/data/plantsData";
 
-type addPlantFormProps = {
-  locations?: Array<PlantLocation>;
-};
-const defaultLocations = [
-  { id: "1", name: "Living Room (South Window)" },
-  { id: "2", name: "Kitchen Shelf" },
-  { id: "3", name: "Bedroom Corner" },
-  { id: "4", name: "Balcony Garden" },
-];
+export function AddPlantForm() {
+  const { data: fetchAllLocationsData } = useQuery({
+    queryKey: ["fetchAllLocations"],
+    queryFn: async () =>
+      request(
+        `${import.meta.env.VITE_GD_GRAPHQL_SERVER}/graphql`,
+        getLocations,
+      ),
+  });
 
-export function AddPlantForm({
-  locations = defaultLocations,
-}: addPlantFormProps) {
+  const locations =
+    fetchAllLocationsData?.locations.map((location: PlantLocation) => {
+      return { label: location.name, value: location.id };
+    }) || [];
+
+  const { mutate: addNewPlant } = useMutation({
+    mutationKey: ["addPlant"],
+    mutationFn: async (payload: { addPlantInput: AddPlantInput }) =>
+      request(
+        `${import.meta.env.VITE_GD_GRAPHQL_SERVER}/graphql`,
+        addPlants,
+        payload,
+      ),
+  });
   const navigate = useNavigate();
   const { t } = useTranslation("addPlant");
   const [lightValue, setLightValue] = useState(
@@ -44,6 +68,44 @@ export function AddPlantForm({
 
   const handleFormSubmit = (formValues: Record<string, any>) => {
     console.log(formValues);
+    let frequency = 1;
+    switch (formValues.waterReqs) {
+      case "Daily":
+        frequency = 1;
+        break;
+      case "weekly":
+        frequency = 7;
+        break;
+      case "monthly":
+        frequency = 30;
+        break;
+      default:
+        frequency = 1;
+        break;
+    }
+    const today = new Date().toISOString();
+    const newPlant: AddPlantInput = {
+      name: formValues.name,
+      species: formValues.species,
+      image:
+        formValues.image ||
+        "https://images.unsplash.com/photo-1614594975525-e45190c55d0b?auto=format&fit=crop&q=80&w=800",
+      generalHealth: "healthy",
+      description: formValues.description || "testDescription",
+      fertilizeFrequencyDays: frequency,
+      pruneFrequencyDays: frequency,
+      repotFrequencyDays: frequency,
+      lastFertilized: today,
+      lastPruned: today,
+      lastRepotted: today,
+      lastWatered: today,
+      waterFrequencyDays: frequency,
+      locationId: parseInt(formValues.locationId),
+      createdById: 1,
+    };
+    console.log("adding new plant", { newPlant });
+    addNewPlant({ addPlantInput: newPlant });
+    navigate({ to: "/" });
   };
 
   return (
@@ -118,7 +180,7 @@ export function AddPlantForm({
 
             {/* Basic Info */}
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-              <Field.Root name="nickname" className="space-y-2">
+              <Field.Root name="name" className="space-y-2">
                 <Field.Label className="text-forest ml-1 text-sm font-bold">
                   {t("nickname")}
                 </Field.Label>
@@ -196,15 +258,52 @@ export function AddPlantForm({
             </div>
 
             {/* Location Dropdown */}
-            <Field.Root className="space-y-2">
+            <Field.Root name="locationId" className="space-y-2">
               <Field.Label className="text-forest ml-1 text-sm font-bold">
                 {t("assign_location")}
               </Field.Label>
-              <select className="bg-cream text-forest focus:ring-forest/20 w-full cursor-pointer appearance-none rounded-2xl border-none px-4 py-3 transition-all outline-none focus:ring-2">
-                {locations.map((location: PlantLocation) => {
-                  return <option key={location.id}>{location.name}</option>;
-                })}
-              </select>
+              <Select.Root items={locations}>
+                <Select.Trigger className="flex h-10 min-w-40 items-center justify-between gap-3 rounded-md border border-gray-200 bg-[canvas] pr-3 pl-3.5 text-base text-gray-900 select-none hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-blue-800 data-[popup-open]:bg-gray-100">
+                  <Select.Value
+                    className="data-placeholder:opacity-60"
+                    placeholder={locations[0]?.name}
+                  />
+                  <Select.Icon className="flex">
+                    <ChevronDown />
+                  </Select.Icon>
+                </Select.Trigger>
+                <Select.Portal>
+                  <Select.Positioner
+                    className="z-10 outline-none select-none"
+                    sideOffset={8}
+                  >
+                    <Select.Popup className="bg-cream text-forest focus:ring-forest/20 w-full cursor-pointer appearance-none rounded-2xl border-none px-4 py-3 transition-all outline-none focus:ring-2">
+                      <Select.ScrollUpArrow />
+                      <Select.List className="max-h-var(--available-height) relative scroll-py-6 overflow-y-auto py-1">
+                        {locations.map(
+                          ({
+                            label,
+                            value,
+                          }: {
+                            label: string;
+                            value: number;
+                          }) => (
+                            <Select.Item key={value} value={value}>
+                              <Select.ItemIndicator className="col-start-1">
+                                <CheckIcon className="size-3" />
+                              </Select.ItemIndicator>
+                              <Select.ItemText className="col-start-2">
+                                {label}
+                              </Select.ItemText>
+                            </Select.Item>
+                          ),
+                        )}
+                      </Select.List>
+                      <Select.ScrollDownArrow className="bottom-0 z-1 flex h-4 w-full cursor-default items-center justify-center rounded-md bg-[canvas] text-center text-xs before:absolute before:left-0 before:h-full before:w-full before:content-['']" />
+                    </Select.Popup>
+                  </Select.Positioner>
+                </Select.Portal>
+              </Select.Root>
             </Field.Root>
 
             {/* Submit Button */}

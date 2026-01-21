@@ -29,6 +29,32 @@ export const countPlants = gql`
   }
 `;
 
+export const addPlants = gql`
+  mutation addPlant($addPlantInput: AddPlantInput!) {
+    plant {
+      addPlant(input: $addPlantInput)
+    }
+  }
+`;
+
+export interface AddPlantInput {
+  name: string;
+  species: string;
+  image: string;
+  generalHealth: "healthy" | "needs-attention" | "critical";
+  description: string;
+  waterFrequencyDays: number;
+  fertilizeFrequencyDays: number;
+  pruneFrequencyDays: number;
+  repotFrequencyDays: number;
+  lastWatered: string;
+  lastPruned: string;
+  lastFertilized: string;
+  lastRepotted: string;
+  locationId: number;
+  createdById: number;
+}
+
 export interface Plant {
   id: string;
   name: string;
