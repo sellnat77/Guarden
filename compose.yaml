@@ -1,4 +1,16 @@
 services:
+  guarden-images:
+    container_name: guarden_images
+    image: rustfs/rustfs:latest
+    restart: unless-stopped
+    volumes:
+      - guarden_images:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    networks:
+      - guarden-network
+
   guarden-db:
     container_name: guarden_database
     image: postgres:latest
@@ -59,3 +71,4 @@ networks:
 
 volumes:
   guarden_pgdata:
+  guarden_images:
