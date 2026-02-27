@@ -1,23 +1,24 @@
 import { useLocation, useNavigate } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { ArrowLeft, Camera, Stethoscope, Upload } from "lucide-react";
+import { ArrowLeft, Stethoscope } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Button, Field, Form, Input } from "@base-ui/react";
+import { Button, Field, Form } from "@base-ui/react";
 import { useMutation } from "@tanstack/react-query";
 import request from "graphql-request";
-import type { PlantState } from "../PlantCard";
-import type { AddVitalInput } from "@/data/vitalsData";
+import { UploadImage } from "./UploadImage";
+import { handleSignedImageUpload } from "./util";
 import type { GenerateUploadUrlInput } from "@/data/imageData";
-import { getUploadUrl, uploadToS3 } from "@/data/imageData";
-import { addVitals } from "@/data/vitalsData";
+import type { AddVitalInput } from "@/data/vitalsData";
+import { getUploadUrl } from "@/data/imageData";
+import { BUCKET, addVitals } from "@/data/vitalsData";
 
 export function AddVitalForm() {
   const location = useLocation({
-    select: (loc) => loc.state as unknown as PlantState,
+    select: (loc) => loc.state,
   });
+
   const plantId = location.plantId;
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const navigate = useNavigate();
   const { t } = useTranslation("addVital");
@@ -25,7 +26,7 @@ export function AddVitalForm() {
   const { mutate: addNewVital } = useMutation({
     mutationKey: ["addVital"],
     mutationFn: async (payload: { vitalInput: AddVitalInput }) =>
-      request(
+      await request(
         `${import.meta.env.VITE_GD_GRAPHQL_SERVER}/graphql`,
         addVitals,
         payload,
@@ -42,49 +43,30 @@ export function AddVitalForm() {
       ),
   });
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImageFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   const handleAddVital = (formValues: Record<string, any>) => {
-    const handleSignedImageUpload = async () => {
-      const uuid = crypto.randomUUID();
-      const { generateUploadUrl: presignedResult } = await generateUploadUrl({
-        urlInput: {
-          key: `${uuid}.jpg`,
-          bucket: "VITALS",
-          contentType: "image/jpeg",
-        },
-      });
-
-      if (imageFile) {
-        // upload
-        await uploadToS3(presignedResult.url, imageFile);
-      }
-      console.log(presignedResult);
+    const handleVital = async () => {
+      const publicUrl = await handleSignedImageUpload(
+        imageFile,
+        generateUploadUrl,
+        BUCKET,
+      );
       console.log(formValues);
+
       const addNewVitalParams: AddVitalInput = {
         plantId: plantId,
-        image: presignedResult.publicUrl,
+        image: publicUrl,
         notes: formValues.notes,
         healthPct: Math.round(Math.random() * 100),
         date: new Date().toISOString(),
       };
+
       console.log("++++++++++");
       console.log(addNewVitalParams);
       console.log("++++++++++");
       addNewVital({ vitalInput: addNewVitalParams });
       navigate({ to: "/" });
     };
-    handleSignedImageUpload();
+    handleVital();
   };
 
   return (
@@ -122,40 +104,7 @@ export function AddVitalForm() {
             onFormSubmit={handleAddVital}
           >
             {/* Image Upload */}
-            <Field.Root
-              name="image"
-              className="flex flex-col items-center justify-center"
-            >
-              <div className="group relative cursor-pointer">
-                <div
-                  className={`border-brown/30 flex h-40 w-40 items-center justify-center overflow-hidden rounded-full border-2 border-dashed transition-all duration-300 ${imagePreview ? "border-none" : "bg-cream group-hover:bg-sand/50"}`}
-                >
-                  {imagePreview ? (
-                    <img
-                      src={imagePreview}
-                      alt={t("preview")}
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <div className="text-brown/60 flex flex-col items-center">
-                      <Camera className="mb-2 h-8 w-8" />
-                      <Field.Label className="text-sm font-medium">
-                        {t("add_photo")}
-                      </Field.Label>
-                    </div>
-                  )}
-                </div>
-                <Input
-                  type="file"
-                  accept="image/jpeg"
-                  onChange={handleImageUpload}
-                  className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-                />
-                <div className="bg-forest absolute right-1 bottom-1 rounded-full p-2 text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
-                  <Upload className="h-4 w-4" />
-                </div>
-              </div>
-            </Field.Root>
+            <UploadImage setImageFile={setImageFile} />
 
             {/* Notes */}
             <Field.Root name="notes" className="space-y-2">

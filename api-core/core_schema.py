@@ -1,3 +1,4 @@
+import string
 from datetime import datetime
 from typing import List
 
@@ -11,10 +12,16 @@ from strawberry_sqlalchemy_mapper import (
 
 import db
 from db import SessionLocal, database
+from s3Client import (
+    GenerateUploadUrlInput,
+    GenerateUploadUrlOutput,
+    generatePresignedUploadUrl,
+)
 from Types.Location import LocationMutations
 from Types.Plant import PlantMutations
 from Types.Tip import TipMutations
 from Types.User import UserMutations
+from Types.Vital import VitalMutations
 
 strawberry_sqlalchemy_mapper = StrawberrySQLAlchemyMapper(always_use_list=False)
 
@@ -87,12 +94,22 @@ class Mutation:
         return PlantMutations()
 
     @strawberry.field
+    def vital(self) -> VitalMutations:
+        return VitalMutations()
+
+    @strawberry.field
     def user(self) -> UserMutations:
         return UserMutations()
 
     @strawberry.field
     def tip(self) -> TipMutations:
         return TipMutations()
+
+    @strawberry.mutation
+    async def generateUploadUrl(
+        self, input: GenerateUploadUrlInput
+    ) -> GenerateUploadUrlOutput:
+        return generatePresignedUploadUrl(input.bucket, input.key, input.contentType)
 
 
 mySession = SessionLocal()

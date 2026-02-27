@@ -15,7 +15,6 @@ class StorageBucket(Enum):
     LOCATIONS = "location"
     PLANTS = "plant"
     VITALS = "vital"
-    TEST = "test"
 
 
 @strawberry.input
@@ -54,7 +53,6 @@ def init_storage():
 
             # Define the public policy (read-only for all)
             policy = {
-                "Version": "2012-10-17",
                 "Statement": [
                     {
                         "Sid": "PublicRead",
