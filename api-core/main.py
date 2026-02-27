@@ -1,4 +1,3 @@
-from s3Client import init_storage
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -7,6 +6,7 @@ from strawberry.fastapi import GraphQLRouter
 
 import db
 from core_schema import get_context, schema
+from s3Client import init_storage
 
 graphql_app = GraphQLRouter(schema, context_getter=get_context)
 
