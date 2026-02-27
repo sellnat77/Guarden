@@ -43,6 +43,7 @@ const days = [
 ];
 export function WateringSchedule() {
   const { t } = useTranslation();
+
   const userLocale = navigator.language || DEFAULT_LOCALE;
   const today = new Date().toLocaleDateString(userLocale);
 

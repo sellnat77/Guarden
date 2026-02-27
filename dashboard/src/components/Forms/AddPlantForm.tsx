@@ -1,31 +1,38 @@
 import { Field } from "@base-ui/react/field";
 import { Button } from "@base-ui/react/button";
 import { Radio } from "@base-ui/react/radio";
-import { Input, RadioGroup, Select } from "@base-ui/react";
+import { RadioGroup, Select } from "@base-ui/react";
 import { Form } from "@base-ui/react/form";
 import { useNavigate } from "@tanstack/react-router";
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowLeft,
-  Camera,
   CheckIcon,
   ChevronDown,
   Droplets,
   Sprout,
-  Upload,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import request from "graphql-request";
-import { lightLevels, wateringSchedules } from "./Base";
+import { BUCKETS, lightLevels, wateringSchedules } from "./Base";
 import { LightSelector } from "./LightSelector";
+import { UploadImage } from "./UploadImage";
+import { handleSignedImageUpload } from "./util";
 import type { AddPlantInput } from "@/data/plantsData";
 import type { PlantLocation } from "@/data/locationsData";
 import { getLocations } from "@/data/locationsData";
 import { addPlants } from "@/data/plantsData";
 
 export function AddPlantForm() {
+  const navigate = useNavigate();
+  const { t } = useTranslation("addPlant");
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [lightValue, setLightValue] = useState(
+    Math.round((lightLevels.length - 1) / 2),
+  );
+
   const { data: fetchAllLocationsData } = useQuery({
     queryKey: ["fetchAllLocations"],
     queryFn: async () =>
@@ -34,11 +41,6 @@ export function AddPlantForm() {
         getLocations,
       ),
   });
-
-  const locations =
-    fetchAllLocationsData?.locations.map((location: PlantLocation) => {
-      return { label: location.name, value: location.id };
-    }) || [];
 
   const { mutate: addNewPlant } = useMutation({
     mutationKey: ["addPlant"],
@@ -49,63 +51,56 @@ export function AddPlantForm() {
         payload,
       ),
   });
-  const navigate = useNavigate();
-  const { t } = useTranslation("addPlant");
-  const [lightValue, setLightValue] = useState(
-    Math.round((lightLevels.length - 1) / 2),
-  );
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+
+  const locations =
+    fetchAllLocationsData?.locations.map((location: PlantLocation) => {
+      return { label: location.name, value: location.id };
+    }) || [];
 
   const handleFormSubmit = (formValues: Record<string, any>) => {
-    console.log(formValues);
-    let frequency = 1;
-    switch (formValues.waterReqs) {
-      case "Daily":
-        frequency = 1;
-        break;
-      case "weekly":
-        frequency = 7;
-        break;
-      case "monthly":
-        frequency = 30;
-        break;
-      default:
-        frequency = 1;
-        break;
-    }
-    const today = new Date().toISOString();
-    const newPlant: AddPlantInput = {
-      name: formValues.name,
-      species: formValues.species,
-      image:
-        formValues.image ||
-        "https://images.unsplash.com/photo-1614594975525-e45190c55d0b?auto=format&fit=crop&q=80&w=800",
-      generalHealth: "healthy",
-      description: formValues.description || "testDescription",
-      fertilizeFrequencyDays: frequency,
-      pruneFrequencyDays: frequency,
-      repotFrequencyDays: frequency,
-      lastFertilized: today,
-      lastPruned: today,
-      lastRepotted: today,
-      lastWatered: today,
-      waterFrequencyDays: frequency,
-      locationId: parseInt(formValues.locationId),
-      createdById: 1,
+    const handleSubmit = async () => {
+      const publicUrl = await handleSignedImageUpload(imageFile, BUCKETS.plant);
+      console.log(formValues);
+      let frequency = 1;
+      switch (formValues.waterReqs) {
+        case "Daily":
+          frequency = 1;
+          break;
+        case "weekly":
+          frequency = 7;
+          break;
+        case "monthly":
+          frequency = 30;
+          break;
+        default:
+          frequency = 1;
+          break;
+      }
+      const today = new Date().toISOString();
+      const newPlant: AddPlantInput = {
+        name: formValues.name,
+        species: formValues.species,
+        image:
+          publicUrl ||
+          "https://images.unsplash.com/photo-1614594975525-e45190c55d0b?auto=format&fit=crop&q=80&w=800",
+        generalHealth: "healthy",
+        description: formValues.description || "testDescription",
+        fertilizeFrequencyDays: frequency,
+        pruneFrequencyDays: frequency,
+        repotFrequencyDays: frequency,
+        lastFertilized: today,
+        lastPruned: today,
+        lastRepotted: today,
+        lastWatered: today,
+        waterFrequencyDays: frequency,
+        locationId: parseInt(formValues.locationId),
+        createdById: 1,
+      };
+      console.log("adding new plant", { newPlant });
+      addNewPlant({ addPlantInput: newPlant });
+      navigate({ to: "/" });
     };
-    console.log("adding new plant", { newPlant });
-    addNewPlant({ addPlantInput: newPlant });
-    navigate({ to: "/" });
+    handleSubmit();
   };
 
   return (
@@ -143,40 +138,7 @@ export function AddPlantForm() {
             onFormSubmit={handleFormSubmit}
           >
             {/* Image Upload */}
-            <Field.Root
-              name="imageUpload"
-              className="flex flex-col items-center justify-center"
-            >
-              <div className="group relative cursor-pointer">
-                <div
-                  className={`border-brown/30 flex h-40 w-40 items-center justify-center overflow-hidden rounded-full border-2 border-dashed transition-all duration-300 ${imagePreview ? "border-none" : "bg-cream group-hover:bg-sand/50"}`}
-                >
-                  {imagePreview ? (
-                    <img
-                      src={imagePreview}
-                      alt={t("preview")}
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <div className="text-brown/60 flex flex-col items-center">
-                      <Camera className="mb-2 h-8 w-8" />
-                      <Field.Label className="text-sm font-medium">
-                        {t("add_photo")}
-                      </Field.Label>
-                    </div>
-                  )}
-                </div>
-                <Input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-                />
-                <div className="bg-forest absolute right-1 bottom-1 rounded-full p-2 text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
-                  <Upload className="h-4 w-4" />
-                </div>
-              </div>
-            </Field.Root>
+            <UploadImage setImageFile={setImageFile} />
 
             {/* Basic Info */}
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -263,7 +225,7 @@ export function AddPlantForm() {
                 {t("assign_location")}
               </Field.Label>
               <Select.Root items={locations}>
-                <Select.Trigger className="flex h-10 min-w-40 items-center justify-between gap-3 rounded-md border border-gray-200 bg-[canvas] pr-3 pl-3.5 text-base text-gray-900 select-none hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-blue-800 data-[popup-open]:bg-gray-100">
+                <Select.Trigger className="flex h-10 min-w-40 items-center justify-between gap-3 rounded-md border border-gray-200 bg-[canvas] pr-3 pl-3.5 text-base text-gray-900 select-none hover:bg-gray-100 focus-visible:outline focus-visible:-outline-offset-1 focus-visible:outline-blue-800 data-popup-open:bg-gray-100">
                   <Select.Value
                     className="data-placeholder:opacity-60"
                     placeholder={locations[0]?.name}

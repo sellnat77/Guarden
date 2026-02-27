@@ -6,12 +6,14 @@ from strawberry.fastapi import GraphQLRouter
 
 import db
 from core_schema import get_context, schema
+from s3Client import init_storage
 
 graphql_app = GraphQLRouter(schema, context_getter=get_context)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    init_storage()
     await db.connect()
     yield
     await db.disconnect()

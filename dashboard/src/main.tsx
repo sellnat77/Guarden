@@ -17,11 +17,16 @@ const router = createRouter({
   defaultStructuralSharing: true,
   defaultPreloadStaleTime: 0,
 });
+interface PlantState {
+  plantId: string;
+}
 
 declare module "@tanstack/react-router" {
   interface Register {
     router: typeof router;
   }
+
+  interface HistoryState extends PlantState {}
 }
 
 const queryClient = new QueryClient();

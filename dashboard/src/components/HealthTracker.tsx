@@ -42,6 +42,7 @@ const defaultData = [
 ];
 export function HealthTracker({ data = defaultData }) {
   const { t } = useTranslation();
+
   return (
     <motion.div
       initial={{

@@ -30,8 +30,10 @@ const getPriorityColor = (priority: string) => {
   }
 };
 export function CareReminders() {
-  const userLocale = navigator.language || DEFAULT_LOCALE;
   const { t } = useTranslation();
+
+  const userLocale = navigator.language || DEFAULT_LOCALE;
+
   return (
     <motion.div
       initial={{

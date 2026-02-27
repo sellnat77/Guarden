@@ -9,10 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AddVitalRouteImport } from './routes/add-vital'
 import { Route as AddPlantRouteImport } from './routes/add-plant'
 import { Route as AddLocationRouteImport } from './routes/add-location'
 import { Route as IndexRouteImport } from './routes/index'
 
+const AddVitalRoute = AddVitalRouteImport.update({
+  id: '/add-vital',
+  path: '/add-vital',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AddPlantRoute = AddPlantRouteImport.update({
   id: '/add-plant',
   path: '/add-plant',
@@ -33,34 +39,45 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/add-location': typeof AddLocationRoute
   '/add-plant': typeof AddPlantRoute
+  '/add-vital': typeof AddVitalRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/add-location': typeof AddLocationRoute
   '/add-plant': typeof AddPlantRoute
+  '/add-vital': typeof AddVitalRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/add-location': typeof AddLocationRoute
   '/add-plant': typeof AddPlantRoute
+  '/add-vital': typeof AddVitalRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/add-location' | '/add-plant'
+  fullPaths: '/' | '/add-location' | '/add-plant' | '/add-vital'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/add-location' | '/add-plant'
-  id: '__root__' | '/' | '/add-location' | '/add-plant'
+  to: '/' | '/add-location' | '/add-plant' | '/add-vital'
+  id: '__root__' | '/' | '/add-location' | '/add-plant' | '/add-vital'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AddLocationRoute: typeof AddLocationRoute
   AddPlantRoute: typeof AddPlantRoute
+  AddVitalRoute: typeof AddVitalRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/add-vital': {
+      id: '/add-vital'
+      path: '/add-vital'
+      fullPath: '/add-vital'
+      preLoaderRoute: typeof AddVitalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/add-plant': {
       id: '/add-plant'
       path: '/add-plant'
@@ -89,6 +106,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AddLocationRoute: AddLocationRoute,
   AddPlantRoute: AddPlantRoute,
+  AddVitalRoute: AddVitalRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,6 +1,13 @@
-import { Calendar, Droplets, MoreVertical, Sun } from "lucide-react";
+import {
+  Calendar,
+  Droplets,
+  MoreVertical,
+  Stethoscope,
+  Sun,
+} from "lucide-react";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "@tanstack/react-router";
 import type { Plant } from "../data/plantsData";
 
 const defaultPlantProps = {
@@ -14,7 +21,9 @@ interface PlantCardProps {
   index: number;
 }
 export function PlantCard({ plant: plantData, index }: PlantCardProps) {
+  const navigate = useNavigate();
   const { t } = useTranslation();
+
   const getHealthColor = (health: string) => {
     switch (health) {
       case "healthy":
@@ -27,9 +36,10 @@ export function PlantCard({ plant: plantData, index }: PlantCardProps) {
         return "bg-gray-400";
     }
   };
+
   const plant = { ...defaultPlantProps, ...plantData };
   const waterDays = Math.floor(Math.random() * 5) + 1;
-  console.log(plant);
+
   return (
     <motion.div
       initial={{
@@ -116,9 +126,14 @@ export function PlantCard({ plant: plantData, index }: PlantCardProps) {
         </div>
 
         <div className="mt-auto flex gap-2">
-          <button className="bg-forest hover:bg-dark-forest text-cream shadow-forest/20 flex flex-1 items-center justify-center gap-2 rounded-2xl py-2.5 text-sm font-medium shadow-lg transition-colors">
-            <Droplets className="h-4 w-4" />
-            {t("water")}
+          <button
+            className="bg-forest hover:bg-dark-forest text-cream shadow-forest/20 flex flex-1 items-center justify-center gap-2 rounded-2xl py-2.5 text-sm font-medium shadow-lg transition-colors"
+            onClick={() =>
+              navigate({ to: "/add-vital", state: { plantId: plantData.id } })
+            }
+          >
+            <Stethoscope className="h-4 w-4" />
+            {t("add_vital")}
           </button>
           <button className="border-sand text-brown hover:bg-cream rounded-2xl border px-4 py-2.5 transition-colors">
             <Calendar className="h-4 w-4" />

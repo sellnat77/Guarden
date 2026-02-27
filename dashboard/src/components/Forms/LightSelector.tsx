@@ -13,7 +13,9 @@ export function LightSelector({
   setLightValue: (newValue: number) => void;
 }) {
   const { t } = useTranslation("baseForms");
+
   const lightDescription = t(lightLevels[lightValue]);
+
   return (
     <>
       <h3 className="border-sand text-forest border-b pb-2 font-serif text-lg font-bold">

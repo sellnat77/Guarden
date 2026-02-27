@@ -11,6 +11,7 @@
   "button_view_all": "View all",
   "light": "Light",
   "water": "Water",
+  "add_vital": "Log Vital",
   "water_days_zero": "Today",
   "water_days_one": "Tomorrow",
   "water_days_other": "In {{count}} days",
