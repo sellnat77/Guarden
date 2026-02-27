@@ -23,6 +23,7 @@ interface PlantCardProps {
 export function PlantCard({ plant: plantData, index }: PlantCardProps) {
   const navigate = useNavigate();
   const { t } = useTranslation();
+
   const getHealthColor = (health: string) => {
     switch (health) {
       case "healthy":
@@ -35,9 +36,10 @@ export function PlantCard({ plant: plantData, index }: PlantCardProps) {
         return "bg-gray-400";
     }
   };
+
   const plant = { ...defaultPlantProps, ...plantData };
   const waterDays = Math.floor(Math.random() * 5) + 1;
-  console.log(plant);
+
   return (
     <motion.div
       initial={{

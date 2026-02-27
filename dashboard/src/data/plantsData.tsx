@@ -37,8 +37,6 @@ export const addPlants = gql`
   }
 `;
 
-export const BUCKET = "VITALS";
-
 export interface AddPlantInput {
   name: string;
   species: string;

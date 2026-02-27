@@ -7,3 +7,8 @@ export const lightLevels = [
 ];
 
 export const wateringSchedules = ["daily", "weekly", "monthly"];
+
+export enum BUCKETS {
+  plant = "PLANTS",
+  vital = "VITALS",
+}

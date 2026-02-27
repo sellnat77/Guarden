@@ -17,7 +17,9 @@ import type { Plant } from "../data/plantsData";
 export function PlantDashboard({ plantFilter }: { plantFilter: string }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
+
   const [isFabOpen, setIsFabOpen] = useState(false);
+
   const { data: fetchAllPlantsData } = useQuery({
     queryKey: ["fetchAllPlants"],
     queryFn: async () =>
@@ -38,6 +40,7 @@ export function PlantDashboard({ plantFilter }: { plantFilter: string }) {
   const plantCount = allPlants.length || 0;
   const plantList = allPlants;
   const locationCount = fetchAllLocationsData?.locations?.length || 0;
+
   return (
     <div>
       {/* Main Content Grid */}

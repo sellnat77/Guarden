@@ -16,18 +16,23 @@ import {
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import request from "graphql-request";
-import { lightLevels, wateringSchedules } from "./Base";
+import { BUCKETS, lightLevels, wateringSchedules } from "./Base";
 import { LightSelector } from "./LightSelector";
 import { UploadImage } from "./UploadImage";
 import { handleSignedImageUpload } from "./util";
 import type { AddPlantInput } from "@/data/plantsData";
 import type { PlantLocation } from "@/data/locationsData";
-import type { GenerateUploadUrlInput } from "@/data/imageData";
 import { getLocations } from "@/data/locationsData";
-import { BUCKET, addPlants } from "@/data/plantsData";
-import { getUploadUrl } from "@/data/imageData";
+import { addPlants } from "@/data/plantsData";
 
 export function AddPlantForm() {
+  const navigate = useNavigate();
+  const { t } = useTranslation("addPlant");
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [lightValue, setLightValue] = useState(
+    Math.round((lightLevels.length - 1) / 2),
+  );
+
   const { data: fetchAllLocationsData } = useQuery({
     queryKey: ["fetchAllLocations"],
     queryFn: async () =>
@@ -36,11 +41,6 @@ export function AddPlantForm() {
         getLocations,
       ),
   });
-
-  const locations =
-    fetchAllLocationsData?.locations.map((location: PlantLocation) => {
-      return { label: location.name, value: location.id };
-    }) || [];
 
   const { mutate: addNewPlant } = useMutation({
     mutationKey: ["addPlant"],
@@ -51,30 +51,15 @@ export function AddPlantForm() {
         payload,
       ),
   });
-  const navigate = useNavigate();
-  const { t } = useTranslation("addPlant");
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [lightValue, setLightValue] = useState(
-    Math.round((lightLevels.length - 1) / 2),
-  );
 
-  const { mutateAsync: generateUploadUrl } = useMutation({
-    mutationKey: ["generateUrl"],
-    mutationFn: async (payload: { urlInput: GenerateUploadUrlInput }) =>
-      await request(
-        `${import.meta.env.VITE_GD_GRAPHQL_SERVER}/graphql`,
-        getUploadUrl,
-        payload,
-      ),
-  });
+  const locations =
+    fetchAllLocationsData?.locations.map((location: PlantLocation) => {
+      return { label: location.name, value: location.id };
+    }) || [];
 
   const handleFormSubmit = (formValues: Record<string, any>) => {
     const handleSubmit = async () => {
-      const publicUrl = await handleSignedImageUpload(
-        imageFile,
-        generateUploadUrl,
-        BUCKET,
-      );
+      const publicUrl = await handleSignedImageUpload(imageFile, BUCKETS.plant);
       console.log(formValues);
       let frequency = 1;
       switch (formValues.waterReqs) {

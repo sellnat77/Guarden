@@ -8,20 +8,20 @@ import { useMutation } from "@tanstack/react-query";
 import request from "graphql-request";
 import { UploadImage } from "./UploadImage";
 import { handleSignedImageUpload } from "./util";
-import type { GenerateUploadUrlInput } from "@/data/imageData";
+import { BUCKETS } from "./Base";
 import type { AddVitalInput } from "@/data/vitalsData";
-import { getUploadUrl } from "@/data/imageData";
-import { BUCKET, addVitals } from "@/data/vitalsData";
+import { addVitals } from "@/data/vitalsData";
 
 export function AddVitalForm() {
+  const navigate = useNavigate();
+  const { t } = useTranslation("addVital");
   const location = useLocation({
     select: (loc) => loc.state,
   });
 
-  const plantId = location.plantId;
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const navigate = useNavigate();
-  const { t } = useTranslation("addVital");
+
+  const plantId = location.plantId;
 
   const { mutate: addNewVital } = useMutation({
     mutationKey: ["addVital"],
@@ -33,23 +33,9 @@ export function AddVitalForm() {
       ),
   });
 
-  const { mutateAsync: generateUploadUrl } = useMutation({
-    mutationKey: ["generateUrl"],
-    mutationFn: async (payload: { urlInput: GenerateUploadUrlInput }) =>
-      await request(
-        `${import.meta.env.VITE_GD_GRAPHQL_SERVER}/graphql`,
-        getUploadUrl,
-        payload,
-      ),
-  });
-
   const handleAddVital = (formValues: Record<string, any>) => {
     const handleVital = async () => {
-      const publicUrl = await handleSignedImageUpload(
-        imageFile,
-        generateUploadUrl,
-        BUCKET,
-      );
+      const publicUrl = await handleSignedImageUpload(imageFile, BUCKETS.vital);
       console.log(formValues);
 
       const addNewVitalParams: AddVitalInput = {

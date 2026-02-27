@@ -7,8 +7,6 @@ export const addVitals = gql`
     }
   }
 `;
-
-export const BUCKET = "VITALS";
 export interface AddVitalInput {
   plantId: string;
   image: string;

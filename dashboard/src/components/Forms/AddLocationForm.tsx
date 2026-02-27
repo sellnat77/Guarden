@@ -19,6 +19,13 @@ import type { AddLocationInput } from "@/data/locationsData";
 import { addLocations } from "@/data/locationsData";
 
 export function AddLocationForm() {
+  const navigate = useNavigate();
+  const { t } = useTranslation("addLocation");
+
+  const [lightValue, setLightValue] = useState(
+    Math.round((lightLevels.length - 1) / 2),
+  );
+
   const { mutate: addNewLocation } = useMutation({
     mutationKey: ["addLocation"],
     mutationFn: async (payload: { locationInput: AddLocationInput }) =>
@@ -28,12 +35,6 @@ export function AddLocationForm() {
         payload,
       ),
   });
-
-  const navigate = useNavigate();
-  const { t } = useTranslation("addLocation");
-  const [lightValue, setLightValue] = useState(
-    Math.round((lightLevels.length - 1) / 2),
-  );
 
   const handleCreateLocation = (formValues: Record<string, any>) => {
     console.log(formValues);
