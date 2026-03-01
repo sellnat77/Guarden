@@ -10,7 +10,9 @@ import { UploadImage } from "./UploadImage";
 import { handleSignedImageUpload } from "./util";
 import { BUCKETS } from "./Base";
 import type { AddVitalInput } from "@/data/vitalsData";
+import type { GenerateUploadUrlInput } from "@/data/imageData";
 import { addVitals } from "@/data/vitalsData";
+import { getUploadUrl } from "@/data/imageData";
 
 export function AddVitalForm() {
   const navigate = useNavigate();
@@ -22,6 +24,16 @@ export function AddVitalForm() {
   const [imageFile, setImageFile] = useState<File | null>(null);
 
   const plantId = location.plantId;
+
+  const { mutateAsync: generateUploadUrl } = useMutation({
+    mutationKey: ["generateUrl"],
+    mutationFn: async (payload: { urlInput: GenerateUploadUrlInput }) =>
+      await request(
+        `${import.meta.env.VITE_GD_GRAPHQL_SERVER}/graphql`,
+        getUploadUrl,
+        payload,
+      ),
+  });
 
   const { mutate: addNewVital } = useMutation({
     mutationKey: ["addVital"],
@@ -35,7 +47,11 @@ export function AddVitalForm() {
 
   const handleAddVital = (formValues: Record<string, any>) => {
     const handleVital = async () => {
-      const publicUrl = await handleSignedImageUpload(imageFile, BUCKETS.vital);
+      const publicUrl = await handleSignedImageUpload(
+        imageFile,
+        generateUploadUrl,
+        BUCKETS.vital,
+      );
       console.log(formValues);
 
       const addNewVitalParams: AddVitalInput = {

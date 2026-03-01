@@ -22,8 +22,10 @@ import { UploadImage } from "./UploadImage";
 import { handleSignedImageUpload } from "./util";
 import type { AddPlantInput } from "@/data/plantsData";
 import type { PlantLocation } from "@/data/locationsData";
+import type { GenerateUploadUrlInput } from "@/data/imageData";
 import { getLocations } from "@/data/locationsData";
 import { addPlants } from "@/data/plantsData";
+import { getUploadUrl } from "@/data/imageData";
 
 export function AddPlantForm() {
   const navigate = useNavigate();
@@ -39,6 +41,16 @@ export function AddPlantForm() {
       request(
         `${import.meta.env.VITE_GD_GRAPHQL_SERVER}/graphql`,
         getLocations,
+      ),
+  });
+
+  const { mutateAsync: generateUploadUrl } = useMutation({
+    mutationKey: ["generateUrl"],
+    mutationFn: async (payload: { urlInput: GenerateUploadUrlInput }) =>
+      await request(
+        `${import.meta.env.VITE_GD_GRAPHQL_SERVER}/graphql`,
+        getUploadUrl,
+        payload,
       ),
   });
 
@@ -59,7 +71,11 @@ export function AddPlantForm() {
 
   const handleFormSubmit = (formValues: Record<string, any>) => {
     const handleSubmit = async () => {
-      const publicUrl = await handleSignedImageUpload(imageFile, BUCKETS.plant);
+      const publicUrl = await handleSignedImageUpload(
+        imageFile,
+        generateUploadUrl,
+        BUCKETS.plant,
+      );
       console.log(formValues);
       let frequency = 1;
       switch (formValues.waterReqs) {

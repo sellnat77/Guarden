@@ -20,10 +20,13 @@ export function PlantDashboard({ plantFilter }: { plantFilter: string }) {
 
   const [isFabOpen, setIsFabOpen] = useState(false);
 
-  const { data: fetchAllPlantsData } = useQuery({
+  const { data: fetchAllPlantsData, refetch: refetchPlants } = useQuery({
     queryKey: ["fetchAllPlants"],
     queryFn: async () =>
-      request(`${import.meta.env.VITE_GD_GRAPHQL_SERVER}/graphql`, getPlants),
+      await request(
+        `${import.meta.env.VITE_GD_GRAPHQL_SERVER}/graphql`,
+        getPlants,
+      ),
   });
 
   const { data: fetchAllLocationsData } = useQuery({
@@ -73,8 +76,14 @@ export function PlantDashboard({ plantFilter }: { plantFilter: string }) {
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
               {plantList.map((plant: Plant, index: number) => {
-                console.log(plant);
-                return <PlantCard key={plant.id} plant={plant} index={index} />;
+                return (
+                  <PlantCard
+                    key={plant.id}
+                    plant={plant}
+                    index={index}
+                    onDeleteSettled={refetchPlants}
+                  />
+                );
               })}
             </div>
           </div>

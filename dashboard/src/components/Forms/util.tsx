@@ -1,20 +1,17 @@
-import request from "graphql-request";
-import { useMutation } from "@tanstack/react-query";
+import type { UseMutateAsyncFunction } from "@tanstack/react-query";
 import type { GenerateUploadUrlInput } from "@/data/imageData";
-import { getUploadUrl, uploadToS3 } from "@/data/imageData";
-
-const { mutateAsync: generateUploadUrl } = useMutation({
-  mutationKey: ["generateUrl"],
-  mutationFn: async (payload: { urlInput: GenerateUploadUrlInput }) =>
-    await request(
-      `${import.meta.env.VITE_GD_GRAPHQL_SERVER}/graphql`,
-      getUploadUrl,
-      payload,
-    ),
-});
+import { uploadToS3 } from "@/data/imageData";
 
 export const handleSignedImageUpload = async (
   imageFile: File | null,
+  generateUploadUrl: UseMutateAsyncFunction<
+    any,
+    Error,
+    {
+      urlInput: GenerateUploadUrlInput;
+    },
+    unknown
+  >,
   bucket: string,
 ) => {
   const uuid = crypto.randomUUID();
