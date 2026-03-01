@@ -8,6 +8,8 @@ import strawberry
 from botocore.client import Config
 from sqlakeyset.serial.serial import deserialize_int
 
+from logUtil import logger
+
 
 @strawberry.enum
 class StorageBucket(Enum):
@@ -67,7 +69,10 @@ def init_storage():
             # Apply the policy
             s3.put_bucket_policy(Bucket=bucketName.value, Policy=json.dumps(policy))
         except s3.exceptions.BucketAlreadyOwnedByYou as e:
-            raise e
+            logger.info(
+                "Bucket already exists",
+                extra={"json_fields": {"bucket": bucketName.value}},
+            )
 
 
 def upload_file(bucket: StorageBucket, filename, file):
@@ -86,5 +91,9 @@ def generatePresignedUploadUrl(
     )
     destinationUrl = f"{S3_SERVER}/{bucket.value}/{key}"
     result = GenerateUploadUrlOutput(url=url, publicUrl=destinationUrl)
+    logger.debug(
+        "Created presigned upload url",
+        extra={"json_fields": {"url": url, "publicUrl": destinationUrl}},
+    )
 
     return result

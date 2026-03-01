@@ -1,11 +1,21 @@
+from dotenv import load_dotenv
+
+load_dotenv()
+
+import json
+import logging
+import os
+import sys
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from pythonjsonlogger import jsonlogger
 from strawberry.fastapi import GraphQLRouter
 
 import db
 from core_schema import get_context, schema
+from logUtil import logger
 from s3Client import init_storage
 
 graphql_app = GraphQLRouter(schema, context_getter=get_context)
@@ -15,6 +25,10 @@ graphql_app = GraphQLRouter(schema, context_getter=get_context)
 async def lifespan(app: FastAPI):
     init_storage()
     await db.connect()
+    logger.debug(
+        "Initialized startup services",
+        extra={"json_fields": {"cool": "beans", "id": 3}},
+    )
     yield
     await db.disconnect()
 
