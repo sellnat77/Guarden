@@ -111,9 +111,7 @@ class Plant(Base):
         ForeignKey("locations.id", ondelete="CASCADE")
     )
     createdById: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
-    location: Mapped[Location] = relationship(
-        "Location", back_populates="plants", cascade="all, delete"
-    )
+    location: Mapped[Location] = relationship("Location", back_populates="plants")
     createdBy: Mapped[User] = relationship(
         "User", back_populates="plant", cascade="all, delete"
     )
@@ -127,32 +125,40 @@ engine = create_engine(DATABASE_URL, echo=True)
 SessionLocal = sessionmaker(bind=engine, autoflush=False)
 
 INITIAL_DATA = {
-    "users": [{"username": "demo", "email": "demo@example.com", "password": "demo"}],
+    "users": [
+        {"id": 1, "username": "demo", "email": "demo@example.com", "password": "demo"}
+    ],
     "locations": [
         {
+            "id": 1,
             "name": "Office",
         },
         {
+            "id": 2,
             "name": "Backyard Patio",
         },
         {
+            "id": 3,
             "name": "Kitchen",
         },
         {
+            "id": 4,
             "name": "Blacony",
         },
     ],
     "vitals": [
         {
+            "id": 1,
             "plantId": 1,
             "healthPct": 85,
             "notes": "Healthy",
             "image": "https://watchandlearn.scholastic.com/content/dam/classroom-magazines/watchandlearn/videos/animals-and-plants/plants/what-are-plants-/english/wall-2018-whatareplantsmp4.transform/content-tile-large/image.png",
         }
     ],
-    "tips": [{"tipText": "Cool tip!"}],
+    "tips": [{"id": 1, "tipText": "Cool tip!"}],
     "plants": [
         {
+            "id": 1,
             "name": "Demonstratus",
             "species": "Succulent",
             "image": "https://watchandlearn.scholastic.com/content/dam/classroom-magazines/watchandlearn/videos/animals-and-plants/plants/what-are-plants-/english/wall-2018-whatareplantsmp4.transform/content-tile-large/image.png",
@@ -175,19 +181,18 @@ def initialize_table(target, connection, **kw):
     if tablename in INITIAL_DATA and len(INITIAL_DATA[tablename]) > 0:
         for row in INITIAL_DATA[tablename]:
             newItem = target(**row)
-            connection.add(newItem)
+            connection.merge(newItem)
         connection.commit()
 
 
 async def connect():
     await database.connect()
     Base.metadata.create_all(engine)
-    if False:
-        initialize_table(User, SessionLocal())
-        initialize_table(Location, SessionLocal())
-        initialize_table(Plant, SessionLocal())
-        initialize_table(Vital, SessionLocal())
-        initialize_table(Tip, SessionLocal())
+    initialize_table(User, SessionLocal())
+    initialize_table(Location, SessionLocal())
+    initialize_table(Plant, SessionLocal())
+    initialize_table(Vital, SessionLocal())
+    initialize_table(Tip, SessionLocal())
 
 
 async def disconnect():

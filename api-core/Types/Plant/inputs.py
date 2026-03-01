@@ -20,3 +20,8 @@ class AddPlantInput:
     lastRepotted: datetime
     locationId: int
     createdById: int
+
+
+@strawberry.input
+class DeletePlantInput:
+    id: int

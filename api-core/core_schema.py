@@ -63,7 +63,7 @@ class Query:
     async def locations(self, info: strawberry.Info) -> List[Location]:
         with db.SessionLocal() as session:
             locations = session.scalars(select(db.Location)).all()
-            print(locations)
+
             return list(locations)
 
     @strawberry.field

@@ -34,7 +34,7 @@ dbPort = os.environ.get("GD_DB_PORT", "5432")
 dbName = os.environ.get("POSTGRES_DB", "guarden")
 
 DATABASE_URL = f"postgresql://{dbUser}:{dbPass}@{dbHost}:{dbPort}/{dbName}"
-print(DATABASE_URL)
+
 config.set_main_option("sqlalchemy.url", DATABASE_URL)
 
 

@@ -1,3 +1,4 @@
+import { Menu } from "@base-ui/react";
 import {
   Calendar,
   Droplets,
@@ -8,7 +9,10 @@ import {
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "@tanstack/react-router";
-import type { Plant } from "../data/plantsData";
+import { useMutation } from "@tanstack/react-query";
+import request from "graphql-request";
+import { deletePlant } from "../data/plantsData";
+import type { DeletePlantInput, Plant } from "../data/plantsData";
 
 const defaultPlantProps = {
   image:
@@ -19,10 +23,26 @@ const defaultPlantProps = {
 interface PlantCardProps {
   plant: Plant;
   index: number;
+  onDeleteSettled: () => void;
 }
-export function PlantCard({ plant: plantData, index }: PlantCardProps) {
+export function PlantCard({
+  plant: plantData,
+  index,
+  onDeleteSettled,
+}: PlantCardProps) {
   const navigate = useNavigate();
   const { t } = useTranslation();
+
+  const { mutate: delPlant } = useMutation({
+    mutationKey: ["deletePlant"],
+    onSettled: onDeleteSettled,
+    mutationFn: async (payload: { deletePlantInput: DeletePlantInput }) =>
+      await request(
+        `${import.meta.env.VITE_GD_GRAPHQL_SERVER}/graphql`,
+        deletePlant,
+        payload,
+      ),
+  });
 
   const getHealthColor = (health: string) => {
     switch (health) {
@@ -39,6 +59,10 @@ export function PlantCard({ plant: plantData, index }: PlantCardProps) {
 
   const plant = { ...defaultPlantProps, ...plantData };
   const waterDays = Math.floor(Math.random() * 5) + 1;
+
+  const handleDeletePlant = () => {
+    delPlant({ deletePlantInput: { id: parseInt(plant.id) } });
+  };
 
   return (
     <motion.div
@@ -70,9 +94,23 @@ export function PlantCard({ plant: plantData, index }: PlantCardProps) {
           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
         />
         <div className="absolute top-4 right-4">
-          <button className="text-forest rounded-full bg-white/90 p-2 shadow-sm backdrop-blur-sm transition-colors hover:bg-white">
-            <MoreVertical className="h-4 w-4" />
-          </button>
+          <Menu.Root>
+            <Menu.Trigger className="text-forest rounded-full bg-white/90 p-2 shadow-sm backdrop-blur-sm transition-colors hover:bg-white">
+              <MoreVertical className="h-4 w-4" />
+            </Menu.Trigger>
+            <Menu.Portal>
+              <Menu.Positioner className="outline-none" sideOffset={8}>
+                <Menu.Popup className="origin--transform-origin rounded-4xl bg-[canvas] py-1 text-gray-900 shadow-lg shadow-gray-200 outline outline-gray-200 transition-[transform,scale,opacity] data-ending-style:scale-90 data-ending-style:opacity-0 data-starting-style:scale-90 data-starting-style:opacity-0 dark:shadow-none dark:-outline-offset-1 dark:outline-gray-300">
+                  <Menu.Item
+                    onClick={handleDeletePlant}
+                    className="data-highlighted:before:bg-terracotta flex cursor-default rounded-4xl py-2 pr-8 pl-4 text-sm leading-4 outline-none select-none data-highlighted:relative data-highlighted:z-0 data-highlighted:text-gray-50 data-highlighted:before:absolute data-highlighted:before:inset-x-1 data-highlighted:before:inset-y-0 data-highlighted:before:z-[-1] data-highlighted:before:rounded-4xl"
+                  >
+                    Delete Plant
+                  </Menu.Item>
+                </Menu.Popup>
+              </Menu.Positioner>
+            </Menu.Portal>
+          </Menu.Root>
         </div>
         <div className="absolute top-4 left-4">
           <span

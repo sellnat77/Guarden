@@ -17,3 +17,10 @@ class PlantMutations:
             newPlant = Plant(**input.__dict__)
             sess.add(newPlant)
             sess.commit()
+
+    @strawberry.mutation
+    async def deletePlant(self, input: DeletePlantInput) -> None:
+        with SessionLocal() as sess:
+            id_to_delete = input.id
+            sess.query(Plant).filter_by(id=id_to_delete).delete()
+            sess.commit()

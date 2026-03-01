@@ -37,6 +37,14 @@ export const addPlants = gql`
   }
 `;
 
+export const deletePlant = gql`
+  mutation deletePlant($deletePlantInput: DeletePlantInput!) {
+    plant {
+      deletePlant(input: $deletePlantInput)
+    }
+  }
+`;
+
 export interface AddPlantInput {
   name: string;
   species: string;
@@ -53,6 +61,10 @@ export interface AddPlantInput {
   lastRepotted: string;
   locationId: number;
   createdById: number;
+}
+
+export interface DeletePlantInput {
+  id: number;
 }
 
 export interface Plant {
