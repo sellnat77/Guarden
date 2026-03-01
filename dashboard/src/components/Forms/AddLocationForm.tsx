@@ -37,7 +37,6 @@ export function AddLocationForm() {
   });
 
   const handleCreateLocation = (formValues: Record<string, any>) => {
-    console.log(formValues);
     if (formValues.locationName) {
       addNewLocation({ locationInput: { name: formValues.locationName } });
       navigate({ to: "/" });

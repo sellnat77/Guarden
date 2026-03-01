@@ -22,7 +22,5 @@ class PlantMutations:
     async def deletePlant(self, input: DeletePlantInput) -> None:
         with SessionLocal() as sess:
             id_to_delete = input.id
-            print(id_to_delete)
-            print(input)
             sess.query(Plant).filter_by(id=id_to_delete).delete()
             sess.commit()

@@ -13,12 +13,11 @@ export const getUploadUrl = gql`
 export const uploadToS3 = async (url: string, fileContents: File) => {
   const formData = new FormData();
   formData.append("file", fileContents); // The file has be the last element
-  console.log(fileContents);
 
   const response = await axios.put(url, fileContents, {
     headers: { "Content-Type": "image/jpeg" },
   });
-  console.log(response.data);
+
   return response;
 };
 

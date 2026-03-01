@@ -52,7 +52,6 @@ export function AddVitalForm() {
         generateUploadUrl,
         BUCKETS.vital,
       );
-      console.log(formValues);
 
       const addNewVitalParams: AddVitalInput = {
         plantId: plantId,
@@ -62,9 +61,6 @@ export function AddVitalForm() {
         date: new Date().toISOString(),
       };
 
-      console.log("++++++++++");
-      console.log(addNewVitalParams);
-      console.log("++++++++++");
       addNewVital({ vitalInput: addNewVitalParams });
       navigate({ to: "/" });
     };

@@ -76,7 +76,7 @@ export function AddPlantForm() {
         generateUploadUrl,
         BUCKETS.plant,
       );
-      console.log(formValues);
+
       let frequency = 1;
       switch (formValues.waterReqs) {
         case "Daily":
@@ -112,7 +112,7 @@ export function AddPlantForm() {
         locationId: parseInt(formValues.locationId),
         createdById: 1,
       };
-      console.log("adding new plant", { newPlant });
+
       addNewPlant({ addPlantInput: newPlant });
       navigate({ to: "/" });
     };

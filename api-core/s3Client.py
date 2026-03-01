@@ -66,16 +66,12 @@ def init_storage():
 
             # Apply the policy
             s3.put_bucket_policy(Bucket=bucketName.value, Policy=json.dumps(policy))
-            print(f"Public policy set for {bucketName.value}")
-
-            print(f"Bucket {bucketName} created.")
-        except s3.exceptions.BucketAlreadyOwnedByYou:
-            print(f"Bucket {bucketName} already exists.")
+        except s3.exceptions.BucketAlreadyOwnedByYou as e:
+            raise e
 
 
 def upload_file(bucket: StorageBucket, filename, file):
     s3.upload_file(filename, bucket.value, file)
-    print(f"{filename} uploaded.")
 
 
 def generatePresignedUploadUrl(
