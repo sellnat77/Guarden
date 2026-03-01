@@ -32,16 +32,19 @@ export function PlantDashboard({ plantFilter }: { plantFilter: string }) {
   const { data: fetchAllLocationsData } = useQuery({
     queryKey: ["fetchAllLocations"],
     queryFn: async () =>
-      request(
+      await request(
         `${import.meta.env.VITE_GD_GRAPHQL_SERVER}/graphql`,
         getLocations,
       ),
   });
 
-  const allPlants = fetchAllPlantsData?.plants || [];
+  const allPlants =
+    fetchAllPlantsData?.plants.filter((plant: Plant) => {
+      return plantFilter.length > 0
+        ? plant.name.toLowerCase().startsWith(plantFilter.toLowerCase())
+        : plant;
+    }) || [];
 
-  const plantCount = allPlants.length || 0;
-  const plantList = allPlants;
   const locationCount = fetchAllLocationsData?.locations?.length || 0;
 
   return (
@@ -52,8 +55,8 @@ export function PlantDashboard({ plantFilter }: { plantFilter: string }) {
         <div className="space-y-8 lg:col-span-8">
           <PlantStats
             totalLocations={locationCount}
-            totalPlants={plantCount}
-            needsWater={plantCount}
+            totalPlants={allPlants.length}
+            needsWater={allPlants.length}
             overallHealth={67}
           />
 
@@ -65,7 +68,7 @@ export function PlantDashboard({ plantFilter }: { plantFilter: string }) {
                 </h2>
                 <p className="text-brown">
                   {t("thriving_plant", {
-                    count: plantCount,
+                    count: allPlants.length,
                   })}
                 </p>
               </div>
@@ -75,7 +78,7 @@ export function PlantDashboard({ plantFilter }: { plantFilter: string }) {
             </div>
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-              {plantList.map((plant: Plant, index: number) => {
+              {allPlants.map((plant: Plant, index: number) => {
                 return (
                   <PlantCard
                     key={plant.id}
@@ -115,9 +118,7 @@ export function PlantDashboard({ plantFilter }: { plantFilter: string }) {
             <p className="text-brown relative z-10 text-sm leading-relaxed">
               {t("sample_tip_text")}
             </p>
-            <p className="text-brown relative z-10 text-sm leading-relaxed">
-              {plantFilter}
-            </p>
+            <p className="text-brown relative z-10 text-sm leading-relaxed" />
           </motion.div>
           <WateringSchedule />
           <CareReminders />

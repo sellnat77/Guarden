@@ -14,12 +14,12 @@ const DEFAULT_PROFILE_PIC =
   "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=200";
 
 function App() {
-  const [searchText, setSearchTect] = useState("");
+  const [searchText, setSearchText] = useState("");
   const { t } = useTranslation();
 
   const handleSearchChanged = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
-    setSearchTect(e.target.value);
+    setSearchText(e.target.value);
   };
   return (
     <div className="App">
