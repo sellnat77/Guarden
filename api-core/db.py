@@ -23,6 +23,8 @@ from sqlalchemy.orm import (
     sessionmaker,
 )
 
+from logUtil import logger
+
 
 def run_migrations():
     alembic_cfg = Config("alembic.ini")
@@ -182,7 +184,9 @@ def initialize_table(target, connection, **kw):
         for row in INITIAL_DATA[tablename]:
             newItem = target(**row)
             connection.merge(newItem)
+            logger.debug("Added row", extra={"json_fields": {"row": row}})
         connection.commit()
+        logger.debug("Seeded table", extra={"json_fields": {"table": tablename}})
 
 
 async def connect():
