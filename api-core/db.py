@@ -111,9 +111,7 @@ class Plant(Base):
         ForeignKey("locations.id", ondelete="CASCADE")
     )
     createdById: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
-    location: Mapped[Location] = relationship(
-        "Location", back_populates="plants"
-    )
+    location: Mapped[Location] = relationship("Location", back_populates="plants")
     createdBy: Mapped[User] = relationship(
         "User", back_populates="plant", cascade="all, delete"
     )
@@ -127,7 +125,9 @@ engine = create_engine(DATABASE_URL, echo=True)
 SessionLocal = sessionmaker(bind=engine, autoflush=False)
 
 INITIAL_DATA = {
-    "users": [{"id": 1, "username": "demo", "email": "demo@example.com", "password": "demo"}],
+    "users": [
+        {"id": 1, "username": "demo", "email": "demo@example.com", "password": "demo"}
+    ],
     "locations": [
         {
             "id": 1,
