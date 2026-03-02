@@ -24,4 +24,4 @@ COPY . /app/
 
 EXPOSE 5000
 
-CMD [""]
+CMD ["uvicorn", "main:app", "--workers", "4", "--host", "0.0.0.0", "--port", "5000"]
