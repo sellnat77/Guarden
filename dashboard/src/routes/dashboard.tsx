@@ -3,9 +3,9 @@ import { Bell, Leaf, Menu as MenuIcon, Search } from "lucide-react";
 import "../App.css";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
+import { Menu } from "@base-ui/react";
 import { PlantDashboard } from "../components/Dashboard";
 import type { ChangeEvent } from "react";
-import { Menu } from "@base-ui/react";
 
 export const Route = createFileRoute("/dashboard")({
   component: RouteComponent,
