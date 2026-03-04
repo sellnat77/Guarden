@@ -32,7 +32,7 @@ class GenerateUploadUrlOutput:
     publicUrl: str
 
 
-S3_SERVER = os.environ.get("OBJECT_STORAGE_SERVER", "http://localhost:9000")
+S3_SERVER = os.environ.get("PUBLIC_OBJECT_STORAGE_SERVER", "http://localhost:9000")
 
 s3 = boto3.client(
     "s3",
@@ -45,6 +45,16 @@ s3 = boto3.client(
 
 
 def init_storage():
+    cors_configuration = {
+        'CORSRules': [
+            {
+                'AllowedHeaders': ['*'],
+                'AllowedMethods': ['GET', 'PUT'],
+                'AllowedOrigins': ["*", "http://localhost:3000"],
+                'MaxAgeSeconds': 3000
+            }
+        ]
+    }
     for bucketName in StorageBucket:
         try:
             s3.create_bucket(
@@ -74,6 +84,13 @@ def init_storage():
                 "Bucket already exists",
                 extra={"json_fields": {"bucket": bucketName.value}},
             )
+        try:
+            s3.put_bucket_cors(
+                    Bucket=bucketName.value,
+                    CORSConfiguration=cors_configuration
+                )
+        except Exception as e:
+            logger.info('Cors policy error', extra={'json_fields':{e}})
 
 
 def upload_file(bucket: StorageBucket, filename, file):
