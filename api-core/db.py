@@ -48,7 +48,7 @@ class User(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     username: Mapped[str] = mapped_column(String(100), nullable=False)
     email: Mapped[str] = mapped_column(String(100), nullable=False)
-    password: Mapped[str] = mapped_column(String(100), nullable=False)
+    password: Mapped[str] = mapped_column(String(500), nullable=False)
     plant: Mapped["Plant"] = relationship(
         back_populates="createdBy", cascade="all, delete"
     )

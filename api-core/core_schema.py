@@ -22,6 +22,7 @@ from Types.Plant import PlantMutations
 from Types.Tip import TipMutations
 from Types.User import UserMutations
 from Types.Vital import VitalMutations
+from Types.Auth import AuthMutations
 
 strawberry_sqlalchemy_mapper = StrawberrySQLAlchemyMapper(always_use_list=False)
 
@@ -85,6 +86,10 @@ class Query:
 
 @strawberry.type
 class Mutation:
+    @strawberry.field
+    async def auth(self)-> AuthMutations:
+        return AuthMutations()
+
     @strawberry.field
     def location(self) -> LocationMutations:
         return LocationMutations()
