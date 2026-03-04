@@ -12,6 +12,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import request from "graphql-request";
 import { deletePlant } from "../data/plantsData";
+import { GRAPHQL_SERVER } from "./constants";
 import type { DeletePlantInput, Plant } from "../data/plantsData";
 
 const defaultPlantProps = {
@@ -37,11 +38,7 @@ export function PlantCard({
     mutationKey: ["deletePlant"],
     onSettled: onDeleteSettled,
     mutationFn: async (payload: { deletePlantInput: DeletePlantInput }) =>
-      await request(
-        `${import.meta.env.VITE_GD_GRAPHQL_SERVER}/graphql`,
-        deletePlant,
-        payload,
-      ),
+      await request(`${GRAPHQL_SERVER}/graphql`, deletePlant, payload),
   });
 
   const getHealthColor = (health: string) => {

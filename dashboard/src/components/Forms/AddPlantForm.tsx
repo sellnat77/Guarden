@@ -16,6 +16,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import request from "graphql-request";
+import { GRAPHQL_SERVER } from "../constants";
 import { BUCKETS, lightLevels, wateringSchedules } from "./Base";
 import { LightSelector } from "./LightSelector";
 import { UploadImage } from "./UploadImage";
@@ -37,31 +38,19 @@ export function AddPlantForm() {
 
   const { data: fetchAllLocationsData } = useQuery({
     queryKey: ["fetchAllLocations"],
-    queryFn: async () =>
-      request(
-        `${import.meta.env.VITE_GD_GRAPHQL_SERVER}/graphql`,
-        getLocations,
-      ),
+    queryFn: async () => request(`${GRAPHQL_SERVER}/graphql`, getLocations),
   });
 
   const { mutateAsync: generateUploadUrl } = useMutation({
     mutationKey: ["generateUrl"],
     mutationFn: async (payload: { urlInput: GenerateUploadUrlInput }) =>
-      await request(
-        `${import.meta.env.VITE_GD_GRAPHQL_SERVER}/graphql`,
-        getUploadUrl,
-        payload,
-      ),
+      await request(`${GRAPHQL_SERVER}/graphql`, getUploadUrl, payload),
   });
 
   const { mutate: addNewPlant } = useMutation({
     mutationKey: ["addPlant"],
     mutationFn: async (payload: { addPlantInput: AddPlantInput }) =>
-      request(
-        `${import.meta.env.VITE_GD_GRAPHQL_SERVER}/graphql`,
-        addPlants,
-        payload,
-      ),
+      request(`${GRAPHQL_SERVER}/graphql`, addPlants, payload),
   });
 
   const locations =

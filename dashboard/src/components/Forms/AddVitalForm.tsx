@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { Button, Field, Form } from "@base-ui/react";
 import { useMutation } from "@tanstack/react-query";
 import request from "graphql-request";
+import { GRAPHQL_SERVER } from "../constants";
 import { UploadImage } from "./UploadImage";
 import { handleSignedImageUpload } from "./util";
 import { BUCKETS } from "./Base";
@@ -28,21 +29,13 @@ export function AddVitalForm() {
   const { mutateAsync: generateUploadUrl } = useMutation({
     mutationKey: ["generateUrl"],
     mutationFn: async (payload: { urlInput: GenerateUploadUrlInput }) =>
-      await request(
-        `${import.meta.env.VITE_GD_GRAPHQL_SERVER}/graphql`,
-        getUploadUrl,
-        payload,
-      ),
+      await request(`${GRAPHQL_SERVER}/graphql`, getUploadUrl, payload),
   });
 
   const { mutate: addNewVital } = useMutation({
     mutationKey: ["addVital"],
     mutationFn: async (payload: { vitalInput: AddVitalInput }) =>
-      await request(
-        `${import.meta.env.VITE_GD_GRAPHQL_SERVER}/graphql`,
-        addVitals,
-        payload,
-      ),
+      await request(`${GRAPHQL_SERVER}/graphql`, addVitals, payload),
   });
 
   const handleAddVital = (formValues: Record<string, any>) => {

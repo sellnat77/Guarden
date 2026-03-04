@@ -13,6 +13,7 @@ import {
   Radio,
   RadioGroup,
 } from "@base-ui/react";
+import { GRAPHQL_SERVER } from "../constants";
 import { lightLevels } from "./Base";
 import { LightSelector } from "./LightSelector";
 import type { AddLocationInput } from "@/data/locationsData";
@@ -29,11 +30,7 @@ export function AddLocationForm() {
   const { mutate: addNewLocation } = useMutation({
     mutationKey: ["addLocation"],
     mutationFn: async (payload: { locationInput: AddLocationInput }) =>
-      request(
-        `${import.meta.env.VITE_GD_GRAPHQL_SERVER}/graphql`,
-        addLocations,
-        payload,
-      ),
+      request(`${GRAPHQL_SERVER}/graphql`, addLocations, payload),
   });
 
   const handleCreateLocation = (formValues: Record<string, any>) => {
