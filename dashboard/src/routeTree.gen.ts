@@ -9,11 +9,29 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as RegisterRouteImport } from './routes/register'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AddVitalRouteImport } from './routes/add-vital'
 import { Route as AddPlantRouteImport } from './routes/add-plant'
 import { Route as AddLocationRouteImport } from './routes/add-location'
 import { Route as IndexRouteImport } from './routes/index'
 
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AddVitalRoute = AddVitalRouteImport.update({
   id: '/add-vital',
   path: '/add-vital',
@@ -40,12 +58,18 @@ export interface FileRoutesByFullPath {
   '/add-location': typeof AddLocationRoute
   '/add-plant': typeof AddPlantRoute
   '/add-vital': typeof AddVitalRoute
+  '/dashboard': typeof DashboardRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/add-location': typeof AddLocationRoute
   '/add-plant': typeof AddPlantRoute
   '/add-vital': typeof AddVitalRoute
+  '/dashboard': typeof DashboardRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,13 +77,38 @@ export interface FileRoutesById {
   '/add-location': typeof AddLocationRoute
   '/add-plant': typeof AddPlantRoute
   '/add-vital': typeof AddVitalRoute
+  '/dashboard': typeof DashboardRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/add-location' | '/add-plant' | '/add-vital'
+  fullPaths:
+    | '/'
+    | '/add-location'
+    | '/add-plant'
+    | '/add-vital'
+    | '/dashboard'
+    | '/login'
+    | '/register'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/add-location' | '/add-plant' | '/add-vital'
-  id: '__root__' | '/' | '/add-location' | '/add-plant' | '/add-vital'
+  to:
+    | '/'
+    | '/add-location'
+    | '/add-plant'
+    | '/add-vital'
+    | '/dashboard'
+    | '/login'
+    | '/register'
+  id:
+    | '__root__'
+    | '/'
+    | '/add-location'
+    | '/add-plant'
+    | '/add-vital'
+    | '/dashboard'
+    | '/login'
+    | '/register'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -67,10 +116,34 @@ export interface RootRouteChildren {
   AddLocationRoute: typeof AddLocationRoute
   AddPlantRoute: typeof AddPlantRoute
   AddVitalRoute: typeof AddVitalRoute
+  DashboardRoute: typeof DashboardRoute
+  LoginRoute: typeof LoginRoute
+  RegisterRoute: typeof RegisterRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/add-vital': {
       id: '/add-vital'
       path: '/add-vital'
@@ -107,6 +180,9 @@ const rootRouteChildren: RootRouteChildren = {
   AddLocationRoute: AddLocationRoute,
   AddPlantRoute: AddPlantRoute,
   AddVitalRoute: AddVitalRoute,
+  DashboardRoute: DashboardRoute,
+  LoginRoute: LoginRoute,
+  RegisterRoute: RegisterRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

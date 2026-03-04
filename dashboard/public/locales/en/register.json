@@ -1,0 +1,10 @@
+{
+  "register_header": "Register",
+  "username": "Username",
+  "username_hint": "Enter your username...",
+  "email": "Email",
+  "email_hint": "Enter your email...",
+  "password": "Password",
+  "password_hint": "Enter your password...",
+  "register_button": "Register!"
+}

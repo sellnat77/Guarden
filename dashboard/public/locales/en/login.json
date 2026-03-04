@@ -1,0 +1,8 @@
+{
+  "login_header": "Login",
+  "username": "Username",
+  "username_hint": "Enter your username...",
+  "password": "Password",
+  "password_hint": "Enter your password...",
+  "login_button": "Login!"
+}
