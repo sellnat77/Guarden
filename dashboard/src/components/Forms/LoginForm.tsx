@@ -1,51 +1,16 @@
-import { useLocation, useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { ArrowLeft, UserKeyIcon } from "lucide-react";
-import { useState } from "react";
+
 import { useTranslation } from "react-i18next";
 import { Button, Field, Form, Input } from "@base-ui/react";
-import { useMutation } from "@tanstack/react-query";
-import request from "graphql-request";
-import { UploadImage } from "./UploadImage";
-import { handleSignedImageUpload } from "./util";
-import { BUCKETS } from "./Base";
-import type { AddVitalInput } from "@/data/vitalsData";
-import type { GenerateUploadUrlInput } from "@/data/imageData";
-import { addVitals } from "@/data/vitalsData";
-import { getUploadUrl } from "@/data/imageData";
 
 export function LoginForm() {
   const navigate = useNavigate();
   const { t } = useTranslation("login");
-  const location = useLocation({
-    select: (loc) => loc.state,
-  });
-
-  const [imageFile, setImageFile] = useState<File | null>(null);
-
-  const plantId = location.plantId;
-
-  const { mutateAsync: generateUploadUrl } = useMutation({
-    mutationKey: ["generateUrl"],
-    mutationFn: async (payload: { urlInput: GenerateUploadUrlInput }) =>
-      await request(
-        `${import.meta.env.VITE_GD_GRAPHQL_SERVER}/graphql`,
-        getUploadUrl,
-        payload,
-      ),
-  });
-
-  const { mutate: addNewVital } = useMutation({
-    mutationKey: ["addVital"],
-    mutationFn: async (payload: { vitalInput: AddVitalInput }) =>
-      await request(
-        `${import.meta.env.VITE_GD_GRAPHQL_SERVER}/graphql`,
-        addVitals,
-        payload,
-      ),
-  });
 
   const handleLoginSubmit = (formValues: Record<string, any>) => {
+    console.log(formValues);
     navigate({ to: "/dashboard" });
   };
 
