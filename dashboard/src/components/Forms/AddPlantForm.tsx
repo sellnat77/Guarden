@@ -15,8 +15,6 @@ import {
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import request from "graphql-request";
-import { GRAPHQL_SERVER } from "../constants";
 import { BUCKETS, lightLevels, wateringSchedules } from "./Base";
 import { LightSelector } from "./LightSelector";
 import { UploadImage } from "./UploadImage";
@@ -27,6 +25,7 @@ import type { GenerateUploadUrlInput } from "@/data/imageData";
 import { getLocations } from "@/data/locationsData";
 import { addPlants } from "@/data/plantsData";
 import { getUploadUrl } from "@/data/imageData";
+import { client } from "@/util/graphqlClient";
 
 export function AddPlantForm() {
   const navigate = useNavigate();
@@ -38,19 +37,20 @@ export function AddPlantForm() {
 
   const { data: fetchAllLocationsData } = useQuery({
     queryKey: ["fetchAllLocations"],
-    queryFn: async () => request(`${GRAPHQL_SERVER}/graphql`, getLocations),
+    queryFn: async () => await client.request(getLocations),
   });
 
   const { mutateAsync: generateUploadUrl } = useMutation({
     mutationKey: ["generateUrl"],
     mutationFn: async (payload: { urlInput: GenerateUploadUrlInput }) =>
-      await request(`${GRAPHQL_SERVER}/graphql`, getUploadUrl, payload),
+      await client.request(getUploadUrl, payload),
   });
 
   const { mutate: addNewPlant } = useMutation({
     mutationKey: ["addPlant"],
+    onSuccess: () => navigate({ to: "/dashboard" }),
     mutationFn: async (payload: { addPlantInput: AddPlantInput }) =>
-      request(`${GRAPHQL_SERVER}/graphql`, addPlants, payload),
+      await client.request(addPlants, payload),
   });
 
   const locations =
@@ -103,7 +103,6 @@ export function AddPlantForm() {
       };
 
       addNewPlant({ addPlantInput: newPlant });
-      navigate({ to: "/" });
     };
     handleSubmit();
   };

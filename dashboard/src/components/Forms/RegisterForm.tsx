@@ -4,14 +4,62 @@ import { ArrowLeft, UserPlus } from "lucide-react";
 
 import { useTranslation } from "react-i18next";
 import { Button, Field, Form, Input } from "@base-ui/react";
+import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { UploadImage } from "./UploadImage";
+import { handleSignedImageUpload } from "./util";
+import { BUCKETS } from "./Base";
+import type { RegisterUserInput } from "@/data/userData";
+import type { GenerateUploadUrlInput } from "@/data/imageData";
+import { getUploadUrl } from "@/data/imageData";
+import { registerUser } from "@/data/userData";
+import { client } from "@/util/graphqlClient";
 
 export function RegisterForm() {
   const navigate = useNavigate();
   const { t } = useTranslation("register");
 
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [registerValid, setRegisterValid] = useState(true);
+
+  const { mutate: addNewUser } = useMutation({
+    mutationKey: ["addUser"],
+    onSuccess: () => navigate({ to: "/dashboard" }),
+    mutationFn: async (payload: { userInput: RegisterUserInput }) =>
+      await client.request(registerUser, payload),
+  });
+
+  const { mutateAsync: generateUploadUrl } = useMutation({
+    mutationKey: ["generateUrl"],
+    mutationFn: async (payload: { urlInput: GenerateUploadUrlInput }) => {
+      const result = await client.request(getUploadUrl, payload);
+      if (result.auth?.register?.registerUser?.message) {
+        setRegisterValid(false);
+        setErrorMessage(result.auth.register.registerUser.message);
+        throw new Error(result.auth.register.registerUser.message);
+      }
+      return result;
+    },
+  });
+
   const handleRegisterSubmit = (formValues: Record<string, any>) => {
-    console.log(formValues);
-    navigate({ to: "/dashboard" });
+    const handleRegister = async () => {
+      const publicUrl = await handleSignedImageUpload(
+        imageFile,
+        generateUploadUrl,
+        BUCKETS.profile,
+      );
+      const addNewUserParams: RegisterUserInput = {
+        username: formValues.username,
+        email: formValues.email,
+        password: formValues.password,
+        profilePicture: publicUrl,
+      };
+
+      addNewUser({ userInput: addNewUserParams });
+    };
+    handleRegister();
   };
 
   return (
@@ -48,7 +96,11 @@ export function RegisterForm() {
             className="relative z-10 space-y-8"
             onFormSubmit={handleRegisterSubmit}
           >
+            {/* Image Upload */}
+            <UploadImage setImageFile={setImageFile} />
+
             <Field.Root name="username" className="space-y-2">
+              <Field.Error match={!registerValid}>{errorMessage}</Field.Error>
               <Field.Label className="text-forest ml-1 text-sm font-bold">
                 {t("username")}
               </Field.Label>

@@ -4,14 +4,38 @@ import { ArrowLeft, UserKeyIcon } from "lucide-react";
 
 import { useTranslation } from "react-i18next";
 import { Button, Field, Form, Input } from "@base-ui/react";
+import { useMutation } from "@tanstack/react-query";
+import { useState } from "react";
+import { loginUser } from "@/data/userData";
+import { client } from "@/util/graphqlClient";
 
-export function LoginForm() {
+export default function LoginForm() {
   const navigate = useNavigate();
   const { t } = useTranslation("login");
 
+  const [errorMessage, setErrorMessage] = useState("");
+  const [loginValid, setLoginValid] = useState(true);
+
+  const { mutate: loginReturningUser } = useMutation({
+    mutationKey: ["loginUser"],
+    onSuccess: () => navigate({ to: "/dashboard" }),
+    mutationFn: async (payload: { username: string; password: string }) => {
+      const result = await client.request(loginUser, payload);
+      if (result?.auth?.login?.loginUser?.message) {
+        setErrorMessage(result.auth.login.loginUser.message);
+        setLoginValid(false);
+        throw new Error(result.auth.login.loginUser.message);
+      }
+      setLoginValid(true);
+      return result;
+    },
+  });
+
   const handleLoginSubmit = (formValues: Record<string, any>) => {
-    console.log(formValues);
-    navigate({ to: "/dashboard" });
+    loginReturningUser({
+      username: formValues.username,
+      password: formValues.password,
+    });
   };
 
   return (
@@ -49,6 +73,7 @@ export function LoginForm() {
             onFormSubmit={handleLoginSubmit}
           >
             <Field.Root name="username" className="space-y-2">
+              <Field.Error match={!loginValid}>{errorMessage}</Field.Error>
               <Field.Label className="text-forest ml-1 text-sm font-bold">
                 {t("username")}
               </Field.Label>

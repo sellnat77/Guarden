@@ -89,8 +89,10 @@ def init_storage():
                     Bucket=bucketName.value,
                     CORSConfiguration=cors_configuration
                 )
+        except s3.exceptions.BucketAlreadyExists:
+            logger.info(f'Skipping CORS config for bucket {bucketName.value}: already exists')
         except Exception as e:
-            logger.info('Cors policy error', extra={'json_fields':{e}})
+            logger.error(f'CORS policy error for bucket {bucketName.value}: {e}', extra={'json_fields': {'error': str(e), 'bucket': bucketName.value}})
 
 
 def upload_file(bucket: StorageBucket, filename, file):
