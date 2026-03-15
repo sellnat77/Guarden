@@ -1,6 +1,7 @@
+from filters import FilterSet, FilterField, Op, apply_filters
 import string
 from datetime import datetime
-from typing import List
+from typing import List, Optional
 
 import strawberry
 from asyncpg import Record
@@ -51,6 +52,10 @@ class Vital:
 class Plant:
     pass
 
+class PlantFilterSet(FilterSet):
+    created_by = FilterField(db.Plant.createdById, op=Op.eq)
+
+PlantFilterInput = PlantFilterSet.input_type()
 
 @strawberry.type
 class Query:
@@ -58,7 +63,7 @@ class Query:
     @strawberry.field
     async def users(self, info: strawberry.Info) -> List[User]:
         with db.SessionLocal() as session:
-            return list(session.scalars(select(User)).all())
+            return list(session.scalars(select(db.User)).all())
 
     @strawberry.field
     async def locations(self, info: strawberry.Info) -> List[Location]:
@@ -78,9 +83,11 @@ class Query:
             return list(session.scalars(select(Tip)).all())
 
     @strawberry.field
-    async def plants(self, info: strawberry.Info) -> List[Plant]:
+    async def plants(self, info: strawberry.Info, filters: Optional[PlantFilterInput]=strawberry.UNSET, limit:  int = 20,
+            offset: int = 0,) -> List[Plant]:
         with db.SessionLocal() as session:
-            plants = session.scalars(select(db.Plant)).all()
+            q = apply_filters(session.query(db.Plant), filters)
+            plants = q.offset(offset).limit(limit).all()
             return list(plants)
 
     @strawberry.field
