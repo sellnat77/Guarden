@@ -7,3 +7,4 @@ class User:
     username: str | None
     password: str
     email: str
+    profilePicture: str

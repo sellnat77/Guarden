@@ -14,6 +14,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.environ.get("ACCESS_TOKEN_EXPIRE_MINUTES", 60))
 SECRET_KEY = os.environ.get("SECRET_KEY", "default_key")
 ALGORITHM = os.environ.get("ALGORITHM", "sha256_crypt")
+ACCESS_TOKEN_NAME = "accessToken"
 
 
 def hash_password(password: str) -> str:
@@ -21,6 +22,8 @@ def hash_password(password: str) -> str:
 
 
 def verify_password(plain: str, hashed: str) -> bool:
+    print(plain)
+    print(hashed)
     return pwd_context.verify(plain, hashed)
 
 
@@ -33,11 +36,18 @@ def create_access_token(
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
 
-def create_user(username: str, email: str, password: str) -> Optional[User]:
+def create_user(
+    username: str, email: str, password: str, profilePicture: str
+) -> Optional[User]:
     print(username, email, password)
     hashed_password = hash_password(password)
     with SessionLocal() as sess:
-        newUser = User(username=username, email=email, password=hashed_password)
+        newUser = User(
+            username=username,
+            email=email,
+            password=hashed_password,
+            profilePicture=profilePicture,
+        )
         sess.add(newUser)
         sess.commit()
         addedUser = sess.query(User).filter_by(username=username).first()
@@ -67,8 +77,8 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
         raise cred_exc
 
     with SessionLocal() as sess:
-        addedUser = sess.query(User).filter_by(username=username).first()
-        if not addedUser:
+        verifiedUser = sess.query(User).filter_by(username=username).first()
+        if not verifiedUser:
             raise cred_exc
 
-        return addedUser
+        return verifiedUser

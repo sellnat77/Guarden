@@ -10,6 +10,14 @@ if TYPE_CHECKING:
     from core_schema import User
 
 
+@strawberry.input
+class RegisterUserInput:
+    username: str
+    email: str
+    password: str
+    profilePicture: str
+
+
 @strawberry.type
 class RegisterSuccess:
     user: Annotated["User", strawberry.lazy("core_schema")]
@@ -29,12 +37,13 @@ RegisterResult = Annotated[
 @strawberry.type
 class RegisterMutation:
     @strawberry.mutation
-    def registerUser(
-        self, username: str, email: str, password: str, info
-    ) -> RegisterResult:
-        authenticatedUser = util.create_user(username, email, password)
+    def registerUser(self, userInput: RegisterUserInput, info) -> RegisterResult:
+        authenticatedUser = util.create_user(**userInput.__dict__)
         if authenticatedUser:
             access_token = util.create_access_token({"sub": authenticatedUser.username})
+            info.context["response"].set_cookie(
+                key=util.ACCESS_TOKEN_NAME, value=access_token
+            )
             return RegisterSuccess(user=authenticatedUser, token=access_token)
 
         return RegisterError(message="Registration Failed")

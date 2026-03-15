@@ -4,7 +4,6 @@ import { ArrowLeft, HouseHeart, Thermometer, Wind } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMutation } from "@tanstack/react-query";
-import request from "graphql-request";
 import {
   Button,
   Field,
@@ -13,11 +12,11 @@ import {
   Radio,
   RadioGroup,
 } from "@base-ui/react";
-import { GRAPHQL_SERVER } from "../constants";
 import { lightLevels } from "./Base";
 import { LightSelector } from "./LightSelector";
 import type { AddLocationInput } from "@/data/locationsData";
 import { addLocations } from "@/data/locationsData";
+import { client } from "@/util/graphqlClient";
 
 export function AddLocationForm() {
   const navigate = useNavigate();
@@ -30,7 +29,7 @@ export function AddLocationForm() {
   const { mutate: addNewLocation } = useMutation({
     mutationKey: ["addLocation"],
     mutationFn: async (payload: { locationInput: AddLocationInput }) =>
-      request(`${GRAPHQL_SERVER}/graphql`, addLocations, payload),
+      client.request(addLocations, payload),
   });
 
   const handleCreateLocation = (formValues: Record<string, any>) => {

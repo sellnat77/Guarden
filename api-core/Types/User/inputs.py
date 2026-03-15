@@ -8,3 +8,4 @@ class AddUserInput:
     username: str
     email: str
     password: str
+    profilePicture: str

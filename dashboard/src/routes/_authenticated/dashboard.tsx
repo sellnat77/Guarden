@@ -1,13 +1,13 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Bell, Leaf, Menu as MenuIcon, Search } from "lucide-react";
-import "../App.css";
+import "../../App.css";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { Menu } from "@base-ui/react";
-import { PlantDashboard } from "../components/Dashboard";
+import { PlantDashboard } from "../../components/Dashboard";
 import type { ChangeEvent } from "react";
 
-export const Route = createFileRoute("/dashboard")({
+export const Route = createFileRoute("/_authenticated/dashboard")({
   component: RouteComponent,
 });
 
@@ -17,7 +17,13 @@ const DEFAULT_PROFILE_PIC =
 function RouteComponent() {
   const navigate = useNavigate();
   const [searchText, setSearchText] = useState("");
+  const { auth } = Route.useRouteContext();
   const { t } = useTranslation();
+
+  const handleLogout = () => {
+    auth.logout();
+    navigate({ to: "/" });
+  };
 
   const handleSearchChanged = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -55,13 +61,16 @@ function RouteComponent() {
           <div className="bg-sand hidden h-10 w-10 overflow-hidden rounded-full border-2 border-white shadow-md md:block">
             <Menu.Root>
               <Menu.Trigger>
-                <img src={DEFAULT_PROFILE_PIC} alt="User" />
+                <img
+                  src={auth.user?.profilePicture || DEFAULT_PROFILE_PIC}
+                  alt="User"
+                />
               </Menu.Trigger>
               <Menu.Portal>
                 <Menu.Positioner className="outline-none" sideOffset={8}>
                   <Menu.Popup className="origin--transform-origin rounded-4xl bg-[canvas] py-1 text-gray-900 shadow-lg shadow-gray-200 outline outline-gray-200 transition-[transform,scale,opacity] data-ending-style:scale-90 data-ending-style:opacity-0 data-starting-style:scale-90 data-starting-style:opacity-0 dark:shadow-none dark:-outline-offset-1 dark:outline-gray-300">
                     <Menu.Item
-                      onClick={() => navigate({ to: "/" })}
+                      onClick={handleLogout}
                       className="data-highlighted:before:bg-terracotta flex cursor-default rounded-4xl py-2 pr-8 pl-4 text-sm leading-4 outline-none select-none data-highlighted:relative data-highlighted:z-0 data-highlighted:text-gray-50 data-highlighted:before:absolute data-highlighted:before:inset-x-1 data-highlighted:before:inset-y-0 data-highlighted:before:z-[-1] data-highlighted:before:rounded-4xl"
                     >
                       Logout
