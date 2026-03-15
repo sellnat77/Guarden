@@ -32,7 +32,7 @@ class LoginMutation:
         authenticatedUser = await util.authenticate_user(username, password)
         if authenticatedUser:
             access_token = util.create_access_token({"sub": authenticatedUser.username})
-            info.context["response"].set_cookie(key="token", value=access_token)
+            info.context["response"].set_cookie(key=util.ACCESS_TOKEN_NAME, value=access_token)
             return LoginSuccess(user=authenticatedUser, token=access_token)
 
         return LoginError(message="Login Failed")

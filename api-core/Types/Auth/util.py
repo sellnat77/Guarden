@@ -14,7 +14,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.environ.get("ACCESS_TOKEN_EXPIRE_MINUTES", 60))
 SECRET_KEY = os.environ.get("SECRET_KEY", "default_key")
 ALGORITHM = os.environ.get("ALGORITHM", "sha256_crypt")
-
+ACCESS_TOKEN_NAME = 'accessToken'
 
 def hash_password(password: str) -> str:
     return pwd_context.hash(password)
@@ -69,8 +69,8 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
         raise cred_exc
 
     with SessionLocal() as sess:
-        addedUser = sess.query(User).filter_by(username=username).first()
-        if not addedUser:
+        verifiedUser = sess.query(User).filter_by(username=username).first()
+        if not verifiedUser:
             raise cred_exc
 
-        return addedUser
+        return verifiedUser

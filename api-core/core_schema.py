@@ -17,7 +17,7 @@ from s3Client import (
     GenerateUploadUrlOutput,
     generatePresignedUploadUrl,
 )
-from Types.Auth import AuthMutations
+from Types.Auth import AuthMutations, AuthQueries
 from Types.Location import LocationMutations
 from Types.Plant import PlantMutations
 from Types.Tip import TipMutations
@@ -82,6 +82,10 @@ class Query:
         with db.SessionLocal() as session:
             plants = session.scalars(select(db.Plant)).all()
             return list(plants)
+
+    @strawberry.field
+    async def auth(self) -> AuthQueries:
+        return AuthQueries()
 
 
 @strawberry.type

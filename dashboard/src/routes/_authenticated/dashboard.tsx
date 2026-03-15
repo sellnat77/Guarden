@@ -1,13 +1,13 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Bell, Leaf, Menu as MenuIcon, Search } from "lucide-react";
-import "../App.css";
+import "../../App.css";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { Menu } from "@base-ui/react";
-import { PlantDashboard } from "../components/Dashboard";
+import { PlantDashboard } from "../../components/Dashboard";
 import type { ChangeEvent } from "react";
 
-export const Route = createFileRoute("/dashboard")({
+export const Route = createFileRoute("/_authenticated/dashboard")({
   component: RouteComponent,
 });
 
@@ -17,10 +17,11 @@ const DEFAULT_PROFILE_PIC =
 function RouteComponent() {
   const navigate = useNavigate();
   const [searchText, setSearchText] = useState("");
+  const { auth } = Route.useRouteContext();
   const { t } = useTranslation();
 
   const handleLogout = () => {
-    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    auth.logout();
     navigate({ to: "/" });
   };
 
@@ -60,7 +61,10 @@ function RouteComponent() {
           <div className="bg-sand hidden h-10 w-10 overflow-hidden rounded-full border-2 border-white shadow-md md:block">
             <Menu.Root>
               <Menu.Trigger>
-                <img src={DEFAULT_PROFILE_PIC} alt="User" />
+                <img
+                  src={auth.user?.profilePicture || DEFAULT_PROFILE_PIC}
+                  alt="User"
+                />
               </Menu.Trigger>
               <Menu.Portal>
                 <Menu.Positioner className="outline-none" sideOffset={8}>

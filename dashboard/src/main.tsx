@@ -1,32 +1,28 @@
 import { StrictMode } from "react";
 
 import ReactDOM from "react-dom/client";
-import { RouterProvider, createRouter } from "@tanstack/react-router";
+import { RouterProvider } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
-import { routeTree } from "./routeTree.gen";
+import { CookiesProvider } from "react-cookie";
 
 import "./i18n/config.tsx";
 import reportWebVitals from "./reportWebVitals.ts";
+import { AuthProvider, useAuth } from "./auth.tsx";
+import { router } from "./router.tsx";
 
-const router = createRouter({
-  routeTree,
-  context: {},
-  defaultPreload: "intent",
-  scrollRestoration: true,
-  defaultStructuralSharing: true,
-  defaultPreloadStaleTime: 0,
-});
+function InnerApp() {
+  const auth = useAuth();
+  return <RouterProvider router={router} context={{ auth }} />;
+}
 interface PlantState {
   plantId: string;
 }
 
 declare module "@tanstack/react-router" {
+  interface HistoryState extends PlantState {}
   interface Register {
     router: typeof router;
   }
-
-  interface HistoryState extends PlantState {}
 }
 
 const queryClient = new QueryClient();
@@ -36,9 +32,13 @@ if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     <StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
-      </QueryClientProvider>
+      <CookiesProvider defaultSetOptions={{ path: "/" }}>
+        <AuthProvider>
+          <QueryClientProvider client={queryClient}>
+            <InnerApp />
+          </QueryClientProvider>
+        </AuthProvider>
+      </CookiesProvider>
     </StrictMode>,
   );
 }

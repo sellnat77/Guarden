@@ -15,9 +15,10 @@ import { getUploadUrl } from "@/data/imageData";
 import { registerUser } from "@/data/userData";
 import { client } from "@/util/graphqlClient";
 
-export function RegisterForm() {
+export function RegisterForm({ route }) {
   const navigate = useNavigate();
   const { t } = useTranslation("register");
+  const { auth } = route.useRouteContext();
 
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [errorMessage, setErrorMessage] = useState("");
@@ -26,8 +27,10 @@ export function RegisterForm() {
   const { mutate: addNewUser } = useMutation({
     mutationKey: ["addUser"],
     onSuccess: () => navigate({ to: "/dashboard" }),
-    mutationFn: async (payload: { userInput: RegisterUserInput }) =>
-      await client.request(registerUser, payload),
+    mutationFn: async (payload: { userInput: RegisterUserInput }) => {
+      await client.request(registerUser, payload);
+      await auth.login(payload.userInput.username, payload.userInput.password);
+    },
   });
 
   const { mutateAsync: generateUploadUrl } = useMutation({

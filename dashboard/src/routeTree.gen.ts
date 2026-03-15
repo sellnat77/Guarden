@@ -11,11 +11,12 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as LoginRouteImport } from './routes/login'
-import { Route as DashboardRouteImport } from './routes/dashboard'
-import { Route as AddVitalRouteImport } from './routes/add-vital'
-import { Route as AddPlantRouteImport } from './routes/add-plant'
-import { Route as AddLocationRouteImport } from './routes/add-location'
+import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedAddVitalRouteImport } from './routes/_authenticated/add-vital'
+import { Route as AuthenticatedAddPlantRouteImport } from './routes/_authenticated/add-plant'
+import { Route as AuthenticatedAddLocationRouteImport } from './routes/_authenticated/add-location'
 
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
@@ -27,24 +28,8 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DashboardRoute = DashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AddVitalRoute = AddVitalRouteImport.update({
-  id: '/add-vital',
-  path: '/add-vital',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AddPlantRoute = AddPlantRouteImport.update({
-  id: '/add-plant',
-  path: '/add-plant',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AddLocationRoute = AddLocationRouteImport.update({
-  id: '/add-location',
-  path: '/add-location',
+const AuthenticatedRoute = AuthenticatedRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -52,71 +37,91 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedAddVitalRoute = AuthenticatedAddVitalRouteImport.update({
+  id: '/add-vital',
+  path: '/add-vital',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedAddPlantRoute = AuthenticatedAddPlantRouteImport.update({
+  id: '/add-plant',
+  path: '/add-plant',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedAddLocationRoute =
+  AuthenticatedAddLocationRouteImport.update({
+    id: '/add-location',
+    path: '/add-location',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/add-location': typeof AddLocationRoute
-  '/add-plant': typeof AddPlantRoute
-  '/add-vital': typeof AddVitalRoute
-  '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/add-location': typeof AuthenticatedAddLocationRoute
+  '/add-plant': typeof AuthenticatedAddPlantRoute
+  '/add-vital': typeof AuthenticatedAddVitalRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/add-location': typeof AddLocationRoute
-  '/add-plant': typeof AddPlantRoute
-  '/add-vital': typeof AddVitalRoute
-  '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/add-location': typeof AuthenticatedAddLocationRoute
+  '/add-plant': typeof AuthenticatedAddPlantRoute
+  '/add-vital': typeof AuthenticatedAddVitalRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/add-location': typeof AddLocationRoute
-  '/add-plant': typeof AddPlantRoute
-  '/add-vital': typeof AddVitalRoute
-  '/dashboard': typeof DashboardRoute
+  '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/_authenticated/add-location': typeof AuthenticatedAddLocationRoute
+  '/_authenticated/add-plant': typeof AuthenticatedAddPlantRoute
+  '/_authenticated/add-vital': typeof AuthenticatedAddVitalRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/login'
+    | '/register'
     | '/add-location'
     | '/add-plant'
     | '/add-vital'
     | '/dashboard'
-    | '/login'
-    | '/register'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/login'
+    | '/register'
     | '/add-location'
     | '/add-plant'
     | '/add-vital'
     | '/dashboard'
-    | '/login'
-    | '/register'
   id:
     | '__root__'
     | '/'
-    | '/add-location'
-    | '/add-plant'
-    | '/add-vital'
-    | '/dashboard'
+    | '/_authenticated'
     | '/login'
     | '/register'
+    | '/_authenticated/add-location'
+    | '/_authenticated/add-plant'
+    | '/_authenticated/add-vital'
+    | '/_authenticated/dashboard'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AddLocationRoute: typeof AddLocationRoute
-  AddPlantRoute: typeof AddPlantRoute
-  AddVitalRoute: typeof AddVitalRoute
-  DashboardRoute: typeof DashboardRoute
+  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
 }
@@ -137,32 +142,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/add-vital': {
-      id: '/add-vital'
-      path: '/add-vital'
-      fullPath: '/add-vital'
-      preLoaderRoute: typeof AddVitalRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/add-plant': {
-      id: '/add-plant'
-      path: '/add-plant'
-      fullPath: '/add-plant'
-      preLoaderRoute: typeof AddPlantRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/add-location': {
-      id: '/add-location'
-      path: '/add-location'
-      fullPath: '/add-location'
-      preLoaderRoute: typeof AddLocationRouteImport
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -172,15 +156,58 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/add-vital': {
+      id: '/_authenticated/add-vital'
+      path: '/add-vital'
+      fullPath: '/add-vital'
+      preLoaderRoute: typeof AuthenticatedAddVitalRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/add-plant': {
+      id: '/_authenticated/add-plant'
+      path: '/add-plant'
+      fullPath: '/add-plant'
+      preLoaderRoute: typeof AuthenticatedAddPlantRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/add-location': {
+      id: '/_authenticated/add-location'
+      path: '/add-location'
+      fullPath: '/add-location'
+      preLoaderRoute: typeof AuthenticatedAddLocationRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
+interface AuthenticatedRouteChildren {
+  AuthenticatedAddLocationRoute: typeof AuthenticatedAddLocationRoute
+  AuthenticatedAddPlantRoute: typeof AuthenticatedAddPlantRoute
+  AuthenticatedAddVitalRoute: typeof AuthenticatedAddVitalRoute
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+}
+
+const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedAddLocationRoute: AuthenticatedAddLocationRoute,
+  AuthenticatedAddPlantRoute: AuthenticatedAddPlantRoute,
+  AuthenticatedAddVitalRoute: AuthenticatedAddVitalRoute,
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+}
+
+const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
+  AuthenticatedRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AddLocationRoute: AddLocationRoute,
-  AddPlantRoute: AddPlantRoute,
-  AddVitalRoute: AddVitalRoute,
-  DashboardRoute: DashboardRoute,
+  AuthenticatedRoute: AuthenticatedRouteWithChildren,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
 }

@@ -33,6 +33,11 @@ export const loginUser: string = gql`
           ... on LoginSuccess {
             __typename
             token
+            user {
+              username
+              email
+              profilePicture
+            }
           }
           ... on LoginError {
             __typename

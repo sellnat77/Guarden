@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { AddPlantForm } from "../components/Forms/AddPlantForm";
+import { AddPlantForm } from "../../components/Forms/AddPlantForm";
 
-export const Route = createFileRoute("/add-plant")({
+export const Route = createFileRoute("/_authenticated/add-plant")({
   component: RouteComponent,
 });
 

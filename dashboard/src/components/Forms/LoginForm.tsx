@@ -6,26 +6,25 @@ import { useTranslation } from "react-i18next";
 import { Button, Field, Form, Input } from "@base-ui/react";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
-import { loginUser } from "@/data/userData";
-import { client } from "@/util/graphqlClient";
 
-export default function LoginForm() {
+export default function LoginForm({ route }) {
   const navigate = useNavigate();
   const { t } = useTranslation("login");
+
+  const { auth } = route.useRouteContext();
 
   const [errorMessage, setErrorMessage] = useState("");
   const [loginValid, setLoginValid] = useState(true);
 
   const { mutate: loginReturningUser } = useMutation({
     mutationKey: ["loginUser"],
+    onError: (error) => {
+      setErrorMessage(error.message);
+      setLoginValid(false);
+    },
     onSuccess: () => navigate({ to: "/dashboard" }),
     mutationFn: async (payload: { username: string; password: string }) => {
-      const result = await client.request(loginUser, payload);
-      if (result?.auth?.login?.loginUser?.message) {
-        setErrorMessage(result.auth.login.loginUser.message);
-        setLoginValid(false);
-        throw new Error(result.auth.login.loginUser.message);
-      }
+      const result = await auth.login(payload.username, payload.password);
       setLoginValid(true);
       return result;
     },
