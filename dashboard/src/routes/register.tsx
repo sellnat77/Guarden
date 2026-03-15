@@ -12,5 +12,5 @@ export const Route = createFileRoute("/register")({
 });
 
 function RouteComponent() {
-  return <RegisterForm route={Route} />;
+  return <RegisterForm />;
 }

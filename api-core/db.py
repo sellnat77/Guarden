@@ -129,7 +129,13 @@ SessionLocal = sessionmaker(bind=engine, autoflush=False)
 
 INITIAL_DATA = {
     "users": [
-        {"id": 1, "username": "demo", "email": "demo@example.com", "password": "demo", "profilePicture": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=200"}
+        {
+            "id": 1,
+            "username": "demo",
+            "email": "demo@example.com",
+            "password": "demo",
+            "profilePicture": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=200",
+        }
     ],
     "locations": [
         {

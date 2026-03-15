@@ -1,4 +1,4 @@
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, useRouteContext } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { ArrowLeft, UserPlus } from "lucide-react";
 
@@ -15,10 +15,11 @@ import { getUploadUrl } from "@/data/imageData";
 import { registerUser } from "@/data/userData";
 import { client } from "@/util/graphqlClient";
 
-export function RegisterForm({ route }) {
+export function RegisterForm() {
   const navigate = useNavigate();
   const { t } = useTranslation("register");
-  const { auth } = route.useRouteContext();
+  const { auth } = useRouteContext({ from: "__root__" });
+  // const { auth } = route.useRouteContext();
 
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [errorMessage, setErrorMessage] = useState("");

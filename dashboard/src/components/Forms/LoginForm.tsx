@@ -1,4 +1,4 @@
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, useRouteContext } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { ArrowLeft, UserKeyIcon } from "lucide-react";
 
@@ -7,11 +7,11 @@ import { Button, Field, Form, Input } from "@base-ui/react";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 
-export default function LoginForm({ route }) {
+export default function LoginForm() {
   const navigate = useNavigate();
   const { t } = useTranslation("login");
 
-  const { auth } = route.useRouteContext();
+  const { auth } = useRouteContext({ from: "__root__" });
 
   const [errorMessage, setErrorMessage] = useState("");
   const [loginValid, setLoginValid] = useState(true);

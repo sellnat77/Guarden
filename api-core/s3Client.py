@@ -46,12 +46,12 @@ s3 = boto3.client(
 
 def init_storage():
     cors_configuration = {
-        'CORSRules': [
+        "CORSRules": [
             {
-                'AllowedHeaders': ['*'],
-                'AllowedMethods': ['GET', 'PUT'],
-                'AllowedOrigins': ["*", "http://localhost:3000"],
-                'MaxAgeSeconds': 3000
+                "AllowedHeaders": ["*"],
+                "AllowedMethods": ["GET", "PUT"],
+                "AllowedOrigins": ["*", "http://localhost:3000"],
+                "MaxAgeSeconds": 3000,
             }
         ]
     }
@@ -86,13 +86,17 @@ def init_storage():
             )
         try:
             s3.put_bucket_cors(
-                    Bucket=bucketName.value,
-                    CORSConfiguration=cors_configuration
-                )
+                Bucket=bucketName.value, CORSConfiguration=cors_configuration
+            )
         except s3.exceptions.BucketAlreadyExists:
-            logger.info(f'Skipping CORS config for bucket {bucketName.value}: already exists')
+            logger.info(
+                f"Skipping CORS config for bucket {bucketName.value}: already exists"
+            )
         except Exception as e:
-            logger.error(f'CORS policy error for bucket {bucketName.value}: {e}', extra={'json_fields': {'error': str(e), 'bucket': bucketName.value}})
+            logger.error(
+                f"CORS policy error for bucket {bucketName.value}: {e}",
+                extra={"json_fields": {"error": str(e), "bucket": bucketName.value}},
+            )
 
 
 def upload_file(bucket: StorageBucket, filename, file):
