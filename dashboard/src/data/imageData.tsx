@@ -21,15 +21,6 @@ export const uploadToS3 = async (url: string, fileContents: File) => {
   return response;
 };
 
-export const getLocations = gql`
-  query getLocations {
-    locations {
-      id
-      name
-    }
-  }
-`;
-
 export const addLocations = gql`
   mutation addLocation($locationInput: AddLocationInput!) {
     location {

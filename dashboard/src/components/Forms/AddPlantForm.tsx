@@ -26,10 +26,12 @@ import { getLocations } from "@/data/locationsData";
 import { addPlants } from "@/data/plantsData";
 import { getUploadUrl } from "@/data/imageData";
 import { client } from "@/util/graphqlClient";
+import { useAuth } from "@/auth";
 
 export function AddPlantForm() {
   const navigate = useNavigate();
   const { t } = useTranslation("addPlant");
+  const { user } = useAuth();
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [lightValue, setLightValue] = useState(
     Math.round((lightLevels.length - 1) / 2),
@@ -54,9 +56,11 @@ export function AddPlantForm() {
   });
 
   const locations =
-    fetchAllLocationsData?.locations.map((location: PlantLocation) => {
-      return { label: location.name, value: location.id };
-    }) || [];
+    fetchAllLocationsData?.location?.getLocations.map(
+      (location: PlantLocation) => {
+        return { label: location.name, value: location.id };
+      },
+    ) || [];
 
   const handleFormSubmit = (formValues: Record<string, any>) => {
     const handleSubmit = async () => {
@@ -99,7 +103,7 @@ export function AddPlantForm() {
         lastWatered: today,
         waterFrequencyDays: frequency,
         locationId: parseInt(formValues.locationId),
-        createdById: 1,
+        createdById: parseInt(user?.id || "1"),
       };
 
       addNewPlant({ addPlantInput: newPlant });

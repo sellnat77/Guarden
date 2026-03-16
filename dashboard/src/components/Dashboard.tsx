@@ -14,16 +14,20 @@ import { HealthTracker } from "./HealthTracker";
 import { WateringSchedule } from "./WateringSchedule";
 import { GRAPHQL_SERVER } from "./constants";
 import type { Plant } from "../data/plantsData";
+import { client } from "@/util/graphqlClient";
+import { useAuth } from "@/auth";
 
 export function PlantDashboard({ plantFilter }: { plantFilter: string }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { user } = useAuth();
 
   const [isFabOpen, setIsFabOpen] = useState(false);
 
   const { data: fetchAllPlantsData, refetch: refetchPlants } = useQuery({
     queryKey: ["fetchAllPlants"],
-    queryFn: async () => await request(`${GRAPHQL_SERVER}/graphql`, getPlants),
+    queryFn: async () =>
+      await client.request(getPlants, { currentUser: user?.id }),
   });
 
   const { data: fetchAllLocationsData } = useQuery({
@@ -33,13 +37,14 @@ export function PlantDashboard({ plantFilter }: { plantFilter: string }) {
   });
 
   const allPlants =
-    fetchAllPlantsData?.plants.filter((plant: Plant) => {
+    fetchAllPlantsData?.plant?.getPlants.filter((plant: Plant) => {
       return plantFilter.length > 0
         ? plant.name.toLowerCase().startsWith(plantFilter.toLowerCase())
         : plant;
     }) || [];
 
-  const locationCount = fetchAllLocationsData?.locations?.length || 0;
+  const locationCount =
+    fetchAllLocationsData?.location?.getLocations?.length || 0;
 
   return (
     <div>

@@ -34,6 +34,7 @@ export const loginUser: string = gql`
             __typename
             token
             user {
+              id
               username
               email
               profilePicture

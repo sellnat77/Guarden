@@ -27,7 +27,7 @@ dependencies = [
 ]
 
 [tool.poetry]
-packages = [{include = "api_core", from = "src"}]
+packages = [{include = "app"}]
 
 [tool.isort]
 profile = "black"
