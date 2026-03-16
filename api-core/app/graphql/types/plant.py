@@ -2,6 +2,8 @@ from datetime import datetime
 from typing import TYPE_CHECKING, Annotated, Any, List, Optional
 
 import strawberry
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import Query
 
 from app.database.db import SessionLocal
 from app.database.models import PlantModel
@@ -41,17 +43,17 @@ class DeletePlantInput:
 class PlantMutations:
     @strawberry.mutation
     async def addPlant(self, info: strawberry.Info, input: AddPlantInput) -> None:
-        session = info.context["db"]
+        session: AsyncSession = info.context["db"]
         newPlant = input.to_model()
         session.add(newPlant)
-        session.commit()
+        await session.commit()
 
     @strawberry.mutation
     async def deletePlant(self, info: strawberry.Info, input: DeletePlantInput) -> None:
-        session = info.context["db"]
+        session: AsyncSession = info.context["db"]
         id_to_delete = input.id
         session.query(PlantModel).filter_by(id=id_to_delete).delete()
-        session.commit()
+        await session.commit()
 
 
 class PlantFilterSet(FilterSet):
@@ -71,7 +73,7 @@ class PlantQueries:
         limit: int | None = None,
         offset: int = 0,
     ) -> List[Annotated["Plant", strawberry.lazy("app.graphql.schema")]]:
-        session = info.context["db"]
-        query = apply_filters(session.query(PlantModel), filters)
-        plants = query.offset(offset).limit(limit).all()
-        return list(plants)
+        session: AsyncSession = info.context["db"]
+        query = apply_filters(Query(PlantModel), filters)
+        plants = await session.execute(query.offset(offset).limit(limit))
+        return list(plants.scalars())

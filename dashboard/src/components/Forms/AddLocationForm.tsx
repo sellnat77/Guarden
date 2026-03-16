@@ -29,7 +29,7 @@ export function AddLocationForm() {
   const { mutate: addNewLocation } = useMutation({
     mutationKey: ["addLocation"],
     mutationFn: async (payload: { locationInput: AddLocationInput }) =>
-      client.request(addLocations, payload),
+      await client.request(addLocations, payload),
   });
 
   const handleCreateLocation = (formValues: Record<string, any>) => {

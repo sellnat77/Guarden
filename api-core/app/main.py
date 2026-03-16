@@ -23,8 +23,8 @@ graphql_app = GraphQLRouter(schema, context_getter=get_context)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    init_storage()
     await connect()
+    init_storage()
     logger.debug(
         "Initialized startup services",
         extra={"json_fields": {"cool": "beans", "id": 3}},

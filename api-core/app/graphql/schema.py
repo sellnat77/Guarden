@@ -53,7 +53,9 @@ async def get_context():
     dbSession = SessionLocal()
     return {
         "db": dbSession,
-        "sqlalchemy_loader": StrawberrySQLAlchemyLoader(bind=dbSession),
+        "sqlalchemy_loader": StrawberrySQLAlchemyLoader(
+            async_bind_factory=SessionLocal
+        ),
     }
 
 

@@ -86,6 +86,7 @@ export function AddPlantForm() {
           break;
       }
       const today = new Date().toISOString();
+      console.log(today);
       const newPlant: AddPlantInput = {
         name: formValues.name,
         species: formValues.species,
