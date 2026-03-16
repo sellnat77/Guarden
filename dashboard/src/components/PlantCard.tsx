@@ -9,11 +9,13 @@ import {
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "@tanstack/react-router";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import request from "graphql-request";
 import { deletePlant } from "../data/plantsData";
 import { GRAPHQL_SERVER } from "./constants";
 import type { DeletePlantInput, Plant } from "../data/plantsData";
+import { client } from "@/util/graphqlClient";
+import { getLocation } from "@/data/locationsData";
 
 const defaultPlantProps = {
   image:
@@ -33,6 +35,14 @@ export function PlantCard({
 }: PlantCardProps) {
   const navigate = useNavigate();
   const { t } = useTranslation();
+
+  const { data: fetchLocation } = useQuery({
+    queryKey: [`fetchAllLocation`, plantData.locationId],
+    queryFn: async () =>
+      await client.request(getLocation, {
+        id: parseInt(plantData.locationId),
+      }),
+  });
 
   const { mutate: delPlant } = useMutation({
     mutationKey: ["deletePlant"],
@@ -56,6 +66,8 @@ export function PlantCard({
 
   const plant = { ...defaultPlantProps, ...plantData };
   const waterDays = Math.floor(Math.random() * 5) + 1;
+  const locationName =
+    fetchLocation?.location?.getLocations[0]?.name || "Default Location";
 
   const handleDeletePlant = () => {
     delPlant({ deletePlantInput: { id: parseInt(plant.id) } });
@@ -154,7 +166,7 @@ export function PlantCard({
                 {t("light")}
               </span>
               <span className="text-forest text-xs font-medium">
-                {plant.location.name}
+                {locationName}
               </span>
             </div>
           </div>

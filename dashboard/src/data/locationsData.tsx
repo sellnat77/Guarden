@@ -1,18 +1,22 @@
 import { gql } from "graphql-request";
 
-export const countLocations = gql`
-  query countLocations {
-    getAllLocations {
-      count
+export const getLocations = gql`
+  query getLocations {
+    location {
+      getLocations {
+        id
+        name
+      }
     }
   }
 `;
 
-export const getLocations = gql`
-  query getLocations {
-    locations {
-      id
-      name
+export const getLocation = gql`
+  query fetchLocation($id: Int!) {
+    location {
+      getLocations(filters: { id: $id }) {
+        name
+      }
     }
   }
 `;

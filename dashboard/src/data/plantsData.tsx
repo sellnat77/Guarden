@@ -1,27 +1,25 @@
 import { gql } from "graphql-request";
-import type { PlantLocation } from "./locationsData";
 import type { Vital } from "./vitalsData";
 
 export const countPlants = gql`
-  query fetchPlants {
-    plants {
-      id
-      name
-      species
-      image
-      generalHealth
-      lastPruned
-      lastWatered
-      lastRepotted
-      lastFertilized
-      location {
+  query fetchPlants($currentUser: Int!) {
+    plant {
+      getPlants(filters: { createdBy: $currentUser }) {
         id
         name
-      }
-      vitals {
-        edges {
-          node {
-            healthPct
+        species
+        image
+        generalHealth
+        lastPruned
+        lastWatered
+        lastRepotted
+        lastFertilized
+        locationId
+        vitals {
+          edges {
+            node {
+              healthPct
+            }
           }
         }
       }
@@ -78,7 +76,7 @@ export interface Plant {
   waterFrequencyDays: number;
   fertilizeFrequencyDays: number;
   lastFertilized: string;
-  location: PlantLocation;
+  locationId: string;
   vitalHistory: Array<Vital>;
 }
 
@@ -95,7 +93,7 @@ export const plants: Array<Plant> = [
     waterFrequencyDays: 7,
     fertilizeFrequencyDays: 30,
     lastFertilized: "2023-10-01",
-    location: { id: "1", name: "Living Room" },
+    locationId: "1",
     vitalHistory: [
       {
         date: "2023-06",
@@ -131,7 +129,7 @@ export const plants: Array<Plant> = [
     waterFrequencyDays: 7,
     fertilizeFrequencyDays: 14,
     lastFertilized: "2023-09-15",
-    location: { id: "1", name: "Living Room" },
+    locationId: "1",
     vitalHistory: [
       {
         date: "2023-06",
@@ -167,7 +165,7 @@ export const plants: Array<Plant> = [
     waterFrequencyDays: 21,
     fertilizeFrequencyDays: 60,
     lastFertilized: "2023-08-01",
-    location: { id: "2", name: "Office" },
+    locationId: "1",
     vitalHistory: [
       {
         date: "2023-06",
@@ -203,7 +201,7 @@ export const plants: Array<Plant> = [
     waterFrequencyDays: 4,
     fertilizeFrequencyDays: 30,
     lastFertilized: "2023-10-01",
-    location: { id: "3", name: "Kitchen" },
+    locationId: "1",
     vitalHistory: [
       {
         date: "2023-06",
@@ -239,7 +237,7 @@ export const plants: Array<Plant> = [
     waterFrequencyDays: 4,
     fertilizeFrequencyDays: 45,
     lastFertilized: "2023-09-01",
-    location: { id: "4", name: "Bathroom" },
+    locationId: "1",
     vitalHistory: [
       {
         date: "2023-06",
@@ -275,7 +273,7 @@ export const plants: Array<Plant> = [
     waterFrequencyDays: 14,
     fertilizeFrequencyDays: 30,
     lastFertilized: "2023-10-05",
-    location: { id: "1", name: "Living Room" },
+    locationId: "1",
     vitalHistory: [
       {
         date: "2023-06",
