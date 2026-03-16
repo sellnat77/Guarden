@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import List
 
 from passlib.context import CryptContext
@@ -35,8 +34,11 @@ class VitalModel(Base):
     healthPct: Mapped[int] = mapped_column(Integer, nullable=False)
     notes: Mapped[str] = mapped_column(String(255), nullable=False)
     image: Mapped[str] = mapped_column(String(255), nullable=False)
-    date: Mapped[datetime] = mapped_column(
-        DateTime, nullable=False, server_default=func.now(), default=func.now()
+    date: Mapped[DATETIME] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+        default=func.now(),
     )
     plantId: Mapped[int] = mapped_column(ForeignKey("plants.id", ondelete="CASCADE"))
     plant: Mapped["PlantModel"] = relationship("PlantModel", back_populates="vitals")
@@ -61,17 +63,17 @@ class PlantModel(Base):
     fertilizeFrequencyDays: Mapped[int] = mapped_column(Integer, nullable=False)
     pruneFrequencyDays: Mapped[int] = mapped_column(Integer, nullable=False)
     repotFrequencyDays: Mapped[int] = mapped_column(Integer, nullable=False)
-    lastWatered: Mapped[datetime] = mapped_column(
-        DateTime, nullable=False, default=func.now()
+    lastWatered: Mapped[DATETIME] = mapped_column(
+        DateTime(timezone=True), nullable=False, default=func.now()
     )
-    lastPruned: Mapped[datetime] = mapped_column(
-        DateTime, nullable=False, default=func.now()
+    lastPruned: Mapped[DATETIME] = mapped_column(
+        DateTime(timezone=True), nullable=False, default=func.now()
     )
-    lastFertilized: Mapped[datetime] = mapped_column(
-        DateTime, nullable=False, default=func.now()
+    lastFertilized: Mapped[DATETIME] = mapped_column(
+        DateTime(timezone=True), nullable=False, default=func.now()
     )
-    lastRepotted: Mapped[datetime] = mapped_column(
-        DateTime, nullable=False, default=func.now()
+    lastRepotted: Mapped[DATETIME] = mapped_column(
+        DateTime(timezone=True), nullable=False, default=func.now()
     )
     locationId: Mapped[int] = mapped_column(
         ForeignKey("locations.id", ondelete="CASCADE")

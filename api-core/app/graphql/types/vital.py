@@ -2,6 +2,8 @@ from datetime import datetime
 from typing import TYPE_CHECKING, Annotated, List, Optional
 
 import strawberry
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import Query
 
 from app.database.models import VitalModel
 from app.graphql.core.filters import FilterField, FilterSet, Op, apply_filters
@@ -25,10 +27,10 @@ class AddVitalInput(BaseInput):
 class VitalMutations:
     @strawberry.mutation
     async def addVital(self, info: strawberry.Info, input: AddVitalInput) -> None:
-        session = info.context["db"]
+        session: AsyncSession = info.context["db"]
         newVital = input.to_model()
         session.add(newVital)
-        session.commit()
+        await session.commit()
 
 
 class VitalFilterSet(FilterSet):
@@ -52,7 +54,7 @@ class VitalQueries:
         limit: int | None = None,
         offset: int = 0,
     ) -> List[Annotated["Vital", strawberry.lazy("app.graphql.schema")]]:
-        session = info.context["db"]
-        query = apply_filters(session.query(VitalModel), filters)
-        Vitals = query.offset(offset).limit(limit).all()
-        return list(Vitals)
+        session: AsyncSession = info.context["db"]
+        query = apply_filters(Query(VitalModel), filters)
+        vitals = await session.execute(query.offset(offset).limit(limit))
+        return list(vitals.scalars())

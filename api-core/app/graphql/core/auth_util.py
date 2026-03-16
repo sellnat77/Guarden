@@ -6,7 +6,8 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext
-from sqlalchemy.orm import Session
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database.models import UserModel
 
@@ -37,28 +38,31 @@ def create_access_token(
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
 
-def create_user(session: Session, user: UserModel) -> Optional[UserModel]:
+async def create_user(session: AsyncSession, user: UserModel) -> Optional[UserModel]:
     hashed_password = hash_password(user.password)
 
     newUser = user
     newUser.password = hashed_password
     session.add(newUser)
-    session.commit()
-    addedUser = session.query(UserModel).filter_by(username=user.username).first()
-    return addedUser
+    await session.commit()
+    addedUser = await session.execute(
+        select(UserModel).filter_by(username=user.username)
+    )
+    return addedUser.scalars().first()
 
 
 async def authenticate_user(
-    username: str, password: str, session: Session
+    username: str, password: str, session: AsyncSession
 ) -> Optional[UserModel]:
-    user = session.query(UserModel).filter_by(username=username).first()
+    users = await session.execute(select(UserModel).filter_by(username=username))
+    user = users.scalars().first()
     if not user or not verify_password(password, user.password):
         return None
     return user
 
 
 async def get_current_user(
-    session: Session, token: str = Depends(oauth2_scheme)
+    session: AsyncSession, token: str = Depends(oauth2_scheme)
 ) -> UserModel:
     cred_exc = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -73,7 +77,10 @@ async def get_current_user(
     except JWTError:
         raise cred_exc
 
-    verifiedUser = session.query(UserModel).filter_by(username=username).first()
+    verifiedUsers = await session.execute(
+        select(UserModel).filter_by(username=username)
+    )
+    verifiedUser = verifiedUsers.scalars().first()
     if not verifiedUser:
         raise cred_exc
 

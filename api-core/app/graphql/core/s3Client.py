@@ -32,11 +32,11 @@ class GenerateUploadUrlOutput:
     publicUrl: str
 
 
-S3_SERVER = os.environ.get("PUBLIC_OBJECT_STORAGE_SERVER", "http://localhost:9000")
+S3_SERVER = os.environ.get("PUBLIC_OBJECT_STORAGE_SERVER", "http://localhost:9900")
 
 s3 = boto3.client(
     "s3",
-    endpoint_url=os.environ.get("OBJECT_STORAGE_SERVER", "http://localhost:9000"),
+    endpoint_url=os.environ.get("OBJECT_STORAGE_SERVER", "http://localhost:9900"),
     aws_access_key_id=os.environ.get("OBJECT_STORAGE_USER", "rustfsadmin"),
     aws_secret_access_key=os.environ.get("OBJECT_STORAGE_PASS", "rustfsadmin"),
     config=Config(signature_version="s3v4"),

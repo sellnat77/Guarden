@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING, Annotated, Union
 
 import strawberry
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database.models import UserModel
 from app.graphql.core.auth_util import (
@@ -38,7 +39,7 @@ class LoginMutation:
     async def loginUser(
         self, info: strawberry.Info, username: str, password: str
     ) -> LoginResult:
-        session = info.context["db"]
+        session: AsyncSession = info.context["db"]
         authenticatedUser = await authenticate_user(username, password, session)
         if authenticatedUser:
             access_token = create_access_token({"sub": authenticatedUser.username})
@@ -78,11 +79,13 @@ RegisterResult = Annotated[
 @strawberry.type
 class RegisterMutation:
     @strawberry.mutation
-    def registerUser(
+    async def registerUser(
         self, info: strawberry.Info, userInput: RegisterUserInput
     ) -> RegisterResult:
-        session = info.context["db"]
-        authenticatedUser = create_user(session=session, user=userInput.to_model())
+        session: AsyncSession = info.context["db"]
+        authenticatedUser = await create_user(
+            session=session, user=userInput.to_model()
+        )
         if authenticatedUser:
             access_token = create_access_token({"sub": authenticatedUser.username})
             info.context["response"].set_cookie(
@@ -110,5 +113,5 @@ class AuthQueries:
     async def get_verified_user_by_token(
         self, info: strawberry.Info, token: str
     ) -> Annotated["User", strawberry.lazy("app.graphql.schema")]:
-        session = info.context["db"]
+        session: AsyncSession = info.context["db"]
         return await get_current_user(session, token)

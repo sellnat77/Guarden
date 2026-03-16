@@ -1,6 +1,9 @@
 from typing import TYPE_CHECKING, Annotated, List, Optional
 
 import strawberry
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import Query
 
 from app.database.models import LocationModel
 from app.graphql.core.filters import FilterField, FilterSet, Op, apply_filters
@@ -20,10 +23,10 @@ class AddLocationInput(BaseInput):
 class LocationMutations:
     @strawberry.mutation
     async def addLocation(self, info: strawberry.Info, input: AddLocationInput) -> None:
-        session = info.context["db"]
+        session: AsyncSession = info.context["db"]
         newLocation = input.to_model()
         session.add(newLocation)
-        session.commit()
+        await session.commit()
 
 
 class LocationFilterSet(FilterSet):
@@ -45,7 +48,8 @@ class LocationQueries:
         limit: int | None = None,
         offset: int = 0,
     ) -> List[Annotated["Location", strawberry.lazy("app.graphql.schema")]]:
-        session = info.context["db"]
-        query = apply_filters(session.query(LocationModel), filters)
-        locations = query.offset(offset).limit(limit).all()
-        return list(locations)
+        session: AsyncSession = info.context["db"]
+        print(session)
+        query = apply_filters(Query(LocationModel), filters)
+        locations = await session.execute(query.offset(offset).limit(limit))
+        return list(locations.scalars())
