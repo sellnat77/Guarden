@@ -15,7 +15,7 @@ class UserModel(Base):
     password: Mapped[str] = mapped_column(String(500), nullable=False)
     profilePicture: Mapped[str] = mapped_column(String(255), default="", nullable=False)
     plant: Mapped[List["PlantModel"]] = relationship(
-        back_populates="createdBy", cascade="all, delete"
+        back_populates="createdBy", cascade="all, delete", lazy="selectin"
     )
 
 
@@ -24,7 +24,7 @@ class LocationModel(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(100), nullable=False)
     plants: Mapped[List["PlantModel"]] = relationship(
-        back_populates="location", cascade="all, delete"
+        back_populates="location", cascade="all, delete", lazy="selectin"
     )
 
 
@@ -41,7 +41,9 @@ class VitalModel(Base):
         default=func.now(),
     )
     plantId: Mapped[int] = mapped_column(ForeignKey("plants.id", ondelete="CASCADE"))
-    plant: Mapped["PlantModel"] = relationship("PlantModel", back_populates="vitals")
+    plant: Mapped["PlantModel"] = relationship(
+        "PlantModel", back_populates="vitals", lazy="selectin"
+    )
 
 
 class TipModel(Base):
@@ -79,14 +81,14 @@ class PlantModel(Base):
         ForeignKey("locations.id", ondelete="CASCADE")
     )
     location: Mapped["LocationModel"] = relationship(
-        "LocationModel", back_populates="plants"
+        "LocationModel", back_populates="plants", lazy="selectin"
     )
     createdById: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
     createdBy: Mapped["UserModel"] = relationship(
-        "UserModel", back_populates="plant", cascade="all, delete"
+        "UserModel", back_populates="plant", cascade="all, delete", lazy="selectin"
     )
     vitals: Mapped[List["VitalModel"]] = relationship(
-        back_populates="plant", cascade="all, delete"
+        back_populates="plant", cascade="all, delete", lazy="selectin"
     )
 
 

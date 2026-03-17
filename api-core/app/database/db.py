@@ -15,6 +15,7 @@ from sqlalchemy import (
     create_engine,
     event,
     func,
+    text,
 )
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.ext.declarative import declarative_base
@@ -56,11 +57,12 @@ database = Database(DATABASE_URL)
 engine = create_async_engine(
     DATABASE_URL,
     poolclass=AsyncAdaptedQueuePool,
+    pool_recycle=2,
     pool_size=10,
     max_overflow=20,
     echo=True,
 )
-SessionLocal = async_sessionmaker(bind=engine, autoflush=False)
+SessionLocal = async_sessionmaker(bind=engine, expire_on_commit=True, autoflush=False)
 
 
 async def initialize_table(target, connection, **kw):
@@ -71,18 +73,26 @@ async def initialize_table(target, connection, **kw):
             await connection.merge(newItem)
             logger.debug("Added row", extra={"json_fields": {"row": row}})
         await connection.commit()
+        await connection.execute(
+            text(
+                f"SELECT setval(pg_get_serial_sequence('{tablename}', 'id'), (SELECT MAX(id) FROM {tablename}))"
+            )
+        )
+        await connection.commit()
         logger.debug("Seeded table", extra={"json_fields": {"table": tablename}})
 
 
 async def connect():
     await database.connect()
     async with engine.begin() as conn:
-        await conn.run_sync(MetaData().create_all)
-        await initialize_table(UserModel, SessionLocal())
-        await initialize_table(LocationModel, SessionLocal())
-        await initialize_table(PlantModel, SessionLocal())
-        await initialize_table(VitalModel, SessionLocal())
-        await initialize_table(TipModel, SessionLocal())
+        await conn.run_sync(Base.metadata.create_all)
+        session = SessionLocal()
+        await initialize_table(UserModel, session)
+        await initialize_table(LocationModel, session)
+        await initialize_table(PlantModel, session)
+        await initialize_table(VitalModel, session)
+        await initialize_table(TipModel, session)
+        await conn.close()
 
 
 async def disconnect():

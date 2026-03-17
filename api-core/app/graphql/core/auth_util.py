@@ -45,6 +45,7 @@ async def create_user(session: AsyncSession, user: UserModel) -> Optional[UserMo
     newUser.password = hashed_password
     session.add(newUser)
     await session.commit()
+    await session.refresh(newUser)
     addedUser = await session.execute(
         select(UserModel).filter_by(username=user.username)
     )

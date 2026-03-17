@@ -14,12 +14,12 @@ import type { GenerateUploadUrlInput } from "@/data/imageData";
 import { getUploadUrl } from "@/data/imageData";
 import { registerUser } from "@/data/userData";
 import { client } from "@/util/graphqlClient";
+import { useAuth } from "@/auth";
 
 export function RegisterForm() {
   const navigate = useNavigate();
   const { t } = useTranslation("register");
-  const { auth } = useRouteContext({ from: "__root__" });
-  // const { auth } = route.useRouteContext();
+  const { login } = useAuth();
 
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [errorMessage, setErrorMessage] = useState("");
@@ -30,7 +30,7 @@ export function RegisterForm() {
     onSuccess: () => navigate({ to: "/dashboard" }),
     mutationFn: async (payload: { userInput: RegisterUserInput }) => {
       await client.request(registerUser, payload);
-      await auth.login(payload.userInput.username, payload.userInput.password);
+      await login(payload.userInput.username, payload.userInput.password);
     },
   });
 
