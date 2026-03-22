@@ -1,4 +1,4 @@
-import { useNavigate, useRouteContext } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { ArrowLeft, UserPlus } from "lucide-react";
 

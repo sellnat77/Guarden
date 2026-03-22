@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Menu } from "@base-ui/react";
 import { PlantDashboard } from "../../components/Dashboard";
 import type { ChangeEvent } from "react";
+import { useAuth } from "@/auth";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   component: RouteComponent,
@@ -17,11 +18,11 @@ const DEFAULT_PROFILE_PIC =
 function RouteComponent() {
   const navigate = useNavigate();
   const [searchText, setSearchText] = useState("");
-  const { auth } = Route.useRouteContext();
+  const { logout, user } = useAuth();
   const { t } = useTranslation();
 
   const handleLogout = () => {
-    auth.logout();
+    logout();
     navigate({ to: "/" });
   };
 
@@ -62,7 +63,7 @@ function RouteComponent() {
             <Menu.Root>
               <Menu.Trigger>
                 <img
-                  src={auth.user?.profilePicture || DEFAULT_PROFILE_PIC}
+                  src={user?.profilePicture || DEFAULT_PROFILE_PIC}
                   alt="User"
                 />
               </Menu.Trigger>

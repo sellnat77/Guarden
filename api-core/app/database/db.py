@@ -1,3 +1,4 @@
+import asyncio
 import os
 from typing import List
 
@@ -38,12 +39,6 @@ from app.database.models import (
 )
 from app.logUtil import logger
 
-
-def run_migrations():
-    alembic_cfg = Config("alembic.ini")
-    command.upgrade(alembic_cfg, "head")
-
-
 dbUser = os.environ.get("POSTGRES_USER", "guardener")
 dbPass = os.environ.get("POSTGRES_PASSWORD", "guardener")
 dbHost = os.environ.get("GD_DB_HOST", "localhost")
@@ -80,19 +75,25 @@ async def initialize_table(target, connection, **kw):
         )
         await connection.commit()
         logger.debug("Seeded table", extra={"json_fields": {"table": tablename}})
+        await connection.close()
+
+
+async def run_migrations():
+    alembic_cfg = Config("alembic.ini")
+    await asyncio.to_thread(command.upgrade, alembic_cfg, "head")
+    yield
 
 
 async def connect():
     await database.connect()
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
-        session = SessionLocal()
-        await initialize_table(UserModel, session)
-        await initialize_table(LocationModel, session)
-        await initialize_table(PlantModel, session)
-        await initialize_table(VitalModel, session)
-        await initialize_table(TipModel, session)
-        await conn.close()
+    session = SessionLocal()
+    await initialize_table(UserModel, session)
+    await initialize_table(LocationModel, session)
+    await initialize_table(PlantModel, session)
+    await initialize_table(VitalModel, session)
+    await initialize_table(TipModel, session)
 
 
 async def disconnect():

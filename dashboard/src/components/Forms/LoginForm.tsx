@@ -1,4 +1,4 @@
-import { useNavigate, useRouteContext } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { ArrowLeft, UserKeyIcon } from "lucide-react";
 
@@ -6,12 +6,13 @@ import { useTranslation } from "react-i18next";
 import { Button, Field, Form, Input } from "@base-ui/react";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
+import { useAuth } from "@/auth";
 
 export default function LoginForm() {
   const navigate = useNavigate();
   const { t } = useTranslation("login");
 
-  const { auth } = useRouteContext({ from: "__root__" });
+  const { login } = useAuth();
 
   const [errorMessage, setErrorMessage] = useState("");
   const [loginValid, setLoginValid] = useState(true);
@@ -24,7 +25,7 @@ export default function LoginForm() {
     },
     onSuccess: () => navigate({ to: "/dashboard" }),
     mutationFn: async (payload: { username: string; password: string }) => {
-      const result = await auth.login(payload.username, payload.password);
+      const result = await login(payload.username, payload.password);
       setLoginValid(true);
       return result;
     },
