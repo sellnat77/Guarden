@@ -32,11 +32,20 @@ class GenerateUploadUrlOutput:
     publicUrl: str
 
 
-S3_SERVER = os.environ.get("PUBLIC_OBJECT_STORAGE_SERVER", "http://localhost:9900")
+def is_docker():
+    return os.path.exists("/.dockerenv")
+
+
+default_internal_server = "host.docker.internal" if is_docker() else "localhost"
+
+INTERNAL_S3_SERVER = os.environ.get(
+    "PRIVATE_OBJECT_STORAGE_SERVER", f"http://{default_internal_server}:9900"
+)
+
 
 s3 = boto3.client(
     "s3",
-    endpoint_url=os.environ.get("OBJECT_STORAGE_SERVER", "http://localhost:9900"),
+    endpoint_url=INTERNAL_S3_SERVER,
     aws_access_key_id=os.environ.get("OBJECT_STORAGE_USER", "rustfsadmin"),
     aws_secret_access_key=os.environ.get("OBJECT_STORAGE_PASS", "rustfsadmin"),
     config=Config(signature_version="s3v4"),
@@ -103,17 +112,30 @@ def upload_file(bucket: StorageBucket, filename, file):
     s3.upload_file(filename, bucket.value, file)
 
 
+EXTERNAL_S3_SERVER = os.environ.get(
+    "PUBLIC_OBJECT_STORAGE_SERVER", "http://localhost:9900"
+)
+public_s3 = boto3.client(
+    "s3",
+    endpoint_url=EXTERNAL_S3_SERVER,
+    aws_access_key_id=os.environ.get("OBJECT_STORAGE_USER", "rustfsadmin"),
+    aws_secret_access_key=os.environ.get("OBJECT_STORAGE_PASS", "rustfsadmin"),
+    config=Config(signature_version="s3v4"),
+    region_name="us-east-1",
+)
+
+
 def generatePresignedUploadUrl(
     bucket: StorageBucket, key: str, contentTypeInput: strawberry.Some[str] | None
 ) -> GenerateUploadUrlOutput:
     contentType = "image/jpeg" if not contentTypeInput else contentTypeInput.value
 
-    url = s3.generate_presigned_url(
+    url = public_s3.generate_presigned_url(
         ClientMethod="put_object",
         Params={"Bucket": bucket.value, "Key": key, "ContentType": contentType},
         ExpiresIn=600,
     )
-    destinationUrl = f"{S3_SERVER}/{bucket.value}/{key}"
+    destinationUrl = f"{EXTERNAL_S3_SERVER}/{bucket.value}/{key}"
     result = GenerateUploadUrlOutput(url=url, publicUrl=destinationUrl)
     logger.debug(
         "Created presigned upload url",

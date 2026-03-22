@@ -1,6 +1,8 @@
+import asyncio
+
 from dotenv import load_dotenv
 
-from app.database.db import connect, disconnect
+from app.database.db import connect, disconnect, run_migrations
 from app.graphql.core.s3Client import init_storage
 from app.graphql.schema import get_context, schema
 from app.logUtil import logger
@@ -23,6 +25,7 @@ graphql_app = GraphQLRouter(schema, context_getter=get_context)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    run_migrations()
     await connect()
     init_storage()
     logger.debug(
@@ -44,11 +47,11 @@ origins = [
 ]
 
 app.add_middleware(
-    middleware_class=CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    middleware_class=CORSMiddleware,
 )
 app.include_router(graphql_app, prefix="/graphql")
 
