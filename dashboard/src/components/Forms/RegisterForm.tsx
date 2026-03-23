@@ -8,9 +8,11 @@ import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { UploadImage } from "./UploadImage";
 import { handleSignedImageUpload } from "./util";
-import { BUCKETS } from "./Base";
-import type { RegisterUserInput } from "@/data/userData";
-import type { GenerateUploadUrlInput } from "@/data/imageData";
+import type {
+  GenerateUploadUrlInput,
+  RegisterUserInput,
+} from "@/data/gql/graphql";
+import { StorageBucket } from "@/data/gql/graphql";
 import { getUploadUrl } from "@/data/imageData";
 import { registerUser } from "@/data/userData";
 import { client } from "@/util/graphqlClient";
@@ -29,7 +31,16 @@ export function RegisterForm() {
     mutationKey: ["addUser"],
     onSuccess: () => navigate({ to: "/dashboard" }),
     mutationFn: async (payload: { userInput: RegisterUserInput }) => {
-      await client.request(registerUser, payload);
+      const {
+        auth: {
+          register: { registerUser: registerResult },
+        },
+      } = await client.request(registerUser, payload);
+      if (registerResult.__typename === "RegisterError") {
+        setRegisterValid(false);
+        setErrorMessage(registerResult.message);
+        throw new Error(registerResult.message);
+      }
       await login(payload.userInput.username, payload.userInput.password);
     },
   });
@@ -37,13 +48,7 @@ export function RegisterForm() {
   const { mutateAsync: generateUploadUrl } = useMutation({
     mutationKey: ["generateUrl"],
     mutationFn: async (payload: { urlInput: GenerateUploadUrlInput }) => {
-      const result = await client.request(getUploadUrl, payload);
-      if (result.auth?.register?.registerUser?.message) {
-        setRegisterValid(false);
-        setErrorMessage(result.auth.register.registerUser.message);
-        throw new Error(result.auth.register.registerUser.message);
-      }
-      return result;
+      return await client.request(getUploadUrl, payload);
     },
   });
 
@@ -52,7 +57,7 @@ export function RegisterForm() {
       const publicUrl = await handleSignedImageUpload(
         imageFile,
         generateUploadUrl,
-        BUCKETS.profile,
+        StorageBucket.Profile,
       );
       const addNewUserParams: RegisterUserInput = {
         username: formValues.username,

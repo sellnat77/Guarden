@@ -1,5 +1,5 @@
 import type { UseMutateAsyncFunction } from "@tanstack/react-query";
-import type { GenerateUploadUrlInput } from "@/data/imageData";
+import type { GenerateUploadUrlInput, StorageBucket } from "@/data/gql/graphql";
 import { uploadToS3 } from "@/data/imageData";
 
 export const handleSignedImageUpload = async (
@@ -12,7 +12,7 @@ export const handleSignedImageUpload = async (
     },
     unknown
   >,
-  bucket: string,
+  bucket: StorageBucket,
 ) => {
   const uuid = crypto.randomUUID();
   const { generateUploadUrl: presignedResult } = await generateUploadUrl({

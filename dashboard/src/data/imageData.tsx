@@ -1,14 +1,14 @@
 import axios from "axios";
-import { gql } from "graphql-request";
+import { graphql } from "./gql";
 
-export const getUploadUrl = gql`
+export const getUploadUrl = graphql(`
   mutation genUrl($urlInput: GenerateUploadUrlInput!) {
     generateUploadUrl(input: $urlInput) {
       url
       publicUrl
     }
   }
-`;
+`);
 
 export const uploadToS3 = async (url: string, fileContents: File) => {
   const formData = new FormData();
@@ -20,16 +20,3 @@ export const uploadToS3 = async (url: string, fileContents: File) => {
 
   return response;
 };
-
-export const addLocations = gql`
-  mutation addLocation($locationInput: AddLocationInput!) {
-    location {
-      addLocation(input: $locationInput)
-    }
-  }
-`;
-export interface GenerateUploadUrlInput {
-  bucket: string;
-  key: string;
-  contentType: string;
-}

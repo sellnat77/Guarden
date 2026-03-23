@@ -10,10 +10,8 @@ import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import request from "graphql-request";
 import { deletePlant } from "../data/plantsData";
-import { GRAPHQL_SERVER } from "./constants";
-import type { DeletePlantInput, Plant } from "../data/plantsData";
+import type { DeletePlantInput, Plant } from "@/data/gql/graphql";
 import { client } from "@/util/graphqlClient";
 import { getLocation } from "@/data/locationsData";
 
@@ -24,7 +22,7 @@ const defaultPlantProps = {
 };
 
 interface PlantCardProps {
-  plant: Plant;
+  plant: Partial<Plant>;
   index: number;
   onDeleteSettled: () => void;
 }
@@ -38,17 +36,20 @@ export function PlantCard({
 
   const { data: fetchLocation } = useQuery({
     queryKey: [`fetchAllLocation`, plantData.locationId],
-    queryFn: async () =>
-      await client.request(getLocation, {
-        id: parseInt(plantData.locationId),
-      }),
+    queryFn: async () => {
+      if (!plantData.locationId) return;
+
+      return await client.request(getLocation, {
+        id: plantData.locationId,
+      });
+    },
   });
 
   const { mutate: delPlant } = useMutation({
     mutationKey: ["deletePlant"],
     onSettled: onDeleteSettled,
     mutationFn: async (payload: { deletePlantInput: DeletePlantInput }) =>
-      await request(`${GRAPHQL_SERVER}/graphql`, deletePlant, payload),
+      await client.request(deletePlant, payload),
   });
 
   const getHealthColor = (health: string) => {
@@ -67,10 +68,12 @@ export function PlantCard({
   const plant = { ...defaultPlantProps, ...plantData };
   const waterDays = Math.floor(Math.random() * 5) + 1;
   const locationName =
-    fetchLocation?.location?.getLocations[0]?.name || "Default Location";
+    fetchLocation?.location.getLocations[0]?.name || "Default Location";
 
   const handleDeletePlant = () => {
-    delPlant({ deletePlantInput: { id: parseInt(plant.id) } });
+    if (!plant.id) return;
+
+    delPlant({ deletePlantInput: { id: plant.id } });
   };
 
   return (
@@ -175,9 +178,10 @@ export function PlantCard({
         <div className="mt-auto flex gap-2">
           <button
             className="bg-forest hover:bg-dark-forest text-cream shadow-forest/20 flex flex-1 items-center justify-center gap-2 rounded-2xl py-2.5 text-sm font-medium shadow-lg transition-colors"
-            onClick={() =>
-              navigate({ to: "/add-vital", state: { plantId: plantData.id } })
-            }
+            onClick={() => {
+              if (!plantData.id) return;
+              navigate({ to: "/add-vital", state: { plantId: plantData.id } });
+            }}
           >
             <Stethoscope className="h-4 w-4" />
             {t("add_vital")}

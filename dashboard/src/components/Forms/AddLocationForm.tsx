@@ -14,7 +14,7 @@ import {
 } from "@base-ui/react";
 import { lightLevels } from "./Base";
 import { LightSelector } from "./LightSelector";
-import type { AddLocationInput } from "@/data/locationsData";
+import type { AddLocationInput } from "@/data/gql/graphql";
 import { addLocations } from "@/data/locationsData";
 import { client } from "@/util/graphqlClient";
 

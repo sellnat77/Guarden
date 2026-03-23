@@ -15,7 +15,7 @@ function InnerApp() {
   return <RouterProvider router={router} context={{ auth }} />;
 }
 interface PlantState {
-  plantId: string;
+  plantId: number;
 }
 
 declare module "@tanstack/react-router" {
