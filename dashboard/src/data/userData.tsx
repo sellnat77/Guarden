@@ -1,6 +1,6 @@
-import { gql } from "graphql-request";
+import { graphql } from "./gql";
 
-export const registerUser = gql`
+export const registerUser = graphql(`
   mutation registerUser($userInput: RegisterUserInput!) {
     auth {
       register {
@@ -17,15 +17,9 @@ export const registerUser = gql`
       }
     }
   }
-`;
-export interface RegisterUserInput {
-  username: string;
-  email: string;
-  password: string;
-  profilePicture: string;
-}
+`);
 
-export const loginUser: string = gql`
+export const loginUser = graphql(`
   mutation loginUser($username: String!, $password: String!) {
     auth {
       login {
@@ -48,9 +42,4 @@ export const loginUser: string = gql`
       }
     }
   }
-`;
-
-export interface LoginUserInput {
-  username: string;
-  password: string;
-}
+`);

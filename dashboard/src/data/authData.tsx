@@ -1,6 +1,6 @@
-import { gql } from "graphql-request";
+import { graphql } from "./gql";
 
-export const verifyToken: string = gql`
+export const verifyToken = graphql(`
   query VerifySession($accessToken: String!) {
     auth {
       getVerifiedUserByToken(token: $accessToken) {
@@ -11,4 +11,4 @@ export const verifyToken: string = gql`
       }
     }
   }
-`;
+`);

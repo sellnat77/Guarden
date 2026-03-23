@@ -1,18 +1,7 @@
 import { Outlet, createRootRouteWithContext } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { TanStackDevtools } from "@tanstack/react-devtools";
-
-interface AuthState {
-  isAuthenticated: boolean;
-  user: {
-    id: string;
-    username: string;
-    email: string;
-    profilePicture: string;
-  } | null;
-  login: (username: string, password: string) => Promise<void>;
-  logout: () => void;
-}
+import type { AuthState } from "@/auth";
 
 interface GuardenRouteContext {
   auth: AuthState;

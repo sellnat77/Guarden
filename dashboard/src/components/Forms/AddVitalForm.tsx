@@ -7,12 +7,12 @@ import { Button, Field, Form } from "@base-ui/react";
 import { useMutation } from "@tanstack/react-query";
 import { UploadImage } from "./UploadImage";
 import { handleSignedImageUpload } from "./util";
-import { BUCKETS } from "./Base";
-import type { AddVitalInput } from "@/data/vitalsData";
-import type { GenerateUploadUrlInput } from "@/data/imageData";
+
+import type { AddVitalInput, GenerateUploadUrlInput } from "@/data/gql/graphql";
 import { addVitals } from "@/data/vitalsData";
 import { getUploadUrl } from "@/data/imageData";
 import { client } from "@/util/graphqlClient";
+import { StorageBucket } from "@/data/gql/graphql";
 
 export function AddVitalForm() {
   const navigate = useNavigate();
@@ -43,7 +43,7 @@ export function AddVitalForm() {
       const publicUrl = await handleSignedImageUpload(
         imageFile,
         generateUploadUrl,
-        BUCKETS.vital,
+        StorageBucket.Vitals,
       );
 
       const addNewVitalParams: AddVitalInput = {

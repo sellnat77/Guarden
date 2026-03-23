@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING, Annotated, Any, List, Optional
 
 import strawberry
+from sqlalchemy import delete
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Query
 
@@ -52,7 +53,7 @@ class PlantMutations:
     async def deletePlant(self, info: strawberry.Info, input: DeletePlantInput) -> None:
         session: AsyncSession = info.context["db"]
         id_to_delete = input.id
-        session.query(PlantModel).filter_by(id=id_to_delete).delete()
+        await session.execute(delete(PlantModel).where(PlantModel.id == id_to_delete))
         await session.commit()
 
 

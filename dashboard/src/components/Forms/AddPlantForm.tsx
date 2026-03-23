@@ -15,13 +15,16 @@ import {
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { BUCKETS, lightLevels, wateringSchedules } from "./Base";
+import { lightLevels, wateringSchedules } from "./Base";
 import { LightSelector } from "./LightSelector";
 import { UploadImage } from "./UploadImage";
 import { handleSignedImageUpload } from "./util";
-import type { AddPlantInput } from "@/data/plantsData";
-import type { PlantLocation } from "@/data/locationsData";
-import type { GenerateUploadUrlInput } from "@/data/imageData";
+import type {
+  AddPlantInput,
+  GenerateUploadUrlInput,
+  Location,
+} from "@/data/gql/graphql";
+import { StorageBucket } from "@/data/gql/graphql";
 import { getLocations } from "@/data/locationsData";
 import { addPlants } from "@/data/plantsData";
 import { getUploadUrl } from "@/data/imageData";
@@ -56,8 +59,8 @@ export function AddPlantForm() {
   });
 
   const locations =
-    fetchAllLocationsData?.location?.getLocations.map(
-      (location: PlantLocation) => {
+    fetchAllLocationsData?.location.getLocations.map(
+      (location: Partial<Location>) => {
         return { label: location.name, value: location.id };
       },
     ) || [];
@@ -67,7 +70,7 @@ export function AddPlantForm() {
       const publicUrl = await handleSignedImageUpload(
         imageFile,
         generateUploadUrl,
-        BUCKETS.plant,
+        StorageBucket.Plants,
       );
 
       let frequency = 1;
@@ -104,7 +107,7 @@ export function AddPlantForm() {
         lastWatered: today,
         waterFrequencyDays: frequency,
         locationId: parseInt(formValues.locationId),
-        createdById: parseInt(user?.id || "1"),
+        createdById: user?.id || 1,
       };
 
       addNewPlant({ addPlantInput: newPlant });
@@ -237,7 +240,7 @@ export function AddPlantForm() {
                 <Select.Trigger className="flex h-10 min-w-40 items-center justify-between gap-3 rounded-md border border-gray-200 bg-[canvas] pr-3 pl-3.5 text-base text-gray-900 select-none hover:bg-gray-100 focus-visible:outline focus-visible:-outline-offset-1 focus-visible:outline-blue-800 data-popup-open:bg-gray-100">
                   <Select.Value
                     className="data-placeholder:opacity-60"
-                    placeholder={locations[0]?.name}
+                    placeholder={locations[0]?.label}
                   />
                   <Select.Icon className="flex">
                     <ChevronDown />
@@ -256,8 +259,8 @@ export function AddPlantForm() {
                             label,
                             value,
                           }: {
-                            label: string;
-                            value: number;
+                            label: string | undefined;
+                            value: number | undefined;
                           }) => (
                             <Select.Item key={value} value={value}>
                               <Select.ItemIndicator className="col-start-1">

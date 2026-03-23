@@ -6,14 +6,13 @@ import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 import request from "graphql-request";
 import { getLocations } from "../data/locationsData";
-import { countPlants as getPlants } from "../data/plantsData";
+import { countPlants } from "../data/plantsData";
 import { PlantCard } from "./PlantCard";
 import { PlantStats } from "./PlantStats";
 import { CareReminders } from "./CareReminders";
 import { HealthTracker } from "./HealthTracker";
 import { WateringSchedule } from "./WateringSchedule";
 import { GRAPHQL_SERVER } from "./constants";
-import type { Plant } from "../data/plantsData";
 import { client } from "@/util/graphqlClient";
 import { useAuth } from "@/auth";
 
@@ -26,8 +25,13 @@ export function PlantDashboard({ plantFilter }: { plantFilter: string }) {
 
   const { data: fetchAllPlantsData, refetch: refetchPlants } = useQuery({
     queryKey: ["fetchAllPlants"],
-    queryFn: async () =>
-      await client.request(getPlants, { currentUser: user?.id }),
+    queryFn: async () => {
+      if (!user?.id) {
+        return;
+      }
+
+      return await client.request(countPlants, { currentUser: user.id });
+    },
   });
 
   const { data: fetchAllLocationsData } = useQuery({
@@ -37,14 +41,14 @@ export function PlantDashboard({ plantFilter }: { plantFilter: string }) {
   });
 
   const allPlants =
-    fetchAllPlantsData?.plant?.getPlants.filter((plant: Plant) => {
+    fetchAllPlantsData?.plant.getPlants.filter((plant) => {
       return plantFilter.length > 0
         ? plant.name.toLowerCase().startsWith(plantFilter.toLowerCase())
-        : plant;
+        : true;
     }) || [];
 
   const locationCount =
-    fetchAllLocationsData?.location?.getLocations?.length || 0;
+    fetchAllLocationsData?.location.getLocations.length || 0;
 
   return (
     <div>
@@ -77,7 +81,7 @@ export function PlantDashboard({ plantFilter }: { plantFilter: string }) {
             </div>
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-              {allPlants.map((plant: Plant, index: number) => {
+              {allPlants.map((plant, index: number) => {
                 return (
                   <PlantCard
                     key={plant.id}

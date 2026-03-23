@@ -3,17 +3,13 @@ import { useCookies } from "react-cookie";
 import { client } from "./util/graphqlClient";
 import { verifyToken } from "./data/authData";
 import { loginUser } from "./data/userData";
+import type { User } from "./data/gql/graphql";
 
-interface User {
-  id: string;
-  username: string;
-  email: string;
-  profilePicture: string;
-}
+type SafeUser = Omit<User, "password">;
 
-interface AuthState {
+export interface AuthState {
   isAuthenticated: boolean;
-  user: User | null;
+  user: SafeUser | null;
   login: (username: string, password: string) => Promise<void>;
   logout: () => void;
 }
@@ -27,7 +23,7 @@ interface AccessTokenCookieValue {
 const AuthContext = createContext<AuthState | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<SafeUser | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [cookies, setCookie] = useCookies<
@@ -38,19 +34,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Restore auth state on app load
   useEffect(() => {
     const token = cookies.accessToken;
-    console.log(`test test test ${token} ${isAuthenticated}`);
     if (token) {
       // Validate token with your API
       client
         .request(verifyToken, { accessToken: token })
         .then((userData) => {
-          console.log(userData);
-          if (userData.auth.getVerifiedUserByToken) {
-            setUser(userData.auth.getVerifiedUserByToken);
-            setIsAuthenticated(true);
-          } else {
-            setCookie(ACCESS_TOKEN_NAME, null);
-          }
+          setUser(userData.auth.getVerifiedUserByToken);
+          setIsAuthenticated(true);
         })
         .catch(() => {
           setCookie(ACCESS_TOKEN_NAME, null);
@@ -74,16 +64,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = async (username: string, password: string) => {
     const response = await client.request(loginUser, { username, password });
-    if (response?.auth?.login?.loginUser?.message) {
-      throw new Error(
-        `Authentication failed ${response?.auth?.login?.loginUser?.message}`,
-      );
+    const loginResponse = response.auth.login.loginUser;
+
+    if (loginResponse.__typename === "LoginError") {
+      throw new Error(`Authentication failed ${loginResponse.message}`);
     }
 
-    const userData = response?.auth?.login?.loginUser?.user;
+    const userData = loginResponse.user;
     setUser(userData);
     setIsAuthenticated(true);
-    setCookie(ACCESS_TOKEN_NAME, response?.auth?.login?.loginUser?.token);
+    setCookie(ACCESS_TOKEN_NAME, loginResponse.token);
   };
 
   const logout = () => {

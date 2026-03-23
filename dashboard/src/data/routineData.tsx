@@ -12,7 +12,7 @@ enum RoutinePriority {
 }
 export interface Routine {
   id: string;
-  plantId: string;
+  plantId: number;
   type: RoutineEnum;
   dueDate: string;
   priority: RoutinePriority;
@@ -21,7 +21,7 @@ export interface Routine {
 export const upcomingRoutines: Array<Routine> = [
   {
     id: "0",
-    plantId: "2",
+    plantId: 2,
     type: RoutineEnum.WATER,
     dueDate: "2023-10-27",
     priority: RoutinePriority.HIGH,
@@ -29,7 +29,7 @@ export const upcomingRoutines: Array<Routine> = [
   },
   {
     id: "1",
-    plantId: "2",
+    plantId: 2,
     type: RoutineEnum.PRUNE,
     dueDate: "2023-10-27",
     priority: RoutinePriority.HIGH,
@@ -37,7 +37,7 @@ export const upcomingRoutines: Array<Routine> = [
   },
   {
     id: "2",
-    plantId: "5",
+    plantId: 5,
     type: RoutineEnum.WATER,
     dueDate: "2023-10-28",
     priority: RoutinePriority.MEDIUM,
@@ -45,7 +45,7 @@ export const upcomingRoutines: Array<Routine> = [
   },
   {
     id: "3",
-    plantId: "6",
+    plantId: 6,
     type: RoutineEnum.FERTILIZE,
     dueDate: "2023-10-29",
     priority: RoutinePriority.LOW,

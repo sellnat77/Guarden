@@ -1,6 +1,6 @@
-import { gql } from "graphql-request";
+import { graphql } from "./gql";
 
-export const getLocations = gql`
+export const getLocations = graphql(`
   query getLocations {
     location {
       getLocations {
@@ -9,9 +9,9 @@ export const getLocations = gql`
       }
     }
   }
-`;
+`);
 
-export const getLocation = gql`
+export const getLocation = graphql(`
   query fetchLocation($id: Int!) {
     location {
       getLocations(filters: { id: $id }) {
@@ -19,20 +19,12 @@ export const getLocation = gql`
       }
     }
   }
-`;
+`);
 
-export const addLocations = gql`
+export const addLocations = graphql(`
   mutation addLocation($locationInput: AddLocationInput!) {
     location {
       addLocation(input: $locationInput)
     }
   }
-`;
-export interface AddLocationInput {
-  name: string;
-}
-
-export interface PlantLocation {
-  id: string;
-  name: string;
-}
+`);
