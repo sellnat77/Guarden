@@ -1,3 +1,4 @@
+from app.database.db import SessionLocal
 import os
 from datetime import datetime, timedelta, timezone
 from typing import Optional
@@ -7,7 +8,7 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from app.database.models import UserModel
 
@@ -38,32 +39,34 @@ def create_access_token(
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
 
-async def create_user(session: AsyncSession, user: UserModel) -> Optional[UserModel]:
+async def create_user(db: async_sessionmaker, user: UserModel) -> Optional[UserModel]:
     hashed_password = hash_password(user.password)
 
     newUser = user
     newUser.password = hashed_password
-    session.add(newUser)
-    await session.commit()
-    await session.refresh(newUser)
-    addedUser = await session.execute(
-        select(UserModel).filter_by(username=user.username)
-    )
-    return addedUser.scalars().first()
+    async with db() as session:
+        session.add(newUser)
+        await session.commit()
+        await session.refresh(newUser)
+        addedUser = await session.execute(
+            select(UserModel).filter_by(username=user.username)
+        )
+        return addedUser.scalars().first()
 
 
 async def authenticate_user(
-    username: str, password: str, session: AsyncSession
+    username: str, password: str, db: async_sessionmaker
 ) -> Optional[UserModel]:
-    users = await session.execute(select(UserModel).filter_by(username=username))
-    user = users.scalars().first()
-    if not user or not verify_password(password, user.password):
-        return None
-    return user
+    async with db() as session:
+        users = await session.execute(select(UserModel).filter_by(username=username))
+        user = users.scalars().first()
+        if not user or not verify_password(password, user.password):
+            return None
+        return user
 
 
 async def get_current_user(
-    session: AsyncSession, token: str = Depends(oauth2_scheme)
+    db: async_sessionmaker, token: str = Depends(oauth2_scheme)
 ) -> UserModel:
     cred_exc = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -78,11 +81,12 @@ async def get_current_user(
     except JWTError:
         raise cred_exc
 
-    verifiedUsers = await session.execute(
-        select(UserModel).filter_by(username=username)
-    )
-    verifiedUser = verifiedUsers.scalars().first()
-    if not verifiedUser:
-        raise cred_exc
+    async with db() as session:
+        verifiedUsers = await session.execute(
+            select(UserModel).filter_by(username=username)
+        )
+        verifiedUser = verifiedUsers.scalars().first()
+        if not verifiedUser:
+            raise cred_exc
 
-    return verifiedUser
+        return verifiedUser

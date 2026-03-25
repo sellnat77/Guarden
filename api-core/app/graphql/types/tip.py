@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING, Annotated, List, Optional
 
 import strawberry
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from sqlalchemy.orm import Query
 
 from app.database.models import TipModel
@@ -25,10 +25,12 @@ class AddTipInput(BaseInput):
 class TipMutations:
     @strawberry.mutation
     async def addTip(self, info: strawberry.Info, input: AddTipInput) -> None:
-        session: AsyncSession = info.context["db"]
-        newTip = input.to_model()
-        session.add(newTip)
-        await session.commit()
+        db: async_sessionmaker = info.context["db"]
+
+        async with db() as session:
+            newTip = input.to_model()
+            session.add(newTip)
+            await session.commit()
 
 
 class TipFilterSet(FilterSet):
@@ -49,7 +51,9 @@ class TipQueries:
         limit: int | None = None,
         offset: int = 0,
     ) -> List[Annotated["Tip", strawberry.lazy("app.graphql.schema")]]:
-        session: AsyncSession = info.context["db"]
-        query = apply_filters(Query(TipModel), filters)
-        tips = await session.execute(query.offset(offset).limit(limit))
-        return list(tips.scalars())
+        db: async_sessionmaker = info.context["db"]
+
+        async with db() as session:
+            query = apply_filters(Query(TipModel), filters)
+            tips = await session.execute(query.offset(offset).limit(limit))
+            return list(tips.scalars())

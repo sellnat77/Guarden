@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Annotated, Any, List, Optional
 
 import strawberry
 from sqlalchemy import delete
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from sqlalchemy.orm import Query
 
 from app.database.db import SessionLocal
@@ -44,20 +44,24 @@ class DeletePlantInput:
 class PlantMutations:
     @strawberry.mutation
     async def addPlant(self, info: strawberry.Info, input: AddPlantInput) -> None:
-        session: AsyncSession = info.context["db"]
+        db: async_sessionmaker = info.context["db"]
         newPlant = input.to_model()
-        session.add(newPlant)
-        await session.commit()
+        async with db() as session:
+            session.add(newPlant)
+            await session.commit()
 
     @strawberry.mutation
     async def deletePlant(self, info: strawberry.Info, input: DeletePlantInput) -> None:
-        session: AsyncSession = info.context["db"]
+        db: async_sessionmaker = info.context["db"]
+
         id_to_delete = input.id
-        await session.execute(delete(PlantModel).where(PlantModel.id == id_to_delete))
-        await session.commit()
+        async with db() as session:
+            await session.execute(delete(PlantModel).where(PlantModel.id == id_to_delete))
+            await session.commit()
 
 
 class PlantFilterSet(FilterSet):
+    id = FilterField(PlantModel.id, op=Op.eq)
     created_by = FilterField(PlantModel.createdById, op=Op.eq)
 
 
@@ -74,7 +78,9 @@ class PlantQueries:
         limit: int | None = None,
         offset: int = 0,
     ) -> List[Annotated["Plant", strawberry.lazy("app.graphql.schema")]]:
-        session: AsyncSession = info.context["db"]
-        query = apply_filters(Query(PlantModel), filters)
-        plants = await session.execute(query.offset(offset).limit(limit))
-        return list(plants.scalars())
+        db: async_sessionmaker = info.context["db"]
+
+        async with db() as session:
+            query = apply_filters(Query(PlantModel), filters)
+            plants = await session.execute(query.offset(offset).limit(limit))
+            return list(plants.scalars())

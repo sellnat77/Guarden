@@ -10,10 +10,13 @@ import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { ResponsiveContainer } from "recharts";
 import { deletePlant } from "../data/plantsData";
+import { VitalGraph } from "./VitalGraph";
 import type { DeletePlantInput, Plant } from "@/data/gql/graphql";
 import { client } from "@/util/graphqlClient";
 import { getLocation } from "@/data/locationsData";
+import { getVitalsForPlant } from "@/data/vitalsData";
 
 const defaultPlantProps = {
   image:
@@ -42,6 +45,14 @@ export function PlantCard({
       return await client.request(getLocation, {
         id: plantData.locationId,
       });
+    },
+  });
+
+  const { data: getAllVitalsForPlant } = useQuery({
+    queryKey: [`getAllVitalsForPlant`, plantData.id],
+    queryFn: async () => {
+      if (!plantData.id) return;
+      return await client.request(getVitalsForPlant, { plantId: plantData.id });
     },
   });
 
@@ -143,11 +154,21 @@ export function PlantCard({
 
       {/* Content Section */}
       <div className="flex flex-1 flex-col p-6 pt-2">
-        <div className="mb-4">
-          <h3 className="text-forest font-serif text-xl font-bold">
-            {plant.name}
-          </h3>
-          <p className="text-brown text-sm italic">{plant.species}</p>
+        <div className="mb-4 flex gap-2">
+          <div className="flex-1">
+            <h3 className="text-forest font-serif text-xl font-bold">
+              {plant.name}
+            </h3>
+            <p className="text-brown text-sm italic">{plant.species}</p>
+          </div>
+          <div className="w-32">
+            <ResponsiveContainer width="100%" height={50}>
+              <VitalGraph
+                data={getAllVitalsForPlant?.vital.getVitals}
+                miniDisplay={true}
+              />
+            </ResponsiveContainer>
+          </div>
         </div>
 
         <div className="mb-6 grid grid-cols-2 gap-3">

@@ -1,9 +1,9 @@
 import { graphql } from "./gql";
 
 export const getLocations = graphql(`
-  query getLocations {
+  query getLocations($currentUser: Int!) {
     location {
-      getLocations {
+      getLocations(filters: { createdBy: $currentUser }) {
         id
         name
       }
