@@ -85,6 +85,28 @@ export const plants: Array<Plant> = [
               lastFertilized: "2023-10-01",
               locationId: 1,
               location: {
+                userId: 1,
+                owner: {
+                  locations: {
+                    edges: [],
+                    pageInfo: {
+                      hasNextPage: false,
+                      hasPreviousPage: false,
+                    },
+                  },
+                  id: 1,
+                  username: "JohnDoe",
+                  email: "",
+                  password: "",
+                  profilePicture: "",
+                  plants: {
+                    edges: [],
+                    pageInfo: {
+                      hasNextPage: false,
+                      hasPreviousPage: false,
+                    },
+                  },
+                },
                 id: 1,
                 name: "test",
                 plants: {
@@ -96,12 +118,19 @@ export const plants: Array<Plant> = [
                 },
               },
               createdBy: {
+                locations: {
+                  edges: [],
+                  pageInfo: {
+                    hasNextPage: false,
+                    hasPreviousPage: false,
+                  },
+                },
                 id: 1,
                 username: "JohnDoe",
                 email: "",
                 password: "",
                 profilePicture: "",
-                plant: {
+                plants: {
                   edges: [],
                   pageInfo: {
                     hasNextPage: false,

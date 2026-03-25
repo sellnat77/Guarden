@@ -83,9 +83,7 @@ class RegisterMutation:
         self, info: strawberry.Info, userInput: RegisterUserInput
     ) -> RegisterResult:
         db: async_sessionmaker = info.context["db"]
-        authenticatedUser = await create_user(
-            db=db, user=userInput.to_model()
-        )
+        authenticatedUser = await create_user(db=db, user=userInput.to_model())
         if authenticatedUser:
             access_token = create_access_token({"sub": authenticatedUser.username})
             info.context["response"].set_cookie(

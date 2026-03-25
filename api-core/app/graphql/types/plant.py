@@ -56,7 +56,9 @@ class PlantMutations:
 
         id_to_delete = input.id
         async with db() as session:
-            await session.execute(delete(PlantModel).where(PlantModel.id == id_to_delete))
+            await session.execute(
+                delete(PlantModel).where(PlantModel.id == id_to_delete)
+            )
             await session.commit()
 
 

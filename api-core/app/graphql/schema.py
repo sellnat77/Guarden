@@ -1,5 +1,3 @@
-from strawberry.schema.config import StrawberryConfig
-from sqlalchemy.ext.asyncio import AsyncSession
 import string
 from datetime import datetime
 from typing import Any, List, Optional
@@ -7,6 +5,8 @@ from typing import Any, List, Optional
 import strawberry
 from asyncpg import Record
 from sqlalchemy import Result, ScalarResult, Sequence, select
+from sqlalchemy.ext.asyncio import AsyncSession
+from strawberry.schema.config import StrawberryConfig
 from strawberry_sqlalchemy_mapper import (
     StrawberrySQLAlchemyLoader,
     StrawberrySQLAlchemyMapper,
@@ -51,10 +51,11 @@ class Vital:
 class Plant:
     __exclude__ = ["location", "createdBy"]
 
+
 async def get_context():
-        return {
-            "db": SessionLocal,
-            "sqlalchemy_loader": StrawberrySQLAlchemyLoader(
+    return {
+        "db": SessionLocal,
+        "sqlalchemy_loader": StrawberrySQLAlchemyLoader(
             async_bind_factory=SessionLocal
         ),
     }
@@ -63,4 +64,6 @@ async def get_context():
 strawberry_sqlalchemy_mapper.finalize()
 additional_types = list(strawberry_sqlalchemy_mapper.mapped_types.values())
 config = StrawberryConfig(batching_config={"max_operations": 5})
-schema = strawberry.Schema(query=Query, mutation=Mutation, types=additional_types, config=config)
+schema = strawberry.Schema(
+    query=Query, mutation=Mutation, types=additional_types, config=config
+)

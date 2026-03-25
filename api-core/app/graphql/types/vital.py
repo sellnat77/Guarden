@@ -61,5 +61,7 @@ class VitalQueries:
 
         async with db() as session:
             query = apply_filters(Query(VitalModel), filters)
-            vitals = await session.execute(query.order_by(VitalModel.date.asc()).offset(offset).limit(limit))
+            vitals = await session.execute(
+                query.order_by(VitalModel.date.asc()).offset(offset).limit(limit)
+            )
             return list(vitals.scalars())

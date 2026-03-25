@@ -1,4 +1,3 @@
-from app.database.db import SessionLocal
 import os
 from datetime import datetime, timedelta, timezone
 from typing import Optional
@@ -10,6 +9,7 @@ from passlib.context import CryptContext
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
+from app.database.db import SessionLocal
 from app.database.models import UserModel
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
