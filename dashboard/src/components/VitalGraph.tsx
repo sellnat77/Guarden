@@ -40,6 +40,13 @@ const defaultData: Array<Partial<Vital>> = [
 ];
 
 export function VitalGraph({ data = defaultData, miniDisplay = false }) {
+  const dateFormatter = (date: string) => {
+    return new Date(date).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    });
+  };
+
   return (
     <AreaChart
       width={500}
@@ -54,17 +61,20 @@ export function VitalGraph({ data = defaultData, miniDisplay = false }) {
     >
       <defs>
         <linearGradient id="colorHeight" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="5%" stopColor="sage" stopOpacity={0.3} />
-          <stop offset="95%" stopColor="sage" stopOpacity={0} />
+          <stop offset="5%" stopOpacity={0.7} />
+          <stop offset="95%" stopOpacity={0.1} />
         </linearGradient>
       </defs>
       <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="sand" />
       {!miniDisplay && (
         <XAxis
           dataKey="date"
+          scale="auto"
+          type="auto"
           axisLine={false}
           tickLine={false}
           tick={{ color: "sage", fontSize: 12 }}
+          tickFormatter={dateFormatter}
           dy={10}
         />
       )}
@@ -78,11 +88,10 @@ export function VitalGraph({ data = defaultData, miniDisplay = false }) {
       {!miniDisplay && (
         <Tooltip
           contentStyle={{
-            backgroundColor: "cream",
+            backgroundColor: "mintcream",
             borderRadius: "12px",
             border: "none",
             boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-            color: "forest",
           }}
           itemStyle={{ color: "forest" }}
         />

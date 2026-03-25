@@ -18,7 +18,7 @@ export function PlantStats({
   const { data: getVitalsForGroup } = useQuery({
     queryKey: [`getAllVitalsForPlants`, plantIds],
     queryFn: async () => {
-      if (plantIds.length == 0) return;
+      if (plantIds.length == 0) return 0;
       const {
         vital: { getVitals },
       } = await client.request(getVitalsForPlantGroup, {

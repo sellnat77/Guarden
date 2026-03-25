@@ -21,36 +21,37 @@ export function PlantDashboard({ plantFilter }: { plantFilter: string }) {
 
   const [isFabOpen, setIsFabOpen] = useState(false);
 
-  const {
-    data: { filteredPlants = [], locations = [] } = {},
-    refetch: refetchPlants,
-  } = useQuery({
-    queryKey: ["fetchAllPlantsAndLocations"],
-    queryFn: async (): Promise<
-      | {
-          filteredPlants: Array<Partial<Plant>>;
-          locations: Array<Partial<Location>>;
+  const { data: { plants = [], locations = [] } = {}, refetch: refetchPlants } =
+    useQuery({
+      queryKey: ["fetchAllPlantsAndLocations"],
+      queryFn: async (): Promise<
+        | {
+            plants: Array<Partial<Plant>>;
+            locations: Array<Partial<Location>>;
+          }
+        | undefined
+      > => {
+        if (!user?.id) {
+          return;
         }
-      | undefined
-    > => {
-      if (!user?.id) {
-        return;
-      }
 
-      const { plant, location } = await client.request(getPlantsAndLocations, {
-        currentUser: user.id,
-      });
-      const plants = plant.getPlants.filter((fetchedPlant) => {
-        return plantFilter.length > 0
-          ? fetchedPlant.name
-              .toLowerCase()
-              .startsWith(plantFilter.toLowerCase())
-          : true;
-      });
-      return { filteredPlants: plants, locations: location.getLocations };
-    },
+        const { plant, location } = await client.request(
+          getPlantsAndLocations,
+          {
+            currentUser: user.id,
+          },
+        );
+
+        return { plants: plant.getPlants, locations: location.getLocations };
+      },
+    });
+
+  const filteredPlants = plants.filter((fetchedPlant) => {
+    if (!fetchedPlant.name) return false;
+    return plantFilter
+      ? fetchedPlant.name.toLowerCase().startsWith(plantFilter.toLowerCase())
+      : true;
   });
-
   const locationCount = locations.length || 0;
 
   return (
