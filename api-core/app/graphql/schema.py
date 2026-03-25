@@ -5,6 +5,8 @@ from typing import Any, List, Optional
 import strawberry
 from asyncpg import Record
 from sqlalchemy import Result, ScalarResult, Sequence, select
+from sqlalchemy.ext.asyncio import AsyncSession
+from strawberry.schema.config import StrawberryConfig
 from strawberry_sqlalchemy_mapper import (
     StrawberrySQLAlchemyLoader,
     StrawberrySQLAlchemyMapper,
@@ -26,7 +28,7 @@ strawberry_sqlalchemy_mapper = StrawberrySQLAlchemyMapper(always_use_list=False)
 
 @strawberry_sqlalchemy_mapper.type(UserModel)
 class User:
-    __exclude__ = ["plant"]
+    __exclude__ = ["plants", "locations"]
 
 
 @strawberry_sqlalchemy_mapper.type(TipModel)
@@ -36,6 +38,7 @@ class Tip:
 
 @strawberry_sqlalchemy_mapper.type(LocationModel)
 class Location:
+    __exclude__ = ["owner"]
     pass
 
 
@@ -50,9 +53,8 @@ class Plant:
 
 
 async def get_context():
-    dbSession = SessionLocal()
     return {
-        "db": dbSession,
+        "db": SessionLocal,
         "sqlalchemy_loader": StrawberrySQLAlchemyLoader(
             async_bind_factory=SessionLocal
         ),
@@ -61,4 +63,7 @@ async def get_context():
 
 strawberry_sqlalchemy_mapper.finalize()
 additional_types = list(strawberry_sqlalchemy_mapper.mapped_types.values())
-schema = strawberry.Schema(query=Query, mutation=Mutation, types=additional_types)
+config = StrawberryConfig(batching_config={"max_operations": 5})
+schema = strawberry.Schema(
+    query=Query, mutation=Mutation, types=additional_types, config=config
+)

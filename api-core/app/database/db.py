@@ -57,25 +57,25 @@ engine = create_async_engine(
     max_overflow=20,
     echo=True,
 )
-SessionLocal = async_sessionmaker(bind=engine, expire_on_commit=True, autoflush=False)
+SessionLocal = async_sessionmaker(bind=engine, expire_on_commit=True, autoflush=True)
 
 
 async def initialize_table(target, connection, **kw):
-    tablename = str(target.__tablename__)
-    if tablename in INITIAL_DATA and len(INITIAL_DATA[tablename]) > 0:
-        for row in INITIAL_DATA[tablename]:
-            newItem = target(**row)
-            await connection.merge(newItem)
-            logger.debug("Added row", extra={"json_fields": {"row": row}})
-        await connection.commit()
-        await connection.execute(
-            text(
-                f"SELECT setval(pg_get_serial_sequence('{tablename}', 'id'), (SELECT MAX(id) FROM {tablename}))"
+    async with connection:
+        tablename = str(target.__tablename__)
+        if tablename in INITIAL_DATA and len(INITIAL_DATA[tablename]) > 0:
+            for row in INITIAL_DATA[tablename]:
+                newItem = target(**row)
+                await connection.merge(newItem)
+                logger.debug("Added row", extra={"json_fields": {"row": row}})
+            await connection.commit()
+            await connection.execute(
+                text(
+                    f"SELECT setval(pg_get_serial_sequence('{tablename}', 'id'), (SELECT MAX(id) FROM {tablename}))"
+                )
             )
-        )
-        await connection.commit()
-        logger.debug("Seeded table", extra={"json_fields": {"table": tablename}})
-        await connection.close()
+            await connection.commit()
+            logger.debug("Seeded table", extra={"json_fields": {"table": tablename}})
 
 
 async def run_migrations():
@@ -88,12 +88,11 @@ async def connect():
     await database.connect()
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
-    session = SessionLocal()
-    await initialize_table(UserModel, session)
-    await initialize_table(LocationModel, session)
-    await initialize_table(PlantModel, session)
-    await initialize_table(VitalModel, session)
-    await initialize_table(TipModel, session)
+    await initialize_table(UserModel, SessionLocal())
+    await initialize_table(LocationModel, SessionLocal())
+    await initialize_table(PlantModel, SessionLocal())
+    await initialize_table(VitalModel, SessionLocal())
+    await initialize_table(TipModel, SessionLocal())
 
 
 async def disconnect():

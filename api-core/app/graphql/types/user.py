@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Annotated, List, Optional
 
 import strawberry
 from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from sqlalchemy.orm import Query
 
 from app.database.models import UserModel
@@ -29,10 +29,12 @@ class AddUserInput(BaseInput):
 class UserMutations:
     @strawberry.mutation
     async def addUser(self, info: strawberry.Info, input: AddUserInput) -> None:
-        session: AsyncSession = info.context["db"]
-        newUser = input.to_model()
-        session.add(newUser)
-        await session.commit()
+        db: async_sessionmaker = info.context["db"]
+
+        async with db() as session:
+            newUser = input.to_model()
+            session.add(newUser)
+            await session.commit()
 
 
 class UserFilterSet(FilterSet):
@@ -53,7 +55,9 @@ class UserQueries:
         limit: int | None = None,
         offset: int = 0,
     ) -> List[Annotated["User", strawberry.lazy("app.graphql.schema")]]:
-        session: AsyncSession = info.context["db"]
-        query = apply_filters(Query(UserModel), filters)
-        users = await session.execute(query.offset(offset).limit(limit))
-        return list(users.scalars())
+        db: async_sessionmaker = info.context["db"]
+
+        async with db() as session:
+            query = apply_filters(Query(UserModel), filters)
+            users = await session.execute(query.offset(offset).limit(limit))
+            return list(users.scalars())

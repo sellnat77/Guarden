@@ -42,7 +42,10 @@ export function AddPlantForm() {
 
   const { data: fetchAllLocationsData } = useQuery({
     queryKey: ["fetchAllLocations"],
-    queryFn: async () => await client.request(getLocations),
+    queryFn: async () => {
+      if (!user) return;
+      return await client.request(getLocations, { currentUser: user.id });
+    },
   });
 
   const { mutateAsync: generateUploadUrl } = useMutation({

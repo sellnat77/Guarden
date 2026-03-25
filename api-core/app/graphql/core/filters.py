@@ -119,7 +119,8 @@ def _build_input_type(name: str, filter_fields: dict[str, FilterField]):
 
     for field_name, ff in filter_fields.items():
         if ff.op == Op.in_:
-            annotations[field_name] = Optional[list[Any]]
+            py_type = _sa_type_to_python(col_type)
+            annotations[field_name] = Optional[list[py_type]]
         elif ff.op == Op.is_null:
             annotations[field_name] = Optional[bool]
         else:

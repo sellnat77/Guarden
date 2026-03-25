@@ -4,17 +4,15 @@ import { HouseHeart, Leaf, Plus, Sprout } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
-import request from "graphql-request";
-import { getLocations } from "../data/locationsData";
-import { countPlants } from "../data/plantsData";
 import { PlantCard } from "./PlantCard";
 import { PlantStats } from "./PlantStats";
 import { CareReminders } from "./CareReminders";
 import { HealthTracker } from "./HealthTracker";
 import { WateringSchedule } from "./WateringSchedule";
-import { GRAPHQL_SERVER } from "./constants";
+import type { Location, Plant } from "@/data/gql/graphql";
 import { client } from "@/util/graphqlClient";
 import { useAuth } from "@/auth";
+import { getPlantsAndLocations } from "@/data/queries";
 
 export function PlantDashboard({ plantFilter }: { plantFilter: string }) {
   const navigate = useNavigate();
@@ -23,32 +21,38 @@ export function PlantDashboard({ plantFilter }: { plantFilter: string }) {
 
   const [isFabOpen, setIsFabOpen] = useState(false);
 
-  const { data: fetchAllPlantsData, refetch: refetchPlants } = useQuery({
-    queryKey: ["fetchAllPlants"],
-    queryFn: async () => {
-      if (!user?.id) {
-        return;
-      }
+  const { data: { plants = [], locations = [] } = {}, refetch: refetchPlants } =
+    useQuery({
+      queryKey: ["fetchAllPlantsAndLocations"],
+      queryFn: async (): Promise<
+        | {
+            plants: Array<Partial<Plant>>;
+            locations: Array<Partial<Location>>;
+          }
+        | undefined
+      > => {
+        if (!user?.id) {
+          return;
+        }
 
-      return await client.request(countPlants, { currentUser: user.id });
-    },
+        const { plant, location } = await client.request(
+          getPlantsAndLocations,
+          {
+            currentUser: user.id,
+          },
+        );
+
+        return { plants: plant.getPlants, locations: location.getLocations };
+      },
+    });
+
+  const filteredPlants = plants.filter((fetchedPlant) => {
+    if (!fetchedPlant.name) return false;
+    return plantFilter
+      ? fetchedPlant.name.toLowerCase().startsWith(plantFilter.toLowerCase())
+      : true;
   });
-
-  const { data: fetchAllLocationsData } = useQuery({
-    queryKey: ["fetchAllLocations"],
-    queryFn: async () =>
-      await request(`${GRAPHQL_SERVER}/graphql`, getLocations),
-  });
-
-  const allPlants =
-    fetchAllPlantsData?.plant.getPlants.filter((plant) => {
-      return plantFilter.length > 0
-        ? plant.name.toLowerCase().startsWith(plantFilter.toLowerCase())
-        : true;
-    }) || [];
-
-  const locationCount =
-    fetchAllLocationsData?.location.getLocations.length || 0;
+  const locationCount = locations.length || 0;
 
   return (
     <div>
@@ -57,10 +61,8 @@ export function PlantDashboard({ plantFilter }: { plantFilter: string }) {
         {/* Left Column - Main Dashboard */}
         <div className="space-y-8 lg:col-span-8">
           <PlantStats
+            allPlants={filteredPlants}
             totalLocations={locationCount}
-            totalPlants={allPlants.length}
-            needsWater={allPlants.length}
-            overallHealth={67}
           />
 
           <div className="mb-8">
@@ -71,7 +73,7 @@ export function PlantDashboard({ plantFilter }: { plantFilter: string }) {
                 </h2>
                 <p className="text-brown">
                   {t("thriving_plant", {
-                    count: allPlants.length,
+                    count: filteredPlants.length,
                   })}
                 </p>
               </div>
@@ -81,7 +83,7 @@ export function PlantDashboard({ plantFilter }: { plantFilter: string }) {
             </div>
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-              {allPlants.map((plant, index: number) => {
+              {filteredPlants.map((plant, index: number) => {
                 return (
                   <PlantCard
                     key={plant.id}

@@ -1,47 +1,20 @@
-import {
-  Area,
-  AreaChart,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { ResponsiveContainer } from "recharts";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
+import { useQuery } from "@tanstack/react-query";
+import { VitalGraph } from "./VitalGraph";
+import { client } from "@/util/graphqlClient";
+import { getAllVitals } from "@/data/vitalsData";
 
-const defaultData = [
-  {
-    name: "May",
-    height: 10,
-  },
-  {
-    name: "Jun",
-    height: 45,
-  },
-  {
-    name: "Jul",
-    height: 52,
-  },
-  {
-    name: "Aug",
-    height: 30,
-  },
-  {
-    name: "Sep",
-    height: 50,
-  },
-  {
-    name: "Oct",
-    height: 25,
-  },
-  {
-    name: "Nov",
-    height: 78,
-  },
-];
-export function HealthTracker({ data = defaultData }) {
+export function HealthTracker() {
   const { t } = useTranslation();
+
+  const { data: getAllVitalsForGraph } = useQuery({
+    queryKey: [`getAllVitals`],
+    queryFn: async () => {
+      return await client.request(getAllVitals);
+    },
+  });
 
   return (
     <motion.div
@@ -66,67 +39,9 @@ export function HealthTracker({ data = defaultData }) {
         <p className="text-brown text-sm">{t("health_tracker_detail")}</p>
       </div>
 
-      <div className="w-full flex-1">
-        <ResponsiveContainer width="100%" height="100%">
-          <AreaChart
-            data={data}
-            margin={{
-              top: 10,
-              right: 10,
-              left: -20,
-              bottom: 0,
-            }}
-          >
-            <defs>
-              <linearGradient id="colorHeight" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="sage" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="sage" stopOpacity={0} />
-              </linearGradient>
-            </defs>
-            <CartesianGrid
-              strokeDasharray="3 3"
-              vertical={false}
-              stroke="sand"
-            />
-            <XAxis
-              dataKey="name"
-              axisLine={false}
-              tickLine={false}
-              tick={{
-                color: "sage",
-                fontSize: 12,
-              }}
-              dy={10}
-            />
-            <YAxis
-              axisLine={false}
-              tickLine={false}
-              tick={{
-                color: "sage",
-                fontSize: 12,
-              }}
-            />
-            <Tooltip
-              contentStyle={{
-                backgroundColor: "cream",
-                borderRadius: "12px",
-                border: "none",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-                color: "forest",
-              }}
-              itemStyle={{
-                color: "forest",
-              }}
-            />
-            <Area
-              type="monotone"
-              dataKey="height"
-              stroke="forest"
-              strokeWidth={3}
-              fillOpacity={1}
-              fill="url(#colorHeight)"
-            />
-          </AreaChart>
+      <div className="h-32 min-h-0 min-w-0 flex-1">
+        <ResponsiveContainer width="100%" height={150}>
+          <VitalGraph data={getAllVitalsForGraph?.vital.getVitals} />
         </ResponsiveContainer>
       </div>
     </motion.div>

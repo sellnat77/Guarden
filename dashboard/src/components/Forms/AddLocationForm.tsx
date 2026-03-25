@@ -17,10 +17,12 @@ import { LightSelector } from "./LightSelector";
 import type { AddLocationInput } from "@/data/gql/graphql";
 import { addLocations } from "@/data/locationsData";
 import { client } from "@/util/graphqlClient";
+import { useAuth } from "@/auth";
 
 export function AddLocationForm() {
   const navigate = useNavigate();
   const { t } = useTranslation("addLocation");
+  const { user } = useAuth();
 
   const [lightValue, setLightValue] = useState(
     Math.round((lightLevels.length - 1) / 2),
@@ -33,8 +35,10 @@ export function AddLocationForm() {
   });
 
   const handleCreateLocation = (formValues: Record<string, any>) => {
-    if (formValues.locationName) {
-      addNewLocation({ locationInput: { name: formValues.locationName } });
+    if (formValues.locationName && user) {
+      addNewLocation({
+        locationInput: { name: formValues.locationName, userId: user.id },
+      });
       navigate({ to: "/" });
     }
   };

@@ -1,12 +1,37 @@
 import { Droplets, Heart, HouseHeart, Sprout } from "lucide-react";
 import { motion } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
+import type { Plant } from "@/data/gql/graphql";
+import { client } from "@/util/graphqlClient";
+import { getVitalsForPlantGroup } from "@/data/vitalsData";
 
 export function PlantStats({
+  allPlants = [],
   totalLocations = 0,
-  totalPlants = 0,
-  needsWater = 0,
-  overallHealth = 0,
+}: {
+  allPlants: Array<Partial<Plant>>;
+  totalLocations: number;
 }) {
+  const plantIds = allPlants
+    .map((plant) => plant.id)
+    .filter((id) => id !== undefined);
+  const { data: getVitalsForGroup } = useQuery({
+    queryKey: [`getAllVitalsForPlants`, plantIds],
+    queryFn: async () => {
+      if (plantIds.length == 0) return 0;
+      const {
+        vital: { getVitals },
+      } = await client.request(getVitalsForPlantGroup, {
+        plantIds: plantIds,
+      });
+      const avgHealth =
+        getVitals.reduce((acc, curr) => acc + curr.healthPct, 0) /
+        getVitals.length;
+      return avgHealth.toFixed(2);
+    },
+  });
+
+  const averageHealth = getVitalsForGroup;
   const stats = [
     {
       label: "Total Locations",
@@ -17,21 +42,21 @@ export function PlantStats({
     },
     {
       label: "Total Plants",
-      value: totalPlants,
+      value: allPlants.length,
       icon: Sprout,
       color: "text-forest",
       bg: "bg-forest/20",
     },
     {
       label: "Needs Water",
-      value: needsWater,
+      value: allPlants.length,
       icon: Droplets,
       color: "text-water",
       bg: "bg-water/20",
     },
     {
       label: "Healthy",
-      value: `${overallHealth}%`,
+      value: `${averageHealth}%`,
       icon: Heart,
       color: "text-terracotta",
       bg: "bg-terracotta/20",
