@@ -3,9 +3,7 @@ from datetime import datetime
 from typing import Any, List, Optional
 
 import strawberry
-from asyncpg import Record
-from sqlalchemy import Result, ScalarResult, Sequence, select
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import Sequence, select
 from strawberry.schema.config import StrawberryConfig
 from strawberry_sqlalchemy_mapper import (
     StrawberrySQLAlchemyLoader,

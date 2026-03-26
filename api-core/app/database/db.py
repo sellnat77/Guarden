@@ -11,10 +11,7 @@ from sqlalchemy import (
     DateTime,
     ForeignKey,
     Integer,
-    MetaData,
     String,
-    create_engine,
-    event,
     func,
     text,
 )
@@ -22,10 +19,8 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import (
     Mapped,
-    Relationship,
     mapped_column,
     relationship,
-    sessionmaker,
 )
 
 from app.database.models import (
@@ -60,7 +55,7 @@ engine = create_async_engine(
 SessionLocal = async_sessionmaker(bind=engine, expire_on_commit=True, autoflush=True)
 
 
-async def initialize_table(target, connection, **kw):
+async def initialize_table(target, connection):
     async with connection:
         tablename = str(target.__tablename__)
         if tablename in INITIAL_DATA and len(INITIAL_DATA[tablename]) > 0:

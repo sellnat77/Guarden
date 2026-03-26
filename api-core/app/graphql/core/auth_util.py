@@ -1,15 +1,13 @@
-import base64
-import hashlib
 import os
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 
-import bcrypt
+from argon2 import PasswordHasher
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
+from sqlalchemy.ext.asyncio import async_sessionmaker
 
 from app.database.models import UserModel
 
@@ -21,15 +19,13 @@ ACCESS_TOKEN_NAME = "accessToken"
 
 
 def hash_password(password: str) -> str:
-    digest = hashlib.sha256(password.encode()).digest()
-    encoded = base64.b64encode(digest)
-    return bcrypt.hashpw(encoded, bcrypt.gensalt()).decode()
+    ph = PasswordHasher()
+    return ph.hash(password)
 
 
-def verify_password(plain: str, hashed: str) -> bool:
-    digest = hashlib.sha256(plain.encode()).digest()
-    encoded = base64.b64encode(digest)
-    return bcrypt.checkpw(encoded, hashed.encode())
+def verify_password(password: str, known_hash) -> bool:
+    ph = PasswordHasher()
+    return ph.verify(known_hash, password)
 
 
 def create_access_token(

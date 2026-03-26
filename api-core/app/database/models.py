@@ -1,9 +1,7 @@
-import base64
-import hashlib
 from datetime import datetime, timezone
 from typing import List
 
-import bcrypt
+from argon2 import PasswordHasher
 from sqlalchemy import DATETIME, DateTime, ForeignKey, Integer, String, func
 from sqlalchemy.orm import Mapped, declarative_base, mapped_column, relationship
 
@@ -103,9 +101,8 @@ class PlantModel(Base):
 
 
 def seed_hash_password(password: str) -> str:
-    digest = hashlib.sha256(password.encode()).digest()
-    encoded = base64.b64encode(digest)
-    return bcrypt.hashpw(encoded, bcrypt.gensalt()).decode()
+    ph = PasswordHasher()
+    return ph.hash(password)
 
 
 INITIAL_DATA = {

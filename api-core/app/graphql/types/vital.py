@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING, Annotated, List, Optional
 
 import strawberry
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
+from sqlalchemy.ext.asyncio import async_sessionmaker
 from sqlalchemy.orm import Query
 
 from app.database.models import VitalModel
