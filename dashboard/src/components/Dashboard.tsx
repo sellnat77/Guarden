@@ -9,6 +9,7 @@ import { PlantStats } from "./PlantStats";
 import { CareReminders } from "./CareReminders";
 import { HealthTracker } from "./HealthTracker";
 import { WateringSchedule } from "./WateringSchedule";
+import { LocationFilter } from "./LocationFilter";
 import type { Location, Plant } from "@/data/gql/graphql";
 import { client } from "@/util/graphqlClient";
 import { useAuth } from "@/auth";
@@ -20,6 +21,7 @@ export function PlantDashboard({ plantFilter }: { plantFilter: string }) {
   const { user } = useAuth();
 
   const [isFabOpen, setIsFabOpen] = useState(false);
+  const [selectedLocation, setSelectedLocation] = useState(0);
 
   const { data: { plants = [], locations = [] } = {}, refetch: refetchPlants } =
     useQuery({
@@ -48,9 +50,15 @@ export function PlantDashboard({ plantFilter }: { plantFilter: string }) {
 
   const filteredPlants = plants.filter((fetchedPlant) => {
     if (!fetchedPlant.name) return false;
-    return plantFilter
-      ? fetchedPlant.name.toLowerCase().startsWith(plantFilter.toLowerCase())
-      : true;
+    if (!fetchedPlant.locationId) return false;
+    if (selectedLocation !== 0 && fetchedPlant.locationId !== selectedLocation)
+      return false;
+
+    if (!plantFilter) return true;
+
+    return fetchedPlant.name
+      .toLowerCase()
+      .startsWith(plantFilter.toLowerCase());
   });
   const locationCount = locations.length || 0;
 
@@ -77,9 +85,10 @@ export function PlantDashboard({ plantFilter }: { plantFilter: string }) {
                   })}
                 </p>
               </div>
-              <button className="text-terracotta hover:text-dark-terracotta text-sm font-medium transition-colors">
-                {t("button_view_all")}
-              </button>
+              <LocationFilter
+                locations={locations}
+                setSelectedLocation={setSelectedLocation}
+              />
             </div>
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">

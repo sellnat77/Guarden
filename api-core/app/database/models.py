@@ -1,7 +1,9 @@
+import base64
+import hashlib
 from datetime import datetime, timezone
 from typing import List
 
-from passlib.context import CryptContext
+import bcrypt
 from sqlalchemy import DATETIME, DateTime, ForeignKey, Integer, String, func
 from sqlalchemy.orm import Mapped, declarative_base, mapped_column, relationship
 
@@ -100,15 +102,19 @@ class PlantModel(Base):
     )
 
 
+def seed_hash_password(password: str) -> str:
+    digest = hashlib.sha256(password.encode()).digest()
+    encoded = base64.b64encode(digest)
+    return bcrypt.hashpw(encoded, bcrypt.gensalt()).decode()
+
+
 INITIAL_DATA = {
     "users": [
         {
             "id": 1,
             "username": "demo",
             "email": "demo@example.com",
-            "password": CryptContext(schemes=["bcrypt"], deprecated="auto").hash(
-                "demo"
-            ),
+            "password": seed_hash_password("demo"),
             "profilePicture": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=200",
         }
     ],
