@@ -6,7 +6,6 @@ from typing import Optional
 import boto3
 import strawberry
 from botocore.client import Config
-from sqlakeyset.serial.serial import deserialize_int
 
 from app.logUtil import logger
 

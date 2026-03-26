@@ -2,17 +2,15 @@ import os
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 
+from argon2 import PasswordHasher
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
-from passlib.context import CryptContext
 from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
+from sqlalchemy.ext.asyncio import async_sessionmaker
 
-from app.database.db import SessionLocal
 from app.database.models import UserModel
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.environ.get("ACCESS_TOKEN_EXPIRE_MINUTES", 60))
 SECRET_KEY = os.environ.get("SECRET_KEY", "default_key")
@@ -21,13 +19,13 @@ ACCESS_TOKEN_NAME = "accessToken"
 
 
 def hash_password(password: str) -> str:
-    return pwd_context.hash(password)
+    ph = PasswordHasher()
+    return ph.hash(password)
 
 
-def verify_password(plain: str, hashed: str) -> bool:
-    print(plain)
-    print(hashed)
-    return pwd_context.verify(plain, hashed)
+def verify_password(password: str, known_hash) -> bool:
+    ph = PasswordHasher()
+    return ph.verify(known_hash, password)
 
 
 def create_access_token(

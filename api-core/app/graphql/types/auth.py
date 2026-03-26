@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Annotated, Union
 
 import strawberry
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
+from sqlalchemy.ext.asyncio import async_sessionmaker
 
 from app.database.models import UserModel
 from app.graphql.core.auth_util import (
