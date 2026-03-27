@@ -13,6 +13,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { ResponsiveContainer } from "recharts";
 import { deletePlant } from "../data/plantsData";
 import { VitalGraph } from "./VitalGraph";
+import { getHealthColor } from "./PlantDetail/util";
 import type { DeletePlantInput, Plant } from "@/data/gql/graphql";
 import { client } from "@/util/graphqlClient";
 import { getLocation } from "@/data/locationsData";
@@ -63,18 +64,6 @@ export function PlantCard({
       await client.request(deletePlant, payload),
   });
 
-  const getHealthColor = (health: string) => {
-    switch (health) {
-      case "healthy":
-        return "bg-sage text-white";
-      case "needs-attention":
-        return "bg-terracotta text-white";
-      case "critical":
-        return "bg-red-500 text-white";
-      default:
-        return "bg-gray-400";
-    }
-  };
 
   const plant = { ...defaultPlantProps, ...plantData };
   const waterDays = Math.floor(Math.random() * 5) + 1;
@@ -114,6 +103,7 @@ export function PlantCard({
         <img
           src={plant.image}
           alt={plant.name}
+          onClick={() => { navigate({to: `/plant/${plant.id}/detail`})}}
           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
         />
         <div className="absolute top-4 right-4">

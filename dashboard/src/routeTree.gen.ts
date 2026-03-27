@@ -17,6 +17,7 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedAddVitalRouteImport } from './routes/_authenticated/add-vital'
 import { Route as AuthenticatedAddPlantRouteImport } from './routes/_authenticated/add-plant'
 import { Route as AuthenticatedAddLocationRouteImport } from './routes/_authenticated/add-location'
+import { Route as AuthenticatedPlantPlantIdDetailRouteImport } from './routes/_authenticated/plant/$plantId.detail'
 
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
@@ -58,6 +59,12 @@ const AuthenticatedAddLocationRoute =
     path: '/add-location',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedPlantPlantIdDetailRoute =
+  AuthenticatedPlantPlantIdDetailRouteImport.update({
+    id: '/plant/$plantId/detail',
+    path: '/plant/$plantId/detail',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -67,6 +74,7 @@ export interface FileRoutesByFullPath {
   '/add-plant': typeof AuthenticatedAddPlantRoute
   '/add-vital': typeof AuthenticatedAddVitalRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/plant/$plantId/detail': typeof AuthenticatedPlantPlantIdDetailRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -76,6 +84,7 @@ export interface FileRoutesByTo {
   '/add-plant': typeof AuthenticatedAddPlantRoute
   '/add-vital': typeof AuthenticatedAddVitalRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/plant/$plantId/detail': typeof AuthenticatedPlantPlantIdDetailRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -87,6 +96,7 @@ export interface FileRoutesById {
   '/_authenticated/add-plant': typeof AuthenticatedAddPlantRoute
   '/_authenticated/add-vital': typeof AuthenticatedAddVitalRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/plant/$plantId/detail': typeof AuthenticatedPlantPlantIdDetailRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -98,6 +108,7 @@ export interface FileRouteTypes {
     | '/add-plant'
     | '/add-vital'
     | '/dashboard'
+    | '/plant/$plantId/detail'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -107,6 +118,7 @@ export interface FileRouteTypes {
     | '/add-plant'
     | '/add-vital'
     | '/dashboard'
+    | '/plant/$plantId/detail'
   id:
     | '__root__'
     | '/'
@@ -117,6 +129,7 @@ export interface FileRouteTypes {
     | '/_authenticated/add-plant'
     | '/_authenticated/add-vital'
     | '/_authenticated/dashboard'
+    | '/_authenticated/plant/$plantId/detail'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -184,6 +197,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAddLocationRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/plant/$plantId/detail': {
+      id: '/_authenticated/plant/$plantId/detail'
+      path: '/plant/$plantId/detail'
+      fullPath: '/plant/$plantId/detail'
+      preLoaderRoute: typeof AuthenticatedPlantPlantIdDetailRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
@@ -192,6 +212,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAddPlantRoute: typeof AuthenticatedAddPlantRoute
   AuthenticatedAddVitalRoute: typeof AuthenticatedAddVitalRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedPlantPlantIdDetailRoute: typeof AuthenticatedPlantPlantIdDetailRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
@@ -199,6 +220,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAddPlantRoute: AuthenticatedAddPlantRoute,
   AuthenticatedAddVitalRoute: AuthenticatedAddVitalRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedPlantPlantIdDetailRoute: AuthenticatedPlantPlantIdDetailRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
