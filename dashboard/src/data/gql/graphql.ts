@@ -82,6 +82,23 @@ export type DeletePlantInput = {
   id: Scalars['Int']['input'];
 };
 
+export enum GeneralHealthEnum {
+  BrownEdges = 'BROWN_EDGES',
+  Diseased = 'DISEASED',
+  FlowerDrop = 'FLOWER_DROP',
+  FoliarBurn = 'FOLIAR_BURN',
+  Healthy = 'HEALTHY',
+  LeafSpot = 'LEAF_SPOT',
+  NutrientDeficient = 'NUTRIENT_DEFICIENT',
+  PestInfested = 'PEST_INFESTED',
+  RootBound = 'ROOT_BOUND',
+  SicklyYellowLeaves = 'SICKLY_YELLOW_LEAVES',
+  SlowGrowth = 'SLOW_GROWTH',
+  Stressed = 'STRESSED',
+  WaterStressed = 'WATER_STRESSED',
+  Wilting = 'WILTING'
+}
+
 export type GenerateUploadUrlInput = {
   bucket: StorageBucket;
   contentType?: InputMaybe<Scalars['String']['input']>;
@@ -94,9 +111,20 @@ export type GenerateUploadUrlOutput = {
   url: Scalars['String']['output'];
 };
 
+export enum LightLevelsEnum {
+  Bright = 'BRIGHT',
+  Dark = 'DARK',
+  FullSun = 'FULL_SUN',
+  Low = 'LOW',
+  Partial = 'PARTIAL',
+  Shady = 'SHADY',
+  Zero = 'ZERO'
+}
+
 export type Location = {
   __typename?: 'Location';
   id: Scalars['Int']['output'];
+  lightProvided: LightLevelsEnum;
   name: Scalars['String']['output'];
   plants: PlantModelConnection;
   userId: Scalars['Int']['output'];
@@ -119,6 +147,7 @@ export type LocationFilterSetInput = {
 export type LocationModel = {
   __typename?: 'LocationModel';
   id: Scalars['Int']['output'];
+  lightProvided: LightLevelsEnum;
   name: Scalars['String']['output'];
   owner: UserModel;
   plants: PlantModelConnection;
@@ -228,14 +257,14 @@ export type Plant = {
   createdById: Scalars['Int']['output'];
   description: Scalars['String']['output'];
   fertilizeFrequencyDays: Scalars['Int']['output'];
-  generalHealth: Scalars['String']['output'];
+  generalHealth: GeneralHealthEnum;
   id: Scalars['Int']['output'];
   image: Scalars['String']['output'];
   lastFertilized: Scalars['DateTime']['output'];
   lastPruned: Scalars['DateTime']['output'];
   lastRepotted: Scalars['DateTime']['output'];
   lastWatered: Scalars['DateTime']['output'];
-  lightRequirements?: Maybe<Scalars['Int']['output']>;
+  lightRequirements: LightLevelsEnum;
   locationId: Scalars['Int']['output'];
   name: Scalars['String']['output'];
   pruneFrequencyDays: Scalars['Int']['output'];
@@ -264,14 +293,14 @@ export type PlantModel = {
   createdById: Scalars['Int']['output'];
   description: Scalars['String']['output'];
   fertilizeFrequencyDays: Scalars['Int']['output'];
-  generalHealth: Scalars['String']['output'];
+  generalHealth: GeneralHealthEnum;
   id: Scalars['Int']['output'];
   image: Scalars['String']['output'];
   lastFertilized: Scalars['DateTime']['output'];
   lastPruned: Scalars['DateTime']['output'];
   lastRepotted: Scalars['DateTime']['output'];
   lastWatered: Scalars['DateTime']['output'];
-  lightRequirements?: Maybe<Scalars['Int']['output']>;
+  lightRequirements: LightLevelsEnum;
   location: LocationModel;
   locationId: Scalars['Int']['output'];
   name: Scalars['String']['output'];
@@ -580,7 +609,7 @@ export type FetchPlantsQueryVariables = Exact<{
 }>;
 
 
-export type FetchPlantsQuery = { __typename?: 'Query', plant: { __typename?: 'PlantQueries', getPlants: Array<{ __typename?: 'Plant', id: number, name: string, species: string, image: string, generalHealth: string, lastPruned: any, lastWatered: any, lastRepotted: any, lastFertilized: any, locationId: number }> } };
+export type FetchPlantsQuery = { __typename?: 'Query', plant: { __typename?: 'PlantQueries', getPlants: Array<{ __typename?: 'Plant', id: number, name: string, species: string, image: string, generalHealth: GeneralHealthEnum, lastPruned: any, lastWatered: any, lastRepotted: any, lastFertilized: any, locationId: number }> } };
 
 export type AddPlantMutationVariables = Exact<{
   addPlantInput: AddPlantInput;
@@ -601,14 +630,14 @@ export type Dashboard_GetPlantsAndLocationsQueryVariables = Exact<{
 }>;
 
 
-export type Dashboard_GetPlantsAndLocationsQuery = { __typename?: 'Query', plant: { __typename?: 'PlantQueries', getPlants: Array<{ __typename?: 'Plant', id: number, name: string, species: string, image: string, generalHealth: string, lastPruned: any, lastWatered: any, lastRepotted: any, lastFertilized: any, locationId: number }> }, location: { __typename?: 'LocationQueries', getLocations: Array<{ __typename?: 'Location', id: number, name: string }> } };
+export type Dashboard_GetPlantsAndLocationsQuery = { __typename?: 'Query', plant: { __typename?: 'PlantQueries', getPlants: Array<{ __typename?: 'Plant', id: number, name: string, species: string, image: string, generalHealth: GeneralHealthEnum, lastPruned: any, lastWatered: any, lastRepotted: any, lastFertilized: any, locationId: number }> }, location: { __typename?: 'LocationQueries', getLocations: Array<{ __typename?: 'Location', id: number, name: string }> } };
 
 export type PlantDetail_GetPlantDetailsQueryVariables = Exact<{
   plantId: Scalars['Int']['input'];
 }>;
 
 
-export type PlantDetail_GetPlantDetailsQuery = { __typename?: 'Query', plant: { __typename?: 'PlantQueries', getPlants: Array<{ __typename?: 'Plant', createdById: number, description: string, fertilizeFrequencyDays: number, generalHealth: string, id: number, image: string, lastFertilized: any, lastPruned: any, lastRepotted: any, lastWatered: any, lightRequirements?: number | null, locationId: number, name: string, pruneFrequencyDays: number, repotFrequencyDays: number, species: string, waterFrequencyDays: number, vitals: { __typename?: 'VitalModelConnection', edges: Array<{ __typename?: 'VitalModelEdge', node: { __typename?: 'VitalModel', date: any, healthPct: number, id: number, image: string, notes: string } }> } }> } };
+export type PlantDetail_GetPlantDetailsQuery = { __typename?: 'Query', plant: { __typename?: 'PlantQueries', getPlants: Array<{ __typename?: 'Plant', createdById: number, description: string, fertilizeFrequencyDays: number, generalHealth: GeneralHealthEnum, id: number, image: string, lastFertilized: any, lastPruned: any, lastRepotted: any, lastWatered: any, lightRequirements: LightLevelsEnum, locationId: number, name: string, pruneFrequencyDays: number, repotFrequencyDays: number, species: string, waterFrequencyDays: number, vitals: { __typename?: 'VitalModelConnection', edges: Array<{ __typename?: 'VitalModelEdge', node: { __typename?: 'VitalModel', date: any, healthPct: number, id: number, image: string, notes: string } }> } }> } };
 
 export type RegisterUserMutationVariables = Exact<{
   userInput: RegisterUserInput;

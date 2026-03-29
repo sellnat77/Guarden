@@ -14,7 +14,8 @@ import { ResponsiveContainer } from "recharts";
 import { deletePlant } from "../data/plantsData";
 import { VitalGraph } from "./VitalGraph";
 import { getHealthColor } from "./PlantDetail/util";
-import type { DeletePlantInput, Plant } from "@/data/gql/graphql";
+import type {DeletePlantInput, Plant} from "@/data/gql/graphql";
+import {  GeneralHealthEnum  } from "@/data/gql/graphql";
 import { client } from "@/util/graphqlClient";
 import { getLocation } from "@/data/locationsData";
 import { getVitalsForPlant } from "@/data/vitalsData";
@@ -22,7 +23,7 @@ import { getVitalsForPlant } from "@/data/vitalsData";
 const defaultPlantProps = {
   image:
     "https://images.unsplash.com/photo-1614594975525-e45190c55d0b?auto=format&fit=crop&q=80&w=800",
-  health: "healthy",
+  health: "Healthy",
 };
 
 interface PlantCardProps {
@@ -127,9 +128,9 @@ export function PlantCard({
         </div>
         <div className="absolute top-4 left-4">
           <span
-            className={`rounded-full px-3 py-1 text-xs font-medium shadow-sm backdrop-blur-md ${getHealthColor(plant.health)}`}
+            className={`rounded-full px-3 py-1 text-xs font-medium shadow-sm backdrop-blur-md ${getHealthColor(plant.generalHealth || GeneralHealthEnum.Healthy)}`}
           >
-            {plant.health.replace("-", " ")}
+            {plant.generalHealth || GeneralHealthEnum.Healthy}
           </span>
         </div>
 

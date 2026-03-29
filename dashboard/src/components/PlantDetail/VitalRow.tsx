@@ -15,7 +15,7 @@ export function VitalRow({ node }: VitalRowProps) {
     <div className="py-3 border-b border-gray-100 last:border-0">
       <div className="flex justify-between items-center mb-1.5">
         <p className="text-xs text-gray-500">{formatDate(date)}</p>
-        <p className={`text-xs font-bold ${healthPct >= 80 ? "text-green-600" : healthPct >= 55 ? "text-yellow-600" : "text-red-600"}`}>
+        <p className={`text-xs font-bold ${healthPct >= 80 ? "text-forest" : healthPct >= 55 ? "text-brown" : "text-dark-terracotta"}`}>
           {healthPct}%
         </p>
       </div>

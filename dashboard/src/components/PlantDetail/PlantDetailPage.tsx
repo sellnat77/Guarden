@@ -1,6 +1,12 @@
 import { Button } from "@base-ui/react";
 import {
   ArrowLeft,
+  ArrowUpFromLineIcon,
+  CrossIcon,
+  DropletIcon,
+  ScissorsIcon,
+  SproutIcon,
+  StethoscopeIcon,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
@@ -8,7 +14,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { CareRow } from "./CareRow";
 import { VitalRow } from "./VitalRow";
-import { LIGHT_LABELS, getHealthColor } from "./util";
+import { getHealthColor, getLightLabel as getLightIcon } from "./util";
 import { getPlantDetails } from "@/data/queries";
 import { client } from "@/util/graphqlClient";
 
@@ -82,15 +88,12 @@ export function PlantDetailPage({
                   <p className="text-sm text-gray-500 mt-2">{plant.description}</p>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  {[
-                    LIGHT_LABELS[plant.lightRequirements || 0],
-                    `📍 Location #${plant.locationId}`,
-                    `🪴 Plant #${plant.id}`,
-                  ].map((tag) => (
-                    <span key={tag} className="text-xs bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full">
-                      {tag}
-                    </span>
-                  ))}
+                  <span>
+                    {`Light Required: ${plant.lightRequirements}`}
+                  </span>
+                  <span>
+                  {getLightIcon(plant.lightRequirements)}
+                </span>
                 </div>
               </div>
             </div>
@@ -98,16 +101,23 @@ export function PlantDetailPage({
             {/* Care + Vitals */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="rounded-2xl border border-gray-100 shadow-sm p-5">
-                <h2 className="text-sm font-semibold text-gray-700 mb-1">🌿 Care Schedule</h2>
+                <div className="flex items-center gap-2 mb-1">
+                  <CrossIcon className=" fill-terracotta stroke-terracotta"/>
+                  <h2 className="text-sm font-semibold text-gray-700">Care Schedule</h2>
+                </div>
                 <p className="text-xs text-gray-400 mb-3">Last activity &amp; frequency</p>
-                <CareRow icon="💧" label="Watering"    lastDate={plant.lastWatered}    frequencyDays={plant.waterFrequencyDays} />
-                <CareRow icon="🌱" label="Fertilizing" lastDate={plant.lastFertilized} frequencyDays={plant.fertilizeFrequencyDays} />
-                <CareRow icon="✂️" label="Pruning"     lastDate={plant.lastPruned}     frequencyDays={plant.pruneFrequencyDays} />
-                <CareRow icon="🪣" label="Repotting"   lastDate={plant.lastRepotted}   frequencyDays={plant.repotFrequencyDays} />
+                <CareRow Icon={DropletIcon} label="Watering"    lastDate={plant.lastWatered}    frequencyDays={plant.waterFrequencyDays} />
+                <CareRow Icon={SproutIcon} label="Fertilizing" lastDate={plant.lastFertilized} frequencyDays={plant.fertilizeFrequencyDays} />
+                <CareRow Icon={ScissorsIcon} label="Pruning"     lastDate={plant.lastPruned}     frequencyDays={plant.pruneFrequencyDays} />
+                <CareRow Icon={ArrowUpFromLineIcon} label="Repotting"   lastDate={plant.lastRepotted}   frequencyDays={plant.repotFrequencyDays} />
               </div>
 
               <div className="rounded-2xl border border-gray-100 shadow-sm p-5">
-                <h2 className="text-sm font-semibold text-gray-700 mb-1">📊 Vitals History</h2>
+                <div className="flex items-center gap-2 mb-1">
+                  <StethoscopeIcon className="  stroke-forest"/>
+
+                  <h2 className="text-sm font-semibold text-gray-700 mb-1">Vitals History</h2>
+                </div>
                 <p className="text-xs text-gray-400 mb-3">Health readings over time</p>
                 {vitals.length === 0
                   ? <p className="text-xs text-gray-400 text-center py-6">No vitals recorded yet.</p>

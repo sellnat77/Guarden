@@ -1,18 +1,21 @@
 import { daysSince, formatDate, urgencyClass } from "./util";
+import type { LucideIcon } from "lucide-react";
 
 interface CareRowProps {
-  icon: string;
+  Icon: LucideIcon;
   label: string;
   lastDate: string | null;
   frequencyDays: number;
 }
 
-export function CareRow({ icon, label, lastDate, frequencyDays }: CareRowProps) {
+export function CareRow({ Icon, label, lastDate, frequencyDays }: CareRowProps) {
   const days = daysSince(lastDate);
   return (
     <div className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0">
       <div className="flex items-center gap-3">
-        <span className="text-xl">{icon}</span>
+        <div>
+          <Icon size={16} />
+        </div>
         <div>
           <p className="text-sm font-medium text-gray-800">{label}</p>
           <p className="text-xs text-gray-400">Every {frequencyDays}d</p>

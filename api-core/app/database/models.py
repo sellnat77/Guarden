@@ -1,8 +1,9 @@
+import enum
 from datetime import datetime, timezone
-from typing import List
+from typing import List, get_args
 
 from argon2 import PasswordHasher
-from sqlalchemy import DATETIME, DateTime, ForeignKey, Integer, String, func
+from sqlalchemy import DATETIME, DateTime, Enum, ForeignKey, Integer, String, func
 from sqlalchemy.orm import Mapped, declarative_base, mapped_column, relationship
 
 Base = declarative_base()
@@ -23,10 +24,25 @@ class UserModel(Base):
     )
 
 
+class LightLevelsEnum(enum.Enum):
+    FULL_SUN = 6
+    BRIGHT = 5
+    PARTIAL = 4
+    SHADY = 3
+    LOW = 2
+    DARK = 1
+    ZERO = 0
+
+
 class LocationModel(Base):
     __tablename__ = "locations"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(100), nullable=False)
+    lightProvided: Mapped[LightLevelsEnum] = mapped_column(
+        Enum(LightLevelsEnum, name="lightProvided"),
+        nullable=False,
+        default=LightLevelsEnum.SHADY,
+    )
     plants: Mapped[List["PlantModel"]] = relationship(
         back_populates="location", cascade="all, delete", lazy="selectin"
     )
@@ -60,15 +76,40 @@ class TipModel(Base):
     tipText: Mapped[str] = mapped_column(String(255), nullable=False)
 
 
+class GeneralHealthEnum(enum.Enum):
+    HEALTHY = "Healthy"
+    STRESSED = "Stressed"
+    DISEASED = "Diseased"
+    PEST_INFESTED = "Pests"
+    NUTRIENT_DEFICIENT = "Nutrient Deficient"
+    WATER_STRESSED = "Water Stressed"
+    ROOT_BOUND = "Root Bound"
+    WILTING = "Wilting"
+    FOLIAR_BURN = "Foliar Burn"
+    SICKLY_YELLOW_LEAVES = "Sickly Yellow Leaves"
+    BROWN_EDGES = "Brown Edges"
+    FLOWER_DROP = "Flower Drop"
+    SLOW_GROWTH = "Slow Growth"
+    LEAF_SPOT = "Leaf Spot"
+
+
 class PlantModel(Base):
     __tablename__ = "plants"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(100), nullable=False)
     species: Mapped[str] = mapped_column(String(100), nullable=False)
     image: Mapped[str] = mapped_column(String(255), nullable=False)
-    generalHealth: Mapped[str] = mapped_column(String(100), nullable=False)
+    generalHealth: Mapped[GeneralHealthEnum] = mapped_column(
+        Enum(GeneralHealthEnum, name="generalHealth"),
+        nullable=False,
+        default=GeneralHealthEnum.HEALTHY,
+    )
     description: Mapped[str] = mapped_column(String(255), nullable=False)
-    lightRequirements: Mapped[int] = mapped_column(Integer, nullable=True)
+    lightRequirements: Mapped[LightLevelsEnum] = mapped_column(
+        Enum(LightLevelsEnum, name="lightRequirements"),
+        nullable=False,
+        default=LightLevelsEnum.SHADY,
+    )
     waterFrequencyDays: Mapped[int] = mapped_column(Integer, nullable=False)
     fertilizeFrequencyDays: Mapped[int] = mapped_column(Integer, nullable=False)
     pruneFrequencyDays: Mapped[int] = mapped_column(Integer, nullable=False)
@@ -684,7 +725,7 @@ INITIAL_DATA = {
             "notes": "Cascading beautifully, best shape yet",
             "image": "https://images.unsplash.com/photo-1572688484438-313a6e50c333?w=480&q=80",
         },
-        # Vera (id 11) — critical overwatering crisis, long slow recovery still in progress
+        # Vera (id 11) — Diseased overwatering crisis, long slow recovery still in progress
         {
             "id": 33,
             "plantId": 11,
@@ -847,9 +888,9 @@ INITIAL_DATA = {
             "name": "Demonstratus",
             "species": "Succulent",
             "image": "https://watchandlearn.scholastic.com/content/dam/classroom-magazines/watchandlearn/videos/animals-and-plants/plants/what-are-plants-/english/wall-2018-whatareplantsmp4.transform/content-tile-large/image.png",
-            "generalHealth": "healthy",
+            "generalHealth": GeneralHealthEnum.HEALTHY,
             "description": "A demo plant",
-            "lightRequirements": 3,
+            "lightRequirements": LightLevelsEnum.SHADY,
             "waterFrequencyDays": 7,
             "fertilizeFrequencyDays": 90,
             "pruneFrequencyDays": 180,
@@ -862,9 +903,9 @@ INITIAL_DATA = {
             "name": "Monty",
             "species": "Monstera deliciosa",
             "image": "https://images.unsplash.com/photo-1614594975525-e45190c55d0b?w=480&q=80",
-            "generalHealth": "healthy",
+            "generalHealth": GeneralHealthEnum.HEALTHY,
             "description": "A large, striking tropical plant with iconic split leaves.",
-            "lightRequirements": 3,
+            "lightRequirements": LightLevelsEnum.SHADY,
             "waterFrequencyDays": 7,
             "fertilizeFrequencyDays": 30,
             "pruneFrequencyDays": 90,
@@ -877,9 +918,9 @@ INITIAL_DATA = {
             "name": "Percy",
             "species": "Epipremnum aureum (Pothos)",
             "image": "https://images.unsplash.com/photo-1643058193371-01baea73ccd6?w=480&q=80",
-            "generalHealth": "healthy",
+            "generalHealth": GeneralHealthEnum.HEALTHY,
             "description": "A hardy trailing vine that thrives in low light conditions.",
-            "lightRequirements": 2,
+            "lightRequirements": LightLevelsEnum.PARTIAL,
             "waterFrequencyDays": 10,
             "fertilizeFrequencyDays": 60,
             "pruneFrequencyDays": 60,
@@ -892,9 +933,9 @@ INITIAL_DATA = {
             "name": "Sansa",
             "species": "Sansevieria trifasciata (Snake Plant)",
             "image": "https://images.unsplash.com/photo-1696508902069-c4bf13d19701?w=480&q=80",
-            "generalHealth": "healthy",
+            "generalHealth": GeneralHealthEnum.HEALTHY,
             "description": "An extremely low-maintenance plant tolerant of neglect.",
-            "lightRequirements": 1,
+            "lightRequirements": LightLevelsEnum.DARK,
             "waterFrequencyDays": 21,
             "fertilizeFrequencyDays": 90,
             "pruneFrequencyDays": 365,
@@ -907,9 +948,9 @@ INITIAL_DATA = {
             "name": "Fifi",
             "species": "Ficus lyrata (Fiddle Leaf Fig)",
             "image": "https://images.unsplash.com/photo-1677428536327-d2aefcec578c?w=480&q=80",
-            "generalHealth": "needs-attention",
+            "generalHealth": GeneralHealthEnum.STRESSED,
             "description": "A dramatic statement plant with large, violin-shaped leaves.",
-            "lightRequirements": 5,
+            "lightRequirements": LightLevelsEnum.FULL_SUN,
             "waterFrequencyDays": 7,
             "fertilizeFrequencyDays": 30,
             "pruneFrequencyDays": 180,
@@ -922,9 +963,9 @@ INITIAL_DATA = {
             "name": "Lily",
             "species": "Spathiphyllum wallisii (Peace Lily)",
             "image": "https://images.unsplash.com/photo-1706944590915-120cf3bf7ccd?w=480&q=80",
-            "generalHealth": "healthy",
+            "generalHealth": GeneralHealthEnum.HEALTHY,
             "description": "An elegant flowering plant that purifies indoor air.",
-            "lightRequirements": 2,
+            "lightRequirements": LightLevelsEnum.PARTIAL,
             "waterFrequencyDays": 7,
             "fertilizeFrequencyDays": 60,
             "pruneFrequencyDays": 90,
@@ -937,9 +978,9 @@ INITIAL_DATA = {
             "name": "Rudy",
             "species": "Ficus elastica (Rubber Plant)",
             "image": "https://images.unsplash.com/photo-1591656884447-8562e2373a66?w=480&q=80",
-            "generalHealth": "healthy",
+            "generalHealth": GeneralHealthEnum.HEALTHY,
             "description": "A bold, glossy-leafed tropical tree popular as a houseplant.",
-            "lightRequirements": 4,
+            "lightRequirements": LightLevelsEnum.LOW,
             "waterFrequencyDays": 10,
             "fertilizeFrequencyDays": 30,
             "pruneFrequencyDays": 180,
@@ -952,9 +993,9 @@ INITIAL_DATA = {
             "name": "Ziggy",
             "species": "Zamioculcas zamiifolia (ZZ Plant)",
             "image": "https://images.unsplash.com/photo-1632207691143-643e2a9a9361?w=480&q=80",
-            "generalHealth": "healthy",
+            "generalHealth": GeneralHealthEnum.HEALTHY,
             "description": "A virtually indestructible plant with waxy, dark green leaves.",
-            "lightRequirements": 1,
+            "lightRequirements": LightLevelsEnum.ZERO,
             "waterFrequencyDays": 21,
             "fertilizeFrequencyDays": 90,
             "pruneFrequencyDays": 365,
@@ -967,9 +1008,9 @@ INITIAL_DATA = {
             "name": "Birdie",
             "species": "Strelitzia reginae (Bird of Paradise)",
             "image": "https://images.unsplash.com/photo-1768368053225-bb828519ad5c?w=480&q=80",
-            "generalHealth": "needs-attention",
+            "generalHealth": GeneralHealthEnum.STRESSED,
             "description": "A majestic plant with large paddle-shaped leaves and vivid flowers.",
-            "lightRequirements": 5,
+            "lightRequirements": LightLevelsEnum.FULL_SUN,
             "waterFrequencyDays": 7,
             "fertilizeFrequencyDays": 30,
             "pruneFrequencyDays": 90,
@@ -982,9 +1023,9 @@ INITIAL_DATA = {
             "name": "Charlotte",
             "species": "Chlorophytum comosum (Spider Plant)",
             "image": "https://images.unsplash.com/photo-1572688484438-313a6e50c333?w=480&q=80",
-            "generalHealth": "healthy",
+            "generalHealth": GeneralHealthEnum.HEALTHY,
             "description": "A cheerful, fast-growing plant that produces cascading baby plantlets.",
-            "lightRequirements": 3,
+            "lightRequirements": LightLevelsEnum.SHADY,
             "waterFrequencyDays": 7,
             "fertilizeFrequencyDays": 60,
             "pruneFrequencyDays": 60,
@@ -997,9 +1038,9 @@ INITIAL_DATA = {
             "name": "Vera",
             "species": "Aloe barbadensis miller (Aloe Vera)",
             "image": "https://images.unsplash.com/photo-1596547609652-9cf5d8d76921?w=480&q=80",
-            "generalHealth": "critical",
+            "generalHealth": GeneralHealthEnum.DISEASED,
             "description": "A medicinal succulent with thick, fleshy leaves full of soothing gel.",
-            "lightRequirements": 5,
+            "lightRequirements": LightLevelsEnum.BRIGHT,
             "waterFrequencyDays": 14,
             "fertilizeFrequencyDays": 90,
             "pruneFrequencyDays": 180,
