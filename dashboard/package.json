@@ -24,7 +24,7 @@
     "graphql-request": "^7.4.0",
     "i18next": "^25.7.3",
     "i18next-http-backend": "^3.0.2",
-    "lucide-react": "^0.575.0",
+    "lucide-react": "^1.7.0",
     "react": "^19.2.0",
     "react-cookie": "^8.0.1",
     "react-dom": "^19.2.0",
