@@ -26,7 +26,10 @@ strawberry_sqlalchemy_mapper = StrawberrySQLAlchemyMapper(always_use_list=False)
 
 @strawberry_sqlalchemy_mapper.type(UserModel)
 class User:
-    __exclude__ = ["plants", "locations"]
+    # __exclude__ = ["plants", "locations"]
+    plants: List["Plant"]
+    locations: List["Location"]
+    pass
 
 
 @strawberry_sqlalchemy_mapper.type(TipModel)
@@ -36,18 +39,23 @@ class Tip:
 
 @strawberry_sqlalchemy_mapper.type(LocationModel)
 class Location:
-    __exclude__ = ["owner"]
+    # __exclude__ = ["owner", "plants"]
+    owner: "User"
+    plants: list["Plant"]
     pass
 
 
 @strawberry_sqlalchemy_mapper.type(VitalModel)
 class Vital:
-    __exclude__ = ["plant"]
+    plant: "Plant"
+    pass
 
 
 @strawberry_sqlalchemy_mapper.type(PlantModel)
 class Plant:
-    __exclude__ = ["location", "createdBy"]
+    location: "Location"
+    createdBy: "User"
+    pass
 
 
 async def get_context():

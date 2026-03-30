@@ -25,6 +25,7 @@ dependencies = [
     "bcrypt (>=5.0.0,<6.0.0)",
     "argon2-cffi (>=25.1.0,<26.0.0)",
     "vulture (>=2.16,<3.0)",
+    "alembic-postgresql-enum (>=1.10.0,<2.0.0)",
 ]
 
 [tool.poetry]

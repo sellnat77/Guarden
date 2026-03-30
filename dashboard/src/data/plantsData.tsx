@@ -1,5 +1,6 @@
 import { graphql } from "./gql";
-import type { Plant } from "./gql/graphql";
+import { GeneralHealthEnum, LightLevelsEnum  } from "./gql/graphql";
+import type {Plant} from "./gql/graphql";
 
 export const countPlants = graphql(`
   query fetchPlants($currentUser: Int!) {
@@ -44,9 +45,19 @@ export const plants: Array<Plant> = [
     description: "Swiss Cheese Plant",
     image:
       "https://images.unsplash.com/photo-1614594975525-e45190c55d0b?auto=format&fit=crop&q=80&w=800",
-    generalHealth: "healthy",
+    generalHealth: GeneralHealthEnum.Healthy,
+    lightRequirements: LightLevelsEnum.Shady,
     lastWatered: "2023-10-25",
     createdById: 1,
+    createdBy: {
+      id: 1,
+      username: "JohnDoe",
+      email: "",
+      password: "",
+      profilePicture: "",
+      plants: [],
+      locations: [],
+    },
     lastPruned: "",
     lastRepotted: "",
     waterFrequencyDays: 7,
@@ -55,6 +66,22 @@ export const plants: Array<Plant> = [
     fertilizeFrequencyDays: 30,
     lastFertilized: "2023-10-01",
     locationId: 1,
+    location: {
+      id: 1,
+      name: "Garden",
+      userId: 1,
+      lightProvided: LightLevelsEnum.Shady,
+      owner: {
+        id: 1,
+        username: "JohnDoe",
+        email: "",
+        password: "",
+        profilePicture: "",
+        plants: [],
+        locations:[],
+      },
+      plants:[]
+    },
     vitals: {
       edges: [
         {
@@ -69,7 +96,8 @@ export const plants: Array<Plant> = [
               description: "",
               image:
                 "https://images.unsplash.com/photo-1614594975525-e45190c55d0b?auto=format&fit=crop&q=80&w=800",
-              generalHealth: "healthy",
+              generalHealth: GeneralHealthEnum.Healthy,
+              lightRequirements: LightLevelsEnum.Shady,
               lastWatered: "2023-10-25",
               waterFrequencyDays: 7,
               fertilizeFrequencyDays: 30,
@@ -86,6 +114,7 @@ export const plants: Array<Plant> = [
               locationId: 1,
               location: {
                 userId: 1,
+                lightProvided: LightLevelsEnum.Shady,
                 owner: {
                   locations: {
                     edges: [],

@@ -24,3 +24,45 @@ export const getPlantsAndLocations = graphql(`
     }
   }
 `);
+
+
+export const getPlantDetails = graphql(`
+  query PlantDetail_getPlantDetails($plantId:Int!) {
+    plant {
+      getPlants(filters: {id: $plantId}) {
+        createdById
+        description
+        fertilizeFrequencyDays
+        generalHealth
+        id
+        image
+        lastFertilized
+        lastPruned
+        lastRepotted
+        lastWatered
+        lightRequirements
+        location {
+          id
+          name
+          lightProvided
+        }
+        name
+        pruneFrequencyDays
+        repotFrequencyDays
+        species
+        waterFrequencyDays
+        vitals {
+          edges {
+            node {
+              date
+              healthPct
+              id
+              image
+              notes
+            }
+          }
+        }
+      }
+    }
+  }
+`);

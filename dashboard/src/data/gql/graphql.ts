@@ -82,6 +82,23 @@ export type DeletePlantInput = {
   id: Scalars['Int']['input'];
 };
 
+export enum GeneralHealthEnum {
+  BrownEdges = 'BROWN_EDGES',
+  Diseased = 'DISEASED',
+  FlowerDrop = 'FLOWER_DROP',
+  FoliarBurn = 'FOLIAR_BURN',
+  Healthy = 'HEALTHY',
+  LeafSpot = 'LEAF_SPOT',
+  NutrientDeficient = 'NUTRIENT_DEFICIENT',
+  PestInfested = 'PEST_INFESTED',
+  RootBound = 'ROOT_BOUND',
+  SicklyYellowLeaves = 'SICKLY_YELLOW_LEAVES',
+  SlowGrowth = 'SLOW_GROWTH',
+  Stressed = 'STRESSED',
+  WaterStressed = 'WATER_STRESSED',
+  Wilting = 'WILTING'
+}
+
 export type GenerateUploadUrlInput = {
   bucket: StorageBucket;
   contentType?: InputMaybe<Scalars['String']['input']>;
@@ -94,11 +111,23 @@ export type GenerateUploadUrlOutput = {
   url: Scalars['String']['output'];
 };
 
+export enum LightLevelsEnum {
+  Bright = 'BRIGHT',
+  Dark = 'DARK',
+  FullSun = 'FULL_SUN',
+  Low = 'LOW',
+  Partial = 'PARTIAL',
+  Shady = 'SHADY',
+  Zero = 'ZERO'
+}
+
 export type Location = {
   __typename?: 'Location';
   id: Scalars['Int']['output'];
+  lightProvided: LightLevelsEnum;
   name: Scalars['String']['output'];
-  plants: PlantModelConnection;
+  owner: User;
+  plants: Array<Plant>;
   userId: Scalars['Int']['output'];
 };
 
@@ -119,6 +148,7 @@ export type LocationFilterSetInput = {
 export type LocationModel = {
   __typename?: 'LocationModel';
   id: Scalars['Int']['output'];
+  lightProvided: LightLevelsEnum;
   name: Scalars['String']['output'];
   owner: UserModel;
   plants: PlantModelConnection;
@@ -225,17 +255,19 @@ export type PageInfo = {
 
 export type Plant = {
   __typename?: 'Plant';
+  createdBy: User;
   createdById: Scalars['Int']['output'];
   description: Scalars['String']['output'];
   fertilizeFrequencyDays: Scalars['Int']['output'];
-  generalHealth: Scalars['String']['output'];
+  generalHealth: GeneralHealthEnum;
   id: Scalars['Int']['output'];
   image: Scalars['String']['output'];
   lastFertilized: Scalars['DateTime']['output'];
   lastPruned: Scalars['DateTime']['output'];
   lastRepotted: Scalars['DateTime']['output'];
   lastWatered: Scalars['DateTime']['output'];
-  lightRequirements?: Maybe<Scalars['Int']['output']>;
+  lightRequirements: LightLevelsEnum;
+  location: Location;
   locationId: Scalars['Int']['output'];
   name: Scalars['String']['output'];
   pruneFrequencyDays: Scalars['Int']['output'];
@@ -264,14 +296,14 @@ export type PlantModel = {
   createdById: Scalars['Int']['output'];
   description: Scalars['String']['output'];
   fertilizeFrequencyDays: Scalars['Int']['output'];
-  generalHealth: Scalars['String']['output'];
+  generalHealth: GeneralHealthEnum;
   id: Scalars['Int']['output'];
   image: Scalars['String']['output'];
   lastFertilized: Scalars['DateTime']['output'];
   lastPruned: Scalars['DateTime']['output'];
   lastRepotted: Scalars['DateTime']['output'];
   lastWatered: Scalars['DateTime']['output'];
-  lightRequirements?: Maybe<Scalars['Int']['output']>;
+  lightRequirements: LightLevelsEnum;
   location: LocationModel;
   locationId: Scalars['Int']['output'];
   name: Scalars['String']['output'];
@@ -416,9 +448,27 @@ export type User = {
   __typename?: 'User';
   email: Scalars['String']['output'];
   id: Scalars['Int']['output'];
+  locations: Array<Location>;
   password: Scalars['String']['output'];
+  plants: Array<Plant>;
   profilePicture: Scalars['String']['output'];
   username: Scalars['String']['output'];
+};
+
+
+export type UserLocationsArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type UserPlantsArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type UserFilterSetInput = {
@@ -481,6 +531,7 @@ export type Vital = {
   id: Scalars['Int']['output'];
   image: Scalars['String']['output'];
   notes: Scalars['String']['output'];
+  plant: Plant;
   plantId: Scalars['Int']['output'];
 };
 
@@ -580,7 +631,7 @@ export type FetchPlantsQueryVariables = Exact<{
 }>;
 
 
-export type FetchPlantsQuery = { __typename?: 'Query', plant: { __typename?: 'PlantQueries', getPlants: Array<{ __typename?: 'Plant', id: number, name: string, species: string, image: string, generalHealth: string, lastPruned: any, lastWatered: any, lastRepotted: any, lastFertilized: any, locationId: number }> } };
+export type FetchPlantsQuery = { __typename?: 'Query', plant: { __typename?: 'PlantQueries', getPlants: Array<{ __typename?: 'Plant', id: number, name: string, species: string, image: string, generalHealth: GeneralHealthEnum, lastPruned: any, lastWatered: any, lastRepotted: any, lastFertilized: any, locationId: number }> } };
 
 export type AddPlantMutationVariables = Exact<{
   addPlantInput: AddPlantInput;
@@ -601,7 +652,14 @@ export type Dashboard_GetPlantsAndLocationsQueryVariables = Exact<{
 }>;
 
 
-export type Dashboard_GetPlantsAndLocationsQuery = { __typename?: 'Query', plant: { __typename?: 'PlantQueries', getPlants: Array<{ __typename?: 'Plant', id: number, name: string, species: string, image: string, generalHealth: string, lastPruned: any, lastWatered: any, lastRepotted: any, lastFertilized: any, locationId: number }> }, location: { __typename?: 'LocationQueries', getLocations: Array<{ __typename?: 'Location', id: number, name: string }> } };
+export type Dashboard_GetPlantsAndLocationsQuery = { __typename?: 'Query', plant: { __typename?: 'PlantQueries', getPlants: Array<{ __typename?: 'Plant', id: number, name: string, species: string, image: string, generalHealth: GeneralHealthEnum, lastPruned: any, lastWatered: any, lastRepotted: any, lastFertilized: any, locationId: number }> }, location: { __typename?: 'LocationQueries', getLocations: Array<{ __typename?: 'Location', id: number, name: string }> } };
+
+export type PlantDetail_GetPlantDetailsQueryVariables = Exact<{
+  plantId: Scalars['Int']['input'];
+}>;
+
+
+export type PlantDetail_GetPlantDetailsQuery = { __typename?: 'Query', plant: { __typename?: 'PlantQueries', getPlants: Array<{ __typename?: 'Plant', createdById: number, description: string, fertilizeFrequencyDays: number, generalHealth: GeneralHealthEnum, id: number, image: string, lastFertilized: any, lastPruned: any, lastRepotted: any, lastWatered: any, lightRequirements: LightLevelsEnum, name: string, pruneFrequencyDays: number, repotFrequencyDays: number, species: string, waterFrequencyDays: number, location: { __typename?: 'Location', id: number, name: string, lightProvided: LightLevelsEnum }, vitals: { __typename?: 'VitalModelConnection', edges: Array<{ __typename?: 'VitalModelEdge', node: { __typename?: 'VitalModel', date: any, healthPct: number, id: number, image: string, notes: string } }> } }> } };
 
 export type RegisterUserMutationVariables = Exact<{
   userInput: RegisterUserInput;
@@ -660,6 +718,7 @@ export const FetchPlantsDocument = {"kind":"Document","definitions":[{"kind":"Op
 export const AddPlantDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"addPlant"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"addPlantInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"AddPlantInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"plant"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"addPlant"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"addPlantInput"}}}]}]}}]}}]} as unknown as DocumentNode<AddPlantMutation, AddPlantMutationVariables>;
 export const DeletePlantDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"deletePlant"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"deletePlantInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DeletePlantInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"plant"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deletePlant"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"deletePlantInput"}}}]}]}}]}}]} as unknown as DocumentNode<DeletePlantMutation, DeletePlantMutationVariables>;
 export const Dashboard_GetPlantsAndLocationsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Dashboard_getPlantsAndLocations"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"currentUser"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"plant"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getPlants"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filters"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"createdBy"},"value":{"kind":"Variable","name":{"kind":"Name","value":"currentUser"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"species"}},{"kind":"Field","name":{"kind":"Name","value":"image"}},{"kind":"Field","name":{"kind":"Name","value":"generalHealth"}},{"kind":"Field","name":{"kind":"Name","value":"lastPruned"}},{"kind":"Field","name":{"kind":"Name","value":"lastWatered"}},{"kind":"Field","name":{"kind":"Name","value":"lastRepotted"}},{"kind":"Field","name":{"kind":"Name","value":"lastFertilized"}},{"kind":"Field","name":{"kind":"Name","value":"locationId"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"location"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getLocations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filters"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"createdBy"},"value":{"kind":"Variable","name":{"kind":"Name","value":"currentUser"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<Dashboard_GetPlantsAndLocationsQuery, Dashboard_GetPlantsAndLocationsQueryVariables>;
+export const PlantDetail_GetPlantDetailsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"PlantDetail_getPlantDetails"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"plantId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"plant"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getPlants"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filters"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"plantId"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createdById"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"fertilizeFrequencyDays"}},{"kind":"Field","name":{"kind":"Name","value":"generalHealth"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"image"}},{"kind":"Field","name":{"kind":"Name","value":"lastFertilized"}},{"kind":"Field","name":{"kind":"Name","value":"lastPruned"}},{"kind":"Field","name":{"kind":"Name","value":"lastRepotted"}},{"kind":"Field","name":{"kind":"Name","value":"lastWatered"}},{"kind":"Field","name":{"kind":"Name","value":"lightRequirements"}},{"kind":"Field","name":{"kind":"Name","value":"location"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"lightProvided"}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"pruneFrequencyDays"}},{"kind":"Field","name":{"kind":"Name","value":"repotFrequencyDays"}},{"kind":"Field","name":{"kind":"Name","value":"species"}},{"kind":"Field","name":{"kind":"Name","value":"waterFrequencyDays"}},{"kind":"Field","name":{"kind":"Name","value":"vitals"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"date"}},{"kind":"Field","name":{"kind":"Name","value":"healthPct"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"image"}},{"kind":"Field","name":{"kind":"Name","value":"notes"}}]}}]}}]}}]}}]}}]}}]} as unknown as DocumentNode<PlantDetail_GetPlantDetailsQuery, PlantDetail_GetPlantDetailsQueryVariables>;
 export const RegisterUserDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"registerUser"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"userInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"RegisterUserInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"auth"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"register"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"registerUser"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"userInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"userInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"RegisterSuccess"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"__typename"}},{"kind":"Field","name":{"kind":"Name","value":"token"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"RegisterError"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"__typename"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]}}]}}]}}]} as unknown as DocumentNode<RegisterUserMutation, RegisterUserMutationVariables>;
 export const LoginUserDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"loginUser"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"username"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"password"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"auth"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"login"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"loginUser"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"password"},"value":{"kind":"Variable","name":{"kind":"Name","value":"password"}}},{"kind":"Argument","name":{"kind":"Name","value":"username"},"value":{"kind":"Variable","name":{"kind":"Name","value":"username"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"LoginSuccess"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"__typename"}},{"kind":"Field","name":{"kind":"Name","value":"token"}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"profilePicture"}}]}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"LoginError"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"__typename"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]}}]}}]}}]} as unknown as DocumentNode<LoginUserMutation, LoginUserMutationVariables>;
 export const AddVitalDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"addVital"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"vitalInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"AddVitalInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"vital"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"addVital"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"vitalInput"}}}]}]}}]}}]} as unknown as DocumentNode<AddVitalMutation, AddVitalMutationVariables>;
