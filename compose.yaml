@@ -1,29 +1,30 @@
 services:
   guarden-images:
-    container_name: guarden_images
     image: rustfs/rustfs:latest
+    container_name: guarden_images
     restart: unless-stopped
     environment:
-      ENV_CORS_ALLOWED_ORIGINS: "*"
+      ENV_CORS_ALLOWED_ORIGINS: ${PUBLIC_URL}
     volumes:
       - guarden_images:/data
     ports:
-      - "9900:9000"
-      - "9901:9001"
+      - ${GD_STORAGE_PORT}:9000
+      - ${GD_STORAGE_ADMIN_PORT}:9001
     networks:
       - guarden-network
 
   guarden-db:
-    container_name: guarden_database
     image: postgres:latest
+    container_name: guarden_database
     restart: unless-stopped
     volumes:
       - guarden_pgdata:/var/lib/postgresql
     ports:
-      - "5432:5432"
-    env_file:
-      - path: .guarden.env
-        required: true
+      - ${GD_DB_PORT}:5432
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     networks:
       - guarden-network
 
@@ -37,32 +38,34 @@ services:
       - guarden-network
 
   api-core:
+    image: ghcr.io/sellnat77/guarden/api-core:latest
     container_name: guarden_api_core
     build:
       context: "api-core"
-    image: ghcr.io/sellnat77/guarden/api-core:latest
     ports:
-      - 5000:5000
+      - ${GD_SERVER_PORT}:5000
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      GD_DB_HOST: ${GD_DB_HOST}
+      GD_DB_PORT: ${GD_DB_PORT}
+      POSTGRES_DB: ${POSTGRES_DB}
+      PUBLIC_OBJECT_STORAGE_SERVER: ${PUBLIC_OBJECT_STORAGE_SERVER}
     depends_on:
       - guarden-db
-    env_file:
-      - path: .guarden.env
-        required: true
+      - guarden-images
     networks:
       - guarden-network
 
   dashboard:
-    container_name: guarden_dashboard
     image: ghcr.io/sellnat77/guarden/dashboard:latest
+    container_name: guarden_dashboard
     build:
       context: "dashboard"
     ports:
-      - "3000:3000"
+      - ${GD_DASHBOARD_PORT}:3000
     depends_on:
       - api-core
-    env_file:
-      - path: .guarden.env
-        required: true
     networks:
       - guarden-network
 

@@ -41,6 +41,7 @@ dbPort = os.environ.get("GD_DB_PORT", "5432")
 dbName = os.environ.get("POSTGRES_DB", "guarden")
 
 DATABASE_URL = f"postgresql+asyncpg://{dbUser}:{dbPass}@{dbHost}:{dbPort}/{dbName}"
+print(DATABASE_URL)
 database = Database(DATABASE_URL)
 
 # Database setup
