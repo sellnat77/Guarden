@@ -1,4 +1,4 @@
-import { CircleSlash, CloudSun, Moon, Sun, SunDim, SunMedium, Sunset } from "lucide-react";
+import { CloudIcon, CloudSunIcon, MoonIcon, MoonStarIcon, SunDimIcon, SunIcon,  SunMediumIcon } from "lucide-react";
 import { GeneralHealthEnum, LightLevelsEnum } from "@/data/gql/graphql";
 
 export function daysSince(iso: string | null) {
@@ -37,22 +37,22 @@ export const getHealthColor = (health: GeneralHealthEnum) => {
 
 export const getLightLabel = (light: LightLevelsEnum) => {
   switch (light) {
-    case LightLevelsEnum.Bright:
-      return <SunMedium/>;
-    case LightLevelsEnum.Dark:
-      return <Moon/>;
     case LightLevelsEnum.FullSun:
-      return <Sun/>;
-    case LightLevelsEnum.Low:
-      return <SunDim/>;
+      return <SunIcon className="bg-light-full-sun  stroke-cream rounded-full p-1 w-7 h-7" />;
+    case LightLevelsEnum.Bright:
+      return <SunMediumIcon className="bg-light-bright stroke-cream rounded-full p-1 w-7 h-7" />;
     case LightLevelsEnum.Partial:
-      return <CloudSun/>;
+      return <SunDimIcon className="bg-light-partial stroke-cream rounded-full p-1 w-7 h-7" />;
     case LightLevelsEnum.Shady:
-      return <Sunset/>;
+      return <CloudIcon className="bg-light-shady stroke-cream rounded-full p-1 w-7 h-7" />;
+    case LightLevelsEnum.Low:
+      return <CloudSunIcon className="bg-light-low stroke-cream rounded-full p-1 w-7 h-7" />;
+    case LightLevelsEnum.Dark:
+      return <MoonIcon className="bg-light-dark  stroke-cream rounded-full p-1 w-7 h-7" />;
     case LightLevelsEnum.Zero:
-      return <CircleSlash/>;
+      return <MoonStarIcon className="bg-light-zero  stroke-cream rounded-full p-1 w-7 h-7" />;
     default:
-      return <Sun/>;
+      return <SunIcon className="bg-light-full-sun  stroke-cream rounded-full p-1 w-7 h-7" />;
   }
 };
 

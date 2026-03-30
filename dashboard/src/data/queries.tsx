@@ -41,7 +41,11 @@ export const getPlantDetails = graphql(`
         lastRepotted
         lastWatered
         lightRequirements
-        locationId
+        location {
+          id
+          name
+          lightProvided
+        }
         name
         pruneFrequencyDays
         repotFrequencyDays

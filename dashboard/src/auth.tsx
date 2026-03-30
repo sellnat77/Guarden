@@ -5,7 +5,7 @@ import { verifyToken } from "./data/authData";
 import { loginUser } from "./data/userData";
 import type { User } from "./data/gql/graphql";
 
-type SafeUser = Omit<User, "password">;
+type SafeUser = Omit<User, "password" | "locations" | "plants">;
 
 export interface AuthState {
   isAuthenticated: boolean;

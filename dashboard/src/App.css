@@ -5,11 +5,19 @@
   --color-sand: #e8dcc4;
   --color-terracotta: #d4735e;
   --color-dark-terracotta: #b05d4b;
+  --color-sun: #c9a84c;
   --color-sage: #8b9d83;
   --color-forest: #4a5d4f;
   --color-dark-forest: #3a4a3e;
   --color-brown: #8b6f47;
   --color-water: #8fcaca;
+  --color-light-full-sun: #c9a84c;
+  --color-light-bright: #d4bc6a;
+  --color-light-partial: #a8822a;
+  --color-light-shady: #8b9d83;
+  --color-light-low: #4a5d4f;
+  --color-light-dark: #3a4a3e;
+  --color-light-zero: #2a2a2a;
 }
 
 body {

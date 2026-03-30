@@ -29,7 +29,7 @@ export function PlantDetailPage({
 
   const { data: plantDetail} = useQuery({
     queryKey: ["getPlantDetail", plantId],
-    queryFn: async () => await client.request(getPlantDetails,{ plantId: parseInt(plantId) })
+    queryFn: async () => await client.request(getPlantDetails, { plantId: parseInt(plantId) })
   });
 
   const plant = plantDetail?.plant.getPlants[0];
@@ -92,7 +92,13 @@ export function PlantDetailPage({
                     {`Light Required: ${plant.lightRequirements}`}
                   </span>
                   <span>
-                  {getLightIcon(plant.lightRequirements)}
+                    {getLightIcon(plant.lightRequirements)}
+                  </span>
+                  <span>
+                    {`Light Provided by ${plant.location.name}: ${plant.location.lightProvided}`}
+                  </span>
+                  <span>
+                  {getLightIcon(plant.location.lightProvided)}
                 </span>
                 </div>
               </div>

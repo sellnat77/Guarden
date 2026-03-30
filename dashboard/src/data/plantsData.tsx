@@ -49,6 +49,15 @@ export const plants: Array<Plant> = [
     lightRequirements: LightLevelsEnum.Shady,
     lastWatered: "2023-10-25",
     createdById: 1,
+    createdBy: {
+      id: 1,
+      username: "JohnDoe",
+      email: "",
+      password: "",
+      profilePicture: "",
+      plants: [],
+      locations: [],
+    },
     lastPruned: "",
     lastRepotted: "",
     waterFrequencyDays: 7,
@@ -57,6 +66,22 @@ export const plants: Array<Plant> = [
     fertilizeFrequencyDays: 30,
     lastFertilized: "2023-10-01",
     locationId: 1,
+    location: {
+      id: 1,
+      name: "Garden",
+      userId: 1,
+      lightProvided: LightLevelsEnum.Shady,
+      owner: {
+        id: 1,
+        username: "JohnDoe",
+        email: "",
+        password: "",
+        profilePicture: "",
+        plants: [],
+        locations:[],
+      },
+      plants:[]
+    },
     vitals: {
       edges: [
         {
