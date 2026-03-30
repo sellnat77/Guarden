@@ -1,3 +1,4 @@
+import os
 import asyncio
 
 from dotenv import load_dotenv
@@ -44,6 +45,7 @@ origins = [
     "http://localhost:3000",
     "http://localhost:8080",
     "http://127.0.0.1:3000",
+    os.getenv("PUBLIC_URL"),
 ]
 
 app.add_middleware(

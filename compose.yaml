@@ -50,7 +50,9 @@ services:
       GD_DB_HOST: ${GD_DB_HOST}
       GD_DB_PORT: ${GD_DB_PORT}
       POSTGRES_DB: ${POSTGRES_DB}
+      OBJECT_STORAGE_SERVER: ${OBJECT_STORAGE_SERVER}
       PUBLIC_OBJECT_STORAGE_SERVER: ${PUBLIC_OBJECT_STORAGE_SERVER}
+      PUBLIC_URL: ${PUBLIC_URL}
     depends_on:
       - guarden-db
       - guarden-images
@@ -64,6 +66,8 @@ services:
       context: "dashboard"
     ports:
       - ${GD_DASHBOARD_PORT}:3000
+    environment:
+      VITE_GD_GRAPHQL_SERVER: ${VITE_GD_GRAPHQL_SERVER}
     depends_on:
       - api-core
     networks:
