@@ -9,11 +9,15 @@ export const getPlantsAndLocations = graphql(`
         species
         image
         generalHealth
+        lightRequirements
         lastPruned
         lastWatered
         lastRepotted
         lastFertilized
         locationId
+        location{
+          lightProvided
+        }
       }
     }
     location {

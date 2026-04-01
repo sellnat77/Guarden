@@ -14,7 +14,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { CareRow } from "./CareRow";
 import { VitalRow } from "./VitalRow";
-import { getHealthColor, getLightLabel as getLightIcon } from "./util";
+import { getHealthColor, getLightIcon as getLightIcon } from "./util";
 import { getPlantDetails } from "@/data/queries";
 import { client } from "@/util/graphqlClient";
 

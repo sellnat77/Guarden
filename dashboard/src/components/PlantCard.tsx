@@ -1,5 +1,6 @@
 import { Menu } from "@base-ui/react";
 import {
+  AlertTriangleIcon,
   Calendar,
   Droplets,
   MoreVertical,
@@ -13,7 +14,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { ResponsiveContainer } from "recharts";
 import { deletePlant } from "../data/plantsData";
 import { VitalGraph } from "./VitalGraph";
-import { getHealthColor } from "./PlantDetail/util";
+import { getHealthColor, getLightIcon, isLightMismatch } from "./PlantDetail/util";
 import type {DeletePlantInput, Plant} from "@/data/gql/graphql";
 import {  GeneralHealthEnum  } from "@/data/gql/graphql";
 import { client } from "@/util/graphqlClient";
@@ -68,6 +69,10 @@ export function PlantCard({
 
   const plant = { ...defaultPlantProps, ...plantData };
   const waterDays = Math.floor(Math.random() * 5) + 1;
+  const lightMismatch = isLightMismatch(
+    plantData.lightRequirements,
+    plantData.location?.lightProvided
+  );
   const locationName =
     fetchLocation?.location.getLocations[0]?.name || "Default Location";
 
@@ -133,6 +138,13 @@ export function PlantCard({
             {plant.generalHealth || GeneralHealthEnum.Healthy}
           </span>
         </div>
+        <div className="absolute top-10 left-4">
+          <span
+            className={`rounded-full px-3 py-1 text-xs font-medium shadow-sm backdrop-blur-md bg-cream text-forest`}
+          >
+            {locationName}
+          </span>
+        </div>
 
         {/* Organic curve divider */}
         <div
@@ -162,28 +174,51 @@ export function PlantCard({
           </div>
         </div>
 
+
+
         <div className="mb-6 grid grid-cols-2 gap-3">
-          <div className="bg-cream flex items-center gap-2 rounded-2xl p-3">
-            <Droplets className="text-terracotta h-4 w-4" />
-            <div className="flex flex-col">
-              <span className="text-brown text-[10px] font-bold tracking-wider uppercase">
-                {t("water")}
-              </span>
-              <span className="text-forest text-xs font-medium">
-                {t("water_days", { count: waterDays })}
-              </span>
-            </div>
+          <div className="bg-cream relative flex flex-col items-center rounded-2xl p-3">
+            <Droplets className="text-water absolute left-3 top-3 h-4 w-4" />
+            <span className="text-brown text-[10px] font-bold tracking-wider uppercase">
+              {t("water")}
+            </span>
+            <span className="text-forest text-xs font-medium">
+              {t("water_days", { count: waterDays })}
+            </span>
           </div>
-          <div className="bg-cream flex items-center gap-2 rounded-2xl p-3">
-            <Sun className="text-sand fill-cream stroke-brown h-4 w-4" />
-            <div className="flex flex-col">
-              <span className="text-brown text-[10px] font-bold tracking-wider uppercase">
-                {t("light")}
+
+          <div className={`relative flex flex-col items-center rounded-2xl p-3 ${lightMismatch ? "bg-terracotta/20" : "bg-cream"}`}>
+            <Sun className={`absolute left-3 top-3 h-4 w-4 ${lightMismatch ? "text-terracotta" : "text-sand fill-cream stroke-terracotta"}`} />
+            {lightMismatch && (
+              <AlertTriangleIcon className="absolute right-3 top-3 h-4 w-4 text-terracotta" />
+            )}
+            <span className="text-brown text-[10px] font-bold tracking-wider uppercase">
+              {t("light")}
+            </span>
+            {lightMismatch ? (
+              <div className="mt-1 flex gap-3">
+                <div className="flex flex-col items-center gap-0.5">
+                  <span className="text-brown text-[9px] font-bold tracking-wider uppercase">
+                    {t("wants")}
+                  </span>
+                  <span title={ plantData.lightRequirements}  className="text-forest text-xs font-medium">
+                    {getLightIcon(plantData.lightRequirements)}
+                  </span>
+                </div>
+                <div className="flex flex-col items-center gap-0.5">
+                  <span className="text-brown text-[9px] font-bold tracking-wider uppercase">
+                    {t("getting")}
+                  </span>
+                  <span title={plantData.location?.lightProvided} className="text-terracotta text-xs font-medium">
+                    {getLightIcon(plantData.location?.lightProvided)}
+                  </span>
+                </div>
+              </div>
+            ) : (
+              <span title={plantData.lightRequirements} className="text-forest text-xs font-medium">
+                {getLightIcon(plantData.lightRequirements)}
               </span>
-              <span className="text-forest text-xs font-medium">
-                {locationName}
-              </span>
-            </div>
+            )}
           </div>
         </div>
 
