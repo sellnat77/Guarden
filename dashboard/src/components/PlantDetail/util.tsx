@@ -33,9 +33,28 @@ export const getHealthColor = (health: GeneralHealthEnum) => {
     default:
       return "bg-gray-400";
   }
+}
+
+  const lightOrder: Record<LightLevelsEnum, number> = {
+    [LightLevelsEnum.FullSun]: 0,
+    [LightLevelsEnum.Bright]: 1,
+    [LightLevelsEnum.Partial]: 2,
+    [LightLevelsEnum.Shady]: 3,
+    [LightLevelsEnum.Low]: 4,
+    [LightLevelsEnum.Dark]: 5,
+    [LightLevelsEnum.Zero]: 6,
+  };
+
+export const isLightMismatch = (
+  required: LightLevelsEnum | undefined,
+  provided: LightLevelsEnum | undefined
+): boolean => {
+  if (!required || !provided) return false;
+  return Math.abs(lightOrder[required] - lightOrder[provided]) >= 2;
 };
 
-export const getLightLabel = (light: LightLevelsEnum) => {
+export const getLightIcon = (light: LightLevelsEnum | undefined) => {
+  if (!light) return <SunIcon className="bg-light-full-sun  stroke-cream rounded-full p-1 w-7 h-7" />;
   switch (light) {
     case LightLevelsEnum.FullSun:
       return <SunIcon className="bg-light-full-sun  stroke-cream rounded-full p-1 w-7 h-7" />;

@@ -1,5 +1,9 @@
 import json
 import os
+
+from dotenv import load_dotenv
+
+load_dotenv()
 from enum import Enum
 from typing import Optional
 
@@ -42,7 +46,7 @@ default_internal_server = (
 )
 
 INTERNAL_S3_SERVER = os.environ.get(
-    "PRIVATE_OBJECT_STORAGE_SERVER", f"http://{default_internal_server}:9900"
+    "PRIVATE_OBJECT_STORAGE_SERVER", f"http://{default_internal_server}:9000"
 )
 
 

@@ -10,10 +10,12 @@ import { CareReminders } from "./CareReminders";
 import { HealthTracker } from "./HealthTracker";
 import { WateringSchedule } from "./WateringSchedule";
 import { LocationFilter } from "./LocationFilter";
-import type { Location, Plant } from "@/data/gql/graphql";
+import type { Location } from "@/data/gql/graphql";
+import type {FragmentType} from "@/data/gql";
 import { client } from "@/util/graphqlClient";
 import { useAuth } from "@/auth";
-import { getPlantsAndLocations } from "@/data/queries";
+import { PlantFragment, getPlantsAndLocations } from "@/data/queries";
+import {  useFragment } from "@/data/gql";
 
 export function PlantDashboard({ plantFilter }: { plantFilter: string }) {
   const navigate = useNavigate();
@@ -26,13 +28,7 @@ export function PlantDashboard({ plantFilter }: { plantFilter: string }) {
   const { data: { plants = [], locations = [] } = {}, refetch: refetchPlants } =
     useQuery({
       queryKey: ["fetchAllPlantsAndLocations"],
-      queryFn: async (): Promise<
-        | {
-            plants: Array<Partial<Plant>>;
-            locations: Array<Partial<Location>>;
-          }
-        | undefined
-      > => {
+      queryFn: async (): Promise<{ plants: Array<FragmentType<typeof PlantFragment >>, locations: Array<Partial<Location>>} | undefined > => {
         if (!user?.id) {
           return;
         }
@@ -48,7 +44,9 @@ export function PlantDashboard({ plantFilter }: { plantFilter: string }) {
       },
     });
 
-  const filteredPlants = plants.filter((fetchedPlant) => {
+  const plantFragments = plants.map((plant)=> useFragment(PlantFragment, plant));
+
+  const filteredPlants = plantFragments.filter((fetchedPlant) => {
     if (!fetchedPlant.name) return false;
     if (!fetchedPlant.locationId) return false;
     if (selectedLocation !== 0 && fetchedPlant.locationId !== selectedLocation)

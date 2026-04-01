@@ -1,8 +1,8 @@
-import { GRAPHQL_SERVER } from "../components/constants";
+import { GRAPHQL_SERVER_CODEGEN } from "../components/constants";
 import type { CodegenConfig } from "@graphql-codegen/cli";
 
 const config: CodegenConfig = {
-  schema: `${GRAPHQL_SERVER}/graphql`,
+  schema: `${GRAPHQL_SERVER_CODEGEN}/graphql`,
   documents: ["src/**/*.{ts,tsx}"],
   generates: {
     "./src/data/gql/": {
