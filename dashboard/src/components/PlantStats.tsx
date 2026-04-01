@@ -1,7 +1,7 @@
 import { Droplets, Heart, HouseHeart, Sprout } from "lucide-react";
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
-import type { Plant } from "@/data/gql/graphql";
+import type {  PlantFragmentFragment } from "@/data/gql/graphql";
 import { client } from "@/util/graphqlClient";
 import { getVitalsForPlantGroup } from "@/data/vitalsData";
 
@@ -9,12 +9,11 @@ export function PlantStats({
   allPlants = [],
   totalLocations = 0,
 }: {
-  allPlants: Array<Partial<Plant>>;
+  allPlants: Array<PlantFragmentFragment>;
   totalLocations: number;
 }) {
   const plantIds = allPlants
-    .map((plant) => plant.id)
-    .filter((id) => id !== undefined);
+    .map((plant) => plant.id);
   const { data: getVitalsForGroup } = useQuery({
     queryKey: [`getAllVitalsForPlants`, plantIds],
     queryFn: async () => {

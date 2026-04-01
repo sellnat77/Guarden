@@ -15,8 +15,7 @@ import { ResponsiveContainer } from "recharts";
 import { deletePlant } from "../data/plantsData";
 import { VitalGraph } from "./VitalGraph";
 import { getHealthColor, getLightIcon, isLightMismatch } from "./PlantDetail/util";
-import type {DeletePlantInput, Plant} from "@/data/gql/graphql";
-import {  GeneralHealthEnum  } from "@/data/gql/graphql";
+import type {DeletePlantInput, PlantFragmentFragment} from "@/data/gql/graphql";
 import { client } from "@/util/graphqlClient";
 import { getLocation } from "@/data/locationsData";
 import { getVitalsForPlant } from "@/data/vitalsData";
@@ -28,7 +27,7 @@ const defaultPlantProps = {
 };
 
 interface PlantCardProps {
-  plant: Partial<Plant>;
+  plant: PlantFragmentFragment;
   index: number;
   onDeleteSettled: () => void;
 }
@@ -71,7 +70,7 @@ export function PlantCard({
   const waterDays = Math.floor(Math.random() * 5) + 1;
   const lightMismatch = isLightMismatch(
     plantData.lightRequirements,
-    plantData.location?.lightProvided
+    plantData.location.lightProvided
   );
   const locationName =
     fetchLocation?.location.getLocations[0]?.name || "Default Location";
@@ -133,9 +132,9 @@ export function PlantCard({
         </div>
         <div className="absolute top-4 left-4">
           <span
-            className={`rounded-full px-3 py-1 text-xs font-medium shadow-sm backdrop-blur-md ${getHealthColor(plant.generalHealth || GeneralHealthEnum.Healthy)}`}
+            className={`rounded-full px-3 py-1 text-xs font-medium shadow-sm backdrop-blur-md ${getHealthColor(plant.generalHealth)}`}
           >
-            {plant.generalHealth || GeneralHealthEnum.Healthy}
+            {plant.generalHealth}
           </span>
         </div>
         <div className="absolute top-10 left-4">
@@ -209,8 +208,8 @@ export function PlantCard({
                   <span className="text-brown text-[9px] font-bold tracking-wider uppercase">
                     {t("getting")}
                   </span>
-                  <span title={plantData.location?.lightProvided} className="text-terracotta text-xs font-medium">
-                    {getLightIcon(plantData.location?.lightProvided)}
+                  <span title={plantData.location.lightProvided} className="text-terracotta text-xs font-medium">
+                    {getLightIcon(plantData.location.lightProvided)}
                   </span>
                 </div>
               </div>

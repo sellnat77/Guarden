@@ -15,7 +15,8 @@ import { useQuery } from "@tanstack/react-query";
 import { CareRow } from "./CareRow";
 import { VitalRow } from "./VitalRow";
 import { getHealthColor, getLightIcon as getLightIcon } from "./util";
-import { getPlantDetails } from "@/data/queries";
+import {  useFragment } from "@/data/gql";
+import { LocationDetailFragment, PlantDetailFragment, VitalDetailFragment, getPlantDetails } from "@/data/queries";
 import { client } from "@/util/graphqlClient";
 
 interface PlantDetailProps {
@@ -27,13 +28,14 @@ export function PlantDetailPage({
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  const { data: plantDetail} = useQuery({
+  const { data: plantDetail } = useQuery({
     queryKey: ["getPlantDetail", plantId],
     queryFn: async () => await client.request(getPlantDetails, { plantId: parseInt(plantId) })
   });
 
-  const plant = plantDetail?.plant.getPlants[0];
+  const plant = useFragment(PlantDetailFragment, plantDetail?.plant.getPlants[0]);
   if (!plant) return null;
+  const location = useFragment(LocationDetailFragment, plant.location)
   const vitals = plant.vitals.edges;
 
   return (
@@ -95,10 +97,10 @@ export function PlantDetailPage({
                     {getLightIcon(plant.lightRequirements)}
                   </span>
                   <span>
-                    {`Light Provided by ${plant.location.name}: ${plant.location.lightProvided}`}
+                    {`Light Provided by ${location.name}: ${location.lightProvided}`}
                   </span>
                   <span>
-                  {getLightIcon(plant.location.lightProvided)}
+                  {getLightIcon(location.lightProvided)}
                 </span>
                 </div>
               </div>
@@ -127,7 +129,10 @@ export function PlantDetailPage({
                 <p className="text-xs text-gray-400 mb-3">Health readings over time</p>
                 {vitals.length === 0
                   ? <p className="text-xs text-gray-400 text-center py-6">No vitals recorded yet.</p>
-                  : vitals.map((v) => <VitalRow key={v.node.id} node={v.node} />)
+                  : vitals.map((v) => {
+                    const vital = useFragment(VitalDetailFragment, v.node);
+                    return <VitalRow key={vital.id} node={vital} />
+                  })
                 }
               </div>
             </div>

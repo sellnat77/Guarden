@@ -1,6 +1,7 @@
-from dotenv import load_dotenv
 import json
 import os
+
+from dotenv import load_dotenv
 
 load_dotenv()
 from enum import Enum
@@ -38,7 +39,11 @@ def is_docker():
     return os.path.exists("/.dockerenv")
 
 
-default_internal_server = os.environ.get("OBJECT_STORAGE_SERVER", "host.docker.internal") if is_docker() else "localhost"
+default_internal_server = (
+    os.environ.get("OBJECT_STORAGE_SERVER", "host.docker.internal")
+    if is_docker()
+    else "localhost"
+)
 
 INTERNAL_S3_SERVER = os.environ.get(
     "PRIVATE_OBJECT_STORAGE_SERVER", f"http://{default_internal_server}:9000"
