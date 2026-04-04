@@ -19,6 +19,7 @@ import type {DeletePlantInput, PlantFragmentFragment} from "@/data/gql/graphql";
 import { client } from "@/util/graphqlClient";
 import { getLocation } from "@/data/locationsData";
 import { getVitalsForPlant } from "@/data/vitalsData";
+import { DEFAULT_LOCALE } from "@/i18n/config";
 
 const defaultPlantProps = {
   image:
@@ -38,6 +39,7 @@ export function PlantCard({
 }: PlantCardProps) {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const userLocale = navigator.language || DEFAULT_LOCALE;
 
   const { data: fetchLocation } = useQuery({
     queryKey: [`fetchAllLocation`, plantData.locationId],
@@ -67,7 +69,9 @@ export function PlantCard({
 
 
   const plant = { ...defaultPlantProps, ...plantData };
-  const waterDays = Math.floor(Math.random() * 5) + 1;
+  const lastWatered = new Date(plant.lastWatered)
+  const nextDue = lastWatered;
+  nextDue.setDate(lastWatered.getDate() + plant.waterFrequencyDays);
   const lightMismatch = isLightMismatch(
     plantData.lightRequirements,
     plantData.location.lightProvided
@@ -182,7 +186,7 @@ export function PlantCard({
               {t("water")}
             </span>
             <span className="text-forest text-xs font-medium">
-              {t("water_days", { count: waterDays })}
+              {nextDue.toLocaleDateString(userLocale, { dateStyle: "short" })}
             </span>
           </div>
 
