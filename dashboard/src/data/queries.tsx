@@ -10,6 +10,7 @@ export const PlantFragment = graphql(`
     lightRequirements
     lastPruned
     lastWatered
+    waterFrequencyDays
     lastRepotted
     lastFertilized
     locationId

@@ -132,7 +132,7 @@ export function PlantDashboard({ plantFilter }: { plantFilter: string }) {
             </p>
             <p className="text-brown relative z-10 text-sm leading-relaxed" />
           </motion.div>
-          <WateringSchedule />
+          <WateringSchedule plants={ filteredPlants} />
           <CareReminders />
         </div>
       </div>
