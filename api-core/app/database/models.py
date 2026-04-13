@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from typing import List, get_args
 
 from argon2 import PasswordHasher
-from sqlalchemy import DATETIME, DateTime, Enum, ForeignKey, Integer, String, func
+from sqlalchemy import DATETIME, DateTime, Enum, ForeignKey, Integer, String, func, Boolean
 from sqlalchemy.orm import Mapped, declarative_base, mapped_column, relationship
 
 Base = declarative_base()
@@ -25,13 +25,13 @@ class UserModel(Base):
 
 
 class LightLevelsEnum(enum.Enum):
-    FULL_SUN = 6
-    BRIGHT = 5
-    PARTIAL = 4
-    SHADY = 3
-    LOW = 2
-    DARK = 1
     ZERO = 0
+    DARK = 1
+    LOW = 2
+    SHADY = 3
+    PARTIAL = 4
+    BRIGHT = 5
+    FULL_SUN = 6
 
 
 class LocationModel(Base):
@@ -43,6 +43,10 @@ class LocationModel(Base):
         nullable=False,
         default=LightLevelsEnum.SHADY,
     )
+    avgTemp: Mapped[int] = mapped_column(Integer, nullable=False)
+    avgHumidity: Mapped[int] = mapped_column(Integer, nullable=False)
+    notes: Mapped[str] = mapped_column(String(250), nullable=True)
+    indoors: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     plants: Mapped[List["PlantModel"]] = relationship(
         back_populates="location", cascade="all, delete", lazy="selectin"
     )
@@ -160,21 +164,40 @@ INITIAL_DATA = {
         {
             "id": 1,
             "name": "Office",
+            "lightProvided": LightLevelsEnum.PARTIAL,
+            "avgTemp": 70,
+            "avgHumidity": 20,
+            "notes": "Office garden, uses artificial lights",
+            "indoors": True,
             "userId": 1,
         },
         {
             "id": 2,
             "name": "Backyard Patio",
+            "lightProvided": LightLevelsEnum.FULL_SUN,
+            "avgTemp": 80,
+            "avgHumidity": 5,
+            "notes": "Backyard Patio, very hot",
+            "indoors": False,
             "userId": 1,
         },
         {
             "id": 3,
             "name": "Kitchen",
+            "lightProvided": LightLevelsEnum.LOW,
+            "avgTemp": 67,
+            "avgHumidity": 60,
+            "notes": "Kitchen garden, windowsill light and very humid",
+            "indoors": True,
             "userId": 1,
         },
         {
             "id": 4,
             "name": "Blacony",
+            "lightProvided": LightLevelsEnum.DARK,
+            "avgTemp": 70,
+            "avgHumidity": 6,
+            "notes": "Balcony garden, Very shady",
             "userId": 1,
         },
     ],

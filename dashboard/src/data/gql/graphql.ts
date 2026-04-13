@@ -21,7 +21,12 @@ export type Scalars = {
 };
 
 export type AddLocationInput = {
+  avgHumidity: Scalars['Int']['input'];
+  avgTemp: Scalars['Int']['input'];
+  indoors: Scalars['Boolean']['input'];
+  lightProvided: Scalars['Int']['input'];
   name: Scalars['String']['input'];
+  notes: Scalars['String']['input'];
   userId: Scalars['Int']['input'];
 };
 
@@ -123,9 +128,13 @@ export enum LightLevelsEnum {
 
 export type Location = {
   __typename?: 'Location';
+  avgHumidity: Scalars['Int']['output'];
+  avgTemp: Scalars['Int']['output'];
   id: Scalars['Int']['output'];
+  indoors: Scalars['Boolean']['output'];
   lightProvided: LightLevelsEnum;
   name: Scalars['String']['output'];
+  notes?: Maybe<Scalars['String']['output']>;
   owner: User;
   plants: Array<Plant>;
   userId: Scalars['Int']['output'];
@@ -147,9 +156,13 @@ export type LocationFilterSetInput = {
 
 export type LocationModel = {
   __typename?: 'LocationModel';
+  avgHumidity: Scalars['Int']['output'];
+  avgTemp: Scalars['Int']['output'];
   id: Scalars['Int']['output'];
+  indoors: Scalars['Boolean']['output'];
   lightProvided: LightLevelsEnum;
   name: Scalars['String']['output'];
+  notes?: Maybe<Scalars['String']['output']>;
   owner: UserModel;
   plants: PlantModelConnection;
   userId: Scalars['Int']['output'];

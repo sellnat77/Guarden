@@ -1,20 +1,31 @@
 import { useTranslation } from "react-i18next";
 import { Sun } from "lucide-react";
 import { Field, Slider } from "@base-ui/react";
-import { lightLevels } from "./Base";
+
+const lightDefs = [
+  'Zero',
+  'Dark',
+  'Low',
+  'Shady',
+  'Partial',
+  'Bright',
+  'Full Sun',
+]
 
 export function LightSelector({
   title = "title",
-  lightValue,
+  lightValue = Math.floor(lightDefs.length / 2),
   setLightValue,
 }: {
   title: string;
-  lightValue: number;
+  lightValue: number | undefined;
   setLightValue: (newValue: number) => void;
 }) {
   const { t } = useTranslation("baseForms");
 
-  const lightDescription = t(lightLevels[lightValue]);
+
+  const selectedLevel = lightDefs[lightValue]
+  const lightDescription = selectedLevel
 
   return (
     <>
@@ -34,7 +45,7 @@ export function LightSelector({
         <Field.Root name="lightReqs">
           <Slider.Root
             min={0}
-            max={lightLevels.length - 1}
+            max={lightDefs.length - 1}
             step={1}
             className="relative flex h-12 items-center overflow-hidden rounded-xl px-5"
             onValueChange={setLightValue}
