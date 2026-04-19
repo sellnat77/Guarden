@@ -12,21 +12,27 @@ import {
   Radio,
   RadioGroup,
 } from "@base-ui/react";
-import { lightLevels } from "./Base";
 import { LightSelector } from "./LightSelector";
-import type { AddLocationInput } from "@/data/gql/graphql";
+import type {AddLocationInput} from "@/data/gql/graphql";
 import { addLocations } from "@/data/locationsData";
 import { client } from "@/util/graphqlClient";
 import { useAuth } from "@/auth";
+
+interface LocationFormData {
+  name: string;
+  locationType: "indoor" | "outdoor";
+  lightProvided: number,
+  avgTemp: string,
+  avgHumidity: string,
+  notes: string
+}
 
 export function AddLocationForm() {
   const navigate = useNavigate();
   const { t } = useTranslation("addLocation");
   const { user } = useAuth();
 
-  const [lightValue, setLightValue] = useState(
-    Math.round((lightLevels.length - 1) / 2),
-  );
+  const [lightValue, setLightValue] = useState<number>();
 
   const { mutate: addNewLocation } = useMutation({
     mutationKey: ["addLocation"],
@@ -34,10 +40,20 @@ export function AddLocationForm() {
       await client.request(addLocations, payload),
   });
 
-  const handleCreateLocation = (formValues: Record<string, any>) => {
-    if (formValues.locationName && user) {
+  const handleCreateLocation = (formValues: LocationFormData) => {
+    if (user) {
+      const input = {
+        name: formValues.name,
+        avgHumidity: parseInt(formValues.avgHumidity),
+        avgTemp: parseInt(formValues.avgTemp),
+        lightProvided: lightValue || 0,
+        notes: formValues.notes,
+        indoors: formValues.locationType === 'indoor',
+        userId: user.id
+      };
+
       addNewLocation({
-        locationInput: { name: formValues.locationName, userId: user.id },
+        locationInput: input,
       });
       navigate({ to: "/" });
     }
@@ -79,7 +95,7 @@ export function AddLocationForm() {
           >
             {/* Location Name & Type */}
             <div className="space-y-6">
-              <Field.Root name="locationName" className="space-y-2">
+              <Field.Root name="name" className="space-y-2">
                 <Field.Label className="text-forest ml-1 text-sm font-bold">
                   {t("location_name")}
                 </Field.Label>
@@ -120,7 +136,7 @@ export function AddLocationForm() {
 
             {/* Environment Stats */}
             <div className="space-y-6 pt-4">
-              <Field.Root name="lightReqs">
+              <Field.Root name="lightProvided">
                 <LightSelector
                   title={t("env_conditions")}
                   lightValue={lightValue}

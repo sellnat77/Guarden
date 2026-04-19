@@ -71,6 +71,9 @@ export const plants: Array<Plant> = [
       name: "Garden",
       userId: 1,
       lightProvided: LightLevelsEnum.Shady,
+      avgHumidity: 10,
+      avgTemp: 12,
+      indoors: true,
       owner: {
         id: 1,
         username: "JohnDoe",
@@ -115,6 +118,9 @@ export const plants: Array<Plant> = [
               location: {
                 userId: 1,
                 lightProvided: LightLevelsEnum.Shady,
+                avgHumidity: 10,
+                avgTemp: 12,
+                indoors: true,
                 owner: {
                   locations: {
                     edges: [],
