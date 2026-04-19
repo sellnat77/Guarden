@@ -5,7 +5,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import async_sessionmaker
 from sqlalchemy.orm import Query
 
-from app.database.models import LocationModel, LightLevelsEnum
+from app.database.models import LightLevelsEnum, LocationModel
 from app.graphql.core.filters import FilterField, FilterSet, Op, apply_filters
 from app.graphql.core.input_base import BaseInput
 
@@ -32,7 +32,9 @@ class LocationMutations:
         db: async_sessionmaker = info.context["db"]
 
         async with db() as session:
-            input.lightProvided = LightLevelsEnum(input.lightProvided) # noqa invalid-assignment
+            input.lightProvided = LightLevelsEnum(
+                input.lightProvided
+            )  # noqa invalid-assignment
             newLocation = input.to_model()
             session.add(newLocation)
             await session.commit()
